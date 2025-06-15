@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import RegistrationModal from './RegistrationModal';
 
@@ -113,10 +112,10 @@ const HeroSection = () => {
       if (isFirstLetter) {
         return (
           <span key={index}>
-            <span className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent text-shadow-black">
+            <span className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
               {word.charAt(0)}
             </span>
-            <span className="text-white text-shadow-black">
+            <span className="text-white">
               {word.slice(1)}
             </span>
             {index < words.length - 1 && ' '}
@@ -126,7 +125,7 @@ const HeroSection = () => {
       
       if (isKeyWord) {
         return (
-          <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent text-shadow-black">
+          <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
             {word}
             {index < words.length - 1 && ' '}
           </span>
@@ -134,7 +133,7 @@ const HeroSection = () => {
       }
       
       return (
-        <span key={index} className="text-white text-shadow-black">
+        <span key={index} className="text-white">
           {word}
           {index < words.length - 1 && ' '}
         </span>
@@ -150,9 +149,9 @@ const HeroSection = () => {
     <>
       <section className="relative h-[70vh] md:h-[80vh] overflow-hidden bg-white">
         {/* Background Banners */}
-        <div className="absolute inset-0 -top-20">
-          <div className="flex animate-scroll-fast space-x-8 h-[calc(100%+80px)]">
-            {[...sportsBanners, ...sportsBanners, ...sportsBanners].map((sport, index) => (
+        <div className="absolute inset-0" style={{ top: '-120px' }}>
+          <div className="flex animate-scroll-fast space-x-8 h-[calc(100%+120px)]">
+            {[...sportsBanners, ...sportsBanners].map((sport, index) => (
               <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
                 <div 
                   className="absolute inset-0 bg-cover bg-center" 
@@ -183,7 +182,7 @@ const HeroSection = () => {
             </h1>
 
             {/* Subtitle */}
-            <div className="text-white mb-8 max-w-xl mx-auto leading-relaxed text-xl md:text-2xl font-medium text-shadow-black text-center">
+            <div className="text-white mb-8 max-w-xl mx-auto leading-relaxed text-xl md:text-2xl font-medium text-center">
               <p className="mb-2">Faça parte do movimento que está</p>
               <p>transformando vidas através da união do Esporte.</p>
             </div>
@@ -191,7 +190,7 @@ const HeroSection = () => {
             {/* CTA Button */}
             <button 
               onClick={handleCadastrarClick}
-              className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105"
+              className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
             >
               Cadastrar agora →
             </button>
