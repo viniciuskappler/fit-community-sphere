@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MapPin, Dumbbell, Users } from 'lucide-react';
 
@@ -153,69 +154,56 @@ const InteractiveMapSection = () => {
             <div className="absolute top-[50%] left-[5%] w-24 h-6 bg-blue-300 opacity-70 rounded-full transform rotate-12"></div>
             <div className="absolute bottom-[20%] right-[5%] w-32 h-8 bg-blue-300 opacity-70 rounded-full transform -rotate-6"></div>
             
-            {/* Enhanced animated map pins */}
+            {/* Map pins with improved visual style */}
             {locations.map((location) => (
               <div
                 key={location.id}
-                className="absolute transform -translate-x-1/2 -translate-y-full cursor-pointer transition-all duration-300 hover:scale-125 hover:-translate-y-2 z-10 animate-pulse"
+                className="absolute transform -translate-x-1/2 -translate-y-full cursor-pointer transition-all duration-300 hover:scale-110 hover:-translate-y-2 z-10"
                 style={{
                   left: `${location.x}%`,
                   top: `${location.y}%`,
-                  animationDuration: `${2 + Math.random() * 2}s`
                 }}
                 onMouseEnter={(e) => handlePinHover(location, e)}
                 onMouseLeave={handlePinLeave}
               >
                 <div className="flex flex-col items-center">
-                  {/* Enhanced pin with gradients and glow */}
+                  {/* Enhanced pin with subtle improvements */}
                   <div 
-                    className={`relative p-4 rounded-full shadow-2xl transition-all duration-300 transform hover:rotate-12 hover:shadow-2xl ${
+                    className={`relative p-3 rounded-full shadow-lg transition-all duration-300 transform hover:rotate-6 ${
                       location.type === 'establishment' 
-                        ? 'bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 hover:from-orange-300 hover:via-orange-400 hover:to-red-400' 
-                        : 'bg-gradient-to-br from-blue-400 via-blue-500 to-indigo-600 hover:from-blue-300 hover:via-blue-400 hover:to-indigo-500'
+                        ? 'bg-gradient-to-br from-orange-400 to-red-500 hover:from-orange-300 hover:to-red-400' 
+                        : 'bg-gradient-to-br from-blue-400 to-indigo-600 hover:from-blue-300 hover:to-indigo-500'
                     }`}
                   >
-                    {/* Glow effect */}
+                    {/* Subtle glow effect */}
                     <div 
-                      className={`absolute inset-0 rounded-full blur-md opacity-30 ${
+                      className={`absolute inset-0 rounded-full blur-sm opacity-20 ${
                         location.type === 'establishment' 
-                          ? 'bg-gradient-to-br from-orange-400 to-red-500' 
-                          : 'bg-gradient-to-br from-blue-400 to-indigo-600'
+                          ? 'bg-orange-400' 
+                          : 'bg-blue-400'
                       }`}
                     ></div>
                     
-                    {/* Icon with enhanced styling */}
-                    <div className="relative z-10 text-white drop-shadow-lg">
+                    {/* Icon */}
+                    <div className="relative z-10 text-white">
                       {location.type === 'establishment' ? (
-                        <Dumbbell size={28} className="filter drop-shadow-md" />
+                        <Dumbbell size={20} />
                       ) : (
-                        <Users size={28} className="filter drop-shadow-md" />
+                        <Users size={20} />
                       )}
                     </div>
-                    
-                    {/* Subtle inner glow */}
-                    <div className="absolute inset-1 rounded-full bg-gradient-to-t from-transparent to-white opacity-20"></div>
                   </div>
                   
-                  {/* Enhanced name label with gradient background */}
+                  {/* Name label with improved styling */}
                   <div 
-                    className={`mt-3 px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-xl backdrop-blur-sm transition-all duration-300 hover:scale-105 max-w-[140px] text-center border border-white/20 ${
+                    className={`mt-2 px-3 py-1 rounded-lg text-xs font-medium text-white shadow-md transition-all duration-300 hover:scale-105 max-w-[120px] text-center ${
                       location.type === 'establishment' 
-                        ? 'bg-gradient-to-r from-orange-500/90 via-orange-600/90 to-red-500/90' 
-                        : 'bg-gradient-to-r from-blue-500/90 via-blue-600/90 to-indigo-600/90'
+                        ? 'bg-orange-500/90' 
+                        : 'bg-blue-500/90'
                     }`}
                   >
-                    <div className="relative z-10 drop-shadow-sm">{location.name}</div>
-                    {/* Subtle highlight */}
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-transparent to-white opacity-10"></div>
+                    {location.name}
                   </div>
-                  
-                  {/* Floating animation effect */}
-                  <div 
-                    className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-6 h-2 rounded-full opacity-40 blur-sm ${
-                      location.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'
-                    }`}
-                  ></div>
                 </div>
               </div>
             ))}
@@ -225,13 +213,13 @@ const InteractiveMapSection = () => {
           <div className="flex justify-center mt-6 space-x-8">
             <div className="flex items-center space-x-3">
               <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-orange-400 to-red-500 rounded-full shadow-lg">
-                <Dumbbell size={14} className="text-white drop-shadow-sm" />
+                <Dumbbell size={14} className="text-white" />
               </div>
               <span className="text-sm text-gray-600 font-medium">Estabelecimentos</span>
             </div>
             <div className="flex items-center space-x-3">
               <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full shadow-lg">
-                <Users size={14} className="text-white drop-shadow-sm" />
+                <Users size={14} className="text-white" />
               </div>
               <span className="text-sm text-gray-600 font-medium">Grupos Esportivos</span>
             </div>
@@ -239,10 +227,10 @@ const InteractiveMapSection = () => {
         </div>
       </div>
       
-      {/* Enhanced Tooltip */}
+      {/* Tooltip */}
       {hoveredLocation && (
         <div
-          className="fixed z-50 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden max-w-sm pointer-events-none transform -translate-x-1/2 -translate-y-full animate-scale-in"
+          className="fixed z-50 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden max-w-sm pointer-events-none transform -translate-x-1/2 -translate-y-full"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y
