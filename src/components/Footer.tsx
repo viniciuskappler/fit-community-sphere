@@ -1,6 +1,6 @@
 import React from 'react';
 const Footer = () => {
-  return <footer className="bg-gray-900 text-white py-16">
+  return <footer className="text-white py-16 bg-zinc-50">
       <div className="w-4/5 max-w-none mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -11,9 +11,9 @@ const Footer = () => {
                   <div className="w-3 h-3 bg-gradient-to-br from-orange-500 to-red-600 rounded-full"></div>
                 </div>
               </div>
-              <span className="text-xl font-bold">Núcleo do Esporte</span>
+              <span className="text-xl font-bold text-zinc-950">Núcleo do Esporte</span>
             </div>
-            <p className="text-gray-400 mb-6 max-w-md">
+            <p className="mb-6 max-w-md text-zinc-800">
               Conectando atletas a estabelecimentos e grupos esportivos. 
               Encontre seu esporte ideal e faça parte de uma comunidade ativa.
             </p>
@@ -32,7 +32,7 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Plataforma</h3>
+            <h3 className="text-lg font-semibold mb-4 text-zinc-800">Plataforma</h3>
             <ul className="space-y-2">
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Buscar</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Eventos</a></li>
@@ -43,7 +43,7 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contato</h3>
+            <h3 className="text-lg font-semibold mb-4 text-zinc-800">Contato</h3>
             <ul className="space-y-2">
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Suporte</a></li>
               <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Parceiros</a></li>
@@ -54,7 +54,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-gray-400 text-[fc4c02]">
+          <p className="text-[fc4c02] text-[#fc4c02]">
             © 2024 Núcleo do Esporte. Todos os direitos reservados.
           </p>
         </div>
