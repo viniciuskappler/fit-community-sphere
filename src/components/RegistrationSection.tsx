@@ -27,17 +27,23 @@ const RegistrationSection = () => {
         <p className="text-gray-500 text-center mt-2 mb-8 text-base max-w-xl mx-auto">
           Selecione o tipo de cadastro que melhor se encaixa com você.
         </p>
-        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
-          {options.map(opt => (
-            <div key={opt.title} className="flex flex-col items-center bg-white rounded-xl p-6 shadow-sm border border-[#ebebef] max-w-xs w-full transition-shadow hover:shadow-md">
-              <div className="mb-3">{opt.icon}</div>
-              <div className="text-lg font-semibold text-gray-900 text-center mb-2">{opt.title}</div>
-              <div className="text-gray-500 text-center text-sm mb-4">{opt.desc}</div>
-              <button className="bg-gradient-to-r from-red-600 to-orange-500 hover:bg-gradient-to-r hover:from-red-700 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg text-sm shadow-none transition">
-                Selecionar
-              </button>
-            </div>
-          ))}
+        
+        {/* Cards com animação de movimento */}
+        <div className="relative overflow-hidden">
+          <div className="flex animate-slide space-x-4">
+            {[...options, ...options].map((opt, index) => (
+              <div key={index} className="flex-shrink-0 w-80">
+                <div className="flex flex-col items-center bg-white rounded-xl p-6 shadow-sm border border-[#ebebef] h-full transition-shadow hover:shadow-md">
+                  <div className="mb-3">{opt.icon}</div>
+                  <div className="text-lg font-semibold text-gray-900 text-center mb-2">{opt.title}</div>
+                  <div className="text-gray-500 text-center text-sm mb-4">{opt.desc}</div>
+                  <button className="bg-gradient-to-r from-red-600 to-orange-500 hover:bg-gradient-to-r hover:from-red-700 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg text-sm shadow-none transition">
+                    Selecionar
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
