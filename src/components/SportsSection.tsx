@@ -88,7 +88,7 @@ const SportsSection = () => {
           <div className="flex animate-slide space-x-4">
             {[...sports, ...sports].map((sport, index) => (
               <Link to="/modalidades-esportivas" key={index} className="flex-shrink-0">
-                <div className="w-32 h-20 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-125 hover:z-10 hover:animate-shake cursor-pointer group relative">
+                <div className="w-32 h-20 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-125 hover:z-30 hover:animate-shake cursor-pointer group relative transform-gpu">
                   <div className={`h-full bg-gradient-to-br ${sport.color} rounded-xl p-3 flex flex-col items-center justify-center relative overflow-hidden`}>
                     <div className="absolute top-0 right-0 w-10 h-10 bg-white/10 rounded-full -translate-y-5 translate-x-5"></div>
                     <div className="text-xl mb-1 group-hover:scale-110 transition-transform">{sport.icon}</div>
