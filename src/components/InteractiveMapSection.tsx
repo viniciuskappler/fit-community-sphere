@@ -1,5 +1,7 @@
+
 import React, { useState } from 'react';
 import { MapPin, Dumbbell, Users } from 'lucide-react';
+
 interface MapLocation {
   id: string;
   name: string;
@@ -13,6 +15,7 @@ interface MapLocation {
     description: string;
   };
 }
+
 const locations: MapLocation[] = [{
   id: '1',
   name: 'Olympia Academia',
@@ -86,12 +89,24 @@ const locations: MapLocation[] = [{
     description: 'Grupo de corrida urbana'
   }
 }];
+
+// Cores diferentes para cada localização
+const locationColors = [
+  'bg-red-500',
+  'bg-blue-500', 
+  'bg-green-500',
+  'bg-purple-500',
+  'bg-yellow-500',
+  'bg-pink-500'
+];
+
 const InteractiveMapSection = () => {
   const [hoveredLocation, setHoveredLocation] = useState<MapLocation | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({
     x: 0,
     y: 0
   });
+
   const handlePinHover = (location: MapLocation, event: React.MouseEvent) => {
     setHoveredLocation(location);
     const rect = event.currentTarget.getBoundingClientRect();
@@ -100,70 +115,81 @@ const InteractiveMapSection = () => {
       y: rect.top - 10
     });
   };
+
   const handlePinLeave = () => {
     setHoveredLocation(null);
   };
-  return <section className="w-full px-4 flex flex-col items-center py-[100px] bg-white">
+
+  return (
+    <section className="w-full px-4 flex flex-col items-center py-[100px] bg-white">
       <div className="w-3/4 mx-auto">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-2 md:text-5xl">Mapa de Estabelecimentos e Grupos
-      </h2>
-        <p className="text-gray-500 text-center mb-12 text-base max-w-xl mx-auto">Descubra academias, centros de treinamento e
-grupos esportivos próximos à você.</p>
+        <h2 className="text-2xl font-bold text-center text-gray-900 mb-2 md:text-5xl">
+          Mapa de Estabelecimentos e Grupos
+        </h2>
+        <p className="text-gray-500 text-center mb-12 text-base max-w-xl mx-auto">
+          Descubra academias, centros de treinamento e grupos esportivos próximos à você.
+        </p>
         
-        <div className="relative bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-8 shadow-lg border border-gray-200 overflow-hidden">
-          {/* City Map Background with new image */}
-          <div className="relative w-full h-[600px] rounded-xl overflow-hidden">
-            {/* Background image with gradient overlay */}
-            <div className="absolute inset-0 bg-cover bg-center" style={{
-            backgroundImage: `url(/lovable-uploads/42c43684-60db-4ba2-9e0e-a851954d5be9.png)`
-          }} />
-            
-            {/* Gradient overlay to blend with white background */}
-            <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/20 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white/40" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/30" />
-            
-            {/* Map pins */}
-            {locations.map(location => <div key={location.id} className="absolute transform -translate-x-1/2 -translate-y-full cursor-pointer transition-all duration-200 hover:scale-110 z-10" style={{
-            left: `${location.x}%`,
-            top: `${location.y}%`
-          }} onMouseEnter={e => handlePinHover(location, e)} onMouseLeave={handlePinLeave}>
-                <div className={`flex flex-col items-center ${location.type === 'establishment' ? 'text-orange-500' : 'text-blue-500'}`}>
-                  <div className={`p-3 rounded-full shadow-lg ${location.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} text-white transform hover:scale-110 transition-transform`}>
-                    {location.type === 'establishment' ? <Dumbbell size={24} /> : <Users size={24} />}
-                  </div>
-                  <div className={`mt-2 px-3 py-1 rounded-lg text-xs font-medium text-white shadow-md ${location.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} max-w-[120px] text-center`}>
-                    {location.name}
-                  </div>
-                </div>
-              </div>)}
-          </div>
+        {/* Imagem sem caixa, apenas com degradê */}
+        <div className="relative w-full h-[600px] rounded-xl overflow-hidden">
+          {/* Background image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{
+              backgroundImage: `url(/lovable-uploads/42c43684-60db-4ba2-9e0e-a851954d5be9.png)`
+            }} 
+          />
           
-          {/* Legend */}
-          <div className="flex justify-center mt-6 space-x-8">
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-6 h-6 bg-orange-500 rounded-full">
-                <Dumbbell size={12} className="text-white" />
+          {/* Gradient overlay to blend with white background */}
+          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/30" />
+          
+          {/* Map pins - estilo Google Maps */}
+          {locations.map((location, index) => (
+            <div
+              key={location.id}
+              className="absolute transform -translate-x-1/2 -translate-y-full cursor-pointer transition-all duration-200 hover:scale-110 z-10"
+              style={{
+                left: `${location.x}%`,
+                top: `${location.y}%`
+              }}
+              onMouseEnter={(e) => handlePinHover(location, e)}
+              onMouseLeave={handlePinLeave}
+            >
+              <div className="flex flex-col items-center">
+                {/* Pin estilo Google Maps */}
+                <div className={`relative ${locationColors[index % locationColors.length]} w-8 h-8 rounded-full shadow-lg transform hover:scale-110 transition-transform flex items-center justify-center`}>
+                  <MapPin size={16} className="text-white" />
+                  {/* Sombra do pin */}
+                  <div className={`absolute top-6 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-transparent ${locationColors[index % locationColors.length].replace('bg-', 'border-t-')}`}></div>
+                </div>
+                
+                {/* Nome do local */}
+                <div className={`mt-3 px-3 py-1 rounded-lg text-xs font-medium text-white shadow-md ${locationColors[index % locationColors.length]} max-w-[120px] text-center`}>
+                  {location.name}
+                </div>
               </div>
-              <span className="text-sm text-gray-600">Estabelecimentos</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-6 h-6 bg-blue-500 rounded-full">
-                <Users size={12} className="text-white" />
-              </div>
-              <span className="text-sm text-gray-600">Grupos Esportivos</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
       
-      {/* Compact Tooltip */}
-      {hoveredLocation && <div className="fixed z-50 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden w-72 pointer-events-none transform -translate-x-1/2 -translate-y-full" style={{
-      left: tooltipPosition.x,
-      top: tooltipPosition.y
-    }}>
+      {/* Tooltip mantido igual */}
+      {hoveredLocation && (
+        <div
+          className="fixed z-50 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden w-72 pointer-events-none transform -translate-x-1/2 -translate-y-full"
+          style={{
+            left: tooltipPosition.x,
+            top: tooltipPosition.y
+          }}
+        >
           <div className="relative">
-            <img src={hoveredLocation.info.photo} alt={hoveredLocation.name} className="w-full h-24 object-cover" />
+            <img 
+              src={hoveredLocation.info.photo} 
+              alt={hoveredLocation.name} 
+              className="w-full h-24 object-cover" 
+            />
             <div className={`absolute top-2 right-2 p-1 rounded-full ${hoveredLocation.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} text-white`}>
               {hoveredLocation.type === 'establishment' ? <Dumbbell size={12} /> : <Users size={12} />}
             </div>
@@ -176,9 +202,14 @@ grupos esportivos próximos à você.</p>
             <div className="space-y-1">
               <h4 className="font-semibold text-gray-800 text-xs">Modalidades:</h4>
               <div className="flex flex-wrap gap-1">
-                {hoveredLocation.info.sports.slice(0, 3).map((sport, index) => <span key={index} className={`px-2 py-0.5 text-xs rounded-full text-white ${hoveredLocation.type === 'establishment' ? 'bg-orange-400' : 'bg-blue-400'}`}>
+                {hoveredLocation.info.sports.slice(0, 3).map((sport, index) => (
+                  <span 
+                    key={index} 
+                    className={`px-2 py-0.5 text-xs rounded-full text-white ${hoveredLocation.type === 'establishment' ? 'bg-orange-400' : 'bg-blue-400'}`}
+                  >
                     {sport}
-                  </span>)}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
@@ -186,7 +217,10 @@ grupos esportivos próximos à você.</p>
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full">
             <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white"></div>
           </div>
-        </div>}
-    </section>;
+        </div>
+      )}
+    </section>
+  );
 };
+
 export default InteractiveMapSection;
