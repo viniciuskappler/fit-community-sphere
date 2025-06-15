@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -115,6 +114,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     
     console.log('Cadastro finalizado:', formData);
     onClose();
+    
+    // Redirecionar para página de agradecimento
+    window.location.href = '/cadastro-realizado';
   };
 
   const renderStepContent = () => {
