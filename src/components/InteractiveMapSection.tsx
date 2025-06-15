@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { MapPin, Dumbbell, Users } from 'lucide-react';
 
@@ -200,10 +199,10 @@ const InteractiveMapSection = () => {
         </div>
       </div>
       
-      {/* Enhanced Tooltip */}
+      {/* Compact Tooltip */}
       {hoveredLocation && (
         <div
-          className="fixed z-50 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden max-w-sm pointer-events-none transform -translate-x-1/2 -translate-y-full"
+          className="fixed z-50 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden w-72 pointer-events-none transform -translate-x-1/2 -translate-y-full"
           style={{
             left: tooltipPosition.x,
             top: tooltipPosition.y
@@ -213,29 +212,28 @@ const InteractiveMapSection = () => {
             <img 
               src={hoveredLocation.info.photo} 
               alt={hoveredLocation.name}
-              className="w-full h-32 object-cover"
+              className="w-full h-24 object-cover"
             />
             <div className={`absolute top-2 right-2 p-1 rounded-full ${hoveredLocation.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} text-white`}>
               {hoveredLocation.type === 'establishment' ? (
-                <Dumbbell size={16} />
+                <Dumbbell size={12} />
               ) : (
-                <Users size={16} />
+                <Users size={12} />
               )}
             </div>
           </div>
           
-          <div className="p-4">
-            <h3 className="font-bold text-gray-900 mb-1 text-lg">{hoveredLocation.name}</h3>
-            <p className="text-sm text-gray-500 mb-2">{hoveredLocation.info.city}</p>
-            <p className="text-sm text-gray-600 mb-3">{hoveredLocation.info.description}</p>
+          <div className="p-3">
+            <h3 className="font-bold text-gray-900 mb-1 text-sm">{hoveredLocation.name}</h3>
+            <p className="text-xs text-gray-500 mb-2">{hoveredLocation.info.city}</p>
             
-            <div className="space-y-2">
-              <h4 className="font-semibold text-gray-800 text-sm">Modalidades:</h4>
+            <div className="space-y-1">
+              <h4 className="font-semibold text-gray-800 text-xs">Modalidades:</h4>
               <div className="flex flex-wrap gap-1">
-                {hoveredLocation.info.sports.map((sport, index) => (
+                {hoveredLocation.info.sports.slice(0, 3).map((sport, index) => (
                   <span 
                     key={index}
-                    className={`px-2 py-1 text-xs rounded-full text-white ${hoveredLocation.type === 'establishment' ? 'bg-orange-400' : 'bg-blue-400'}`}
+                    className={`px-2 py-0.5 text-xs rounded-full text-white ${hoveredLocation.type === 'establishment' ? 'bg-orange-400' : 'bg-blue-400'}`}
                   >
                     {sport}
                   </span>
