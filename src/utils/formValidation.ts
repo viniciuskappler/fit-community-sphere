@@ -1,19 +1,27 @@
+
 export interface FormData {
+  // Dados Pessoais
   fullName: string;
   cpf: string;
   phone: string;
   email: string;
   city: string;
   birthDate: string;
+  
+  // Preferências Esportivas
   favoriteStateSports: string[];
   practicedSports: string[];
   interestedSports: string[];
+  
+  // Dados do Estabelecimento/Grupo
   businessName: string;
   cnpj: string;
   description: string;
   address: string;
   state: string;
   cep: string;
+  
+  // Termos
   acceptTerms: boolean;
   acceptNewsletter: boolean;
 }
@@ -26,118 +34,79 @@ export interface ValidationErrors {
   city?: string;
   birthDate?: string;
   favoriteStateSports?: string;
+  practicedSports?: string;
+  interestedSports?: string;
   businessName?: string;
+  cnpj?: string;
   description?: string;
   address?: string;
   state?: string;
   cep?: string;
   acceptTerms?: string;
+  general?: string; // Adicionando a propriedade general que estava faltando
 }
 
 export const validateStep1 = (formData: FormData): ValidationErrors => {
   const errors: ValidationErrors = {};
-
+  
   if (!formData.fullName.trim()) {
-    errors.fullName = 'Você esqueceu de preencher esse campo.';
+    errors.fullName = 'Nome é obrigatório';
   }
+  
   if (!formData.cpf.trim()) {
-    errors.cpf = 'Você esqueceu de preencher esse campo.';
+    errors.cpf = 'CPF é obrigatório';
   }
+  
   if (!formData.phone.trim()) {
-    errors.phone = 'Você esqueceu de preencher esse campo.';
+    errors.phone = 'Telefone é obrigatório';
   }
+  
   if (!formData.email.trim()) {
-    errors.email = 'Você esqueceu de preencher esse campo.';
+    errors.email = 'E-mail é obrigatório';
   } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-    errors.email = 'Esse campo foi preenchido incorretamente.';
+    errors.email = 'E-mail inválido';
   }
+  
   if (!formData.city.trim()) {
-    errors.city = 'Você esqueceu de preencher esse campo.';
+    errors.city = 'Cidade é obrigatória';
   }
-  if (!formData.birthDate.trim()) {
-    errors.birthDate = 'Você esqueceu de preencher esse campo.';
-  } else {
-    // Validação de data de nascimento (apenas pessoas nascidas a partir de 1915)
-    const birthYear = new Date(formData.birthDate).getFullYear();
-    const currentYear = new Date().getFullYear();
-    
-    if (birthYear < 1915) {
-      errors.birthDate = 'Data de nascimento inválida. Apenas pessoas nascidas a partir de 1915.';
-    } else if (birthYear > currentYear - 13) {
-      errors.birthDate = 'Você deve ter pelo menos 13 anos para se cadastrar.';
-    }
+  
+  if (!formData.birthDate) {
+    errors.birthDate = 'Data de nascimento é obrigatória';
   }
-
+  
   return errors;
 };
 
 export const validateStep2 = (formData: FormData): ValidationErrors => {
   const errors: ValidationErrors = {};
-
+  
   if (formData.favoriteStateSports.length < 5) {
-    errors.favoriteStateSports = 'Você deve selecionar pelo menos 5 modalidades que mais gosta.';
-  } else if (formData.favoriteStateSports.length > 20) {
-    errors.favoriteStateSports = 'Você pode selecionar no máximo 20 modalidades.';
+    errors.favoriteStateSports = 'Selecione pelo menos 5 esportes favoritos';
   }
-
+  
   return errors;
 };
 
-export const validateStep3 = (formData: FormData, registrationType: 'supporter' | 'establishment' | 'group'): ValidationErrors => {
+export const validateStep3 = (formData: FormData, registrationType: string): ValidationErrors => {
   const errors: ValidationErrors = {};
-
-  if (registrationType !== 'supporter') {
-    if (!formData.businessName.trim()) {
-      errors.businessName = 'Você esqueceu de preencher esse campo.';
-    }
-    if (!formData.description.trim()) {
-      errors.description = 'Você esqueceu de preencher esse campo.';
-    }
-    if (!formData.address.trim()) {
-      errors.address = 'Você esqueceu de preencher esse campo.';
-    }
-    if (!formData.state.trim()) {
-      errors.state = 'Você esqueceu de preencher esse campo.';
-    }
-    if (!formData.cep.trim()) {
-      errors.cep = 'Você esqueceu de preencher esse campo.';
-    }
-  }
-
+  
   if (!formData.acceptTerms) {
-    errors.acceptTerms = 'Você deve aceitar os termos para continuar.';
+    errors.acceptTerms = 'Você deve aceitar os termos de uso';
   }
-
+  
   return errors;
 };
 
-export const isStep1Valid = (formData: FormData) => {
-  const errors = validateStep1(formData);
-  return Object.keys(errors).length === 0;
-};
-
-export const isStep2Valid = (formData: FormData) => {
-  const errors = validateStep2(formData);
-  return Object.keys(errors).length === 0;
-};
-
-export const isStep3Valid = (formData: FormData, registrationType: 'supporter' | 'establishment' | 'group') => {
-  const errors = validateStep3(formData, registrationType);
-  return Object.keys(errors).length === 0;
-};
-
-export const getStepTitle = (currentStep: number, registrationType: 'supporter' | 'establishment' | 'group') => {
-  switch (currentStep) {
-    case 1: return 'Dados Pessoais';
-    case 2: return 'Preferências Esportivas';
-    case 3: return registrationType === 'supporter' ? 'Confirmação' : 
-             registrationType === 'establishment' ? 'Dados do Estabelecimento' : 'Dados do Grupo';
-    default: return '';
+export const getStepTitle = (step: number, registrationType: string): string => {
+  switch (step) {
+    case 1:
+      return 'Dados Pessoais';
+    case 2:
+      return 'Preferências Esportivas';
+    case 3:
+      return 'Finalização';
+    default:
+      return '';
   }
-};
-
-export const formatDateForDisplay = (dateValue: string) => {
-  if (!dateValue) return '';
-  const [year, month, day] = dateValue.split('-');
-  return `${day}/${month}/${year}`;
 };

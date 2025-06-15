@@ -53,7 +53,12 @@ export const useUserData = () => {
         .eq('user_id', user.id);
 
       if (sportsData) {
-        setSports(sportsData);
+        // Garantir que os tipos estão corretos
+        const typedSports: UserSport[] = sportsData.map(sport => ({
+          sport_name: sport.sport_name,
+          sport_type: sport.sport_type as 'favorite' | 'practiced' | 'interested'
+        }));
+        setSports(typedSports);
       }
     } catch (error) {
       console.error('Erro ao buscar dados do usuário:', error);
@@ -65,12 +70,16 @@ export const useUserData = () => {
   const saveUserProfile = async (profileData: Partial<UserProfile>) => {
     if (!user) return { error: 'Usuário não autenticado' };
 
+    // Garantir que full_name sempre tenha um valor
+    const dataToSave = {
+      id: user.id,
+      full_name: profileData.full_name || '',
+      ...profileData
+    };
+
     const { error } = await supabase
       .from('user_profiles')
-      .upsert({
-        id: user.id,
-        ...profileData
-      });
+      .upsert(dataToSave);
 
     if (!error) {
       await fetchUserData();

@@ -125,52 +125,68 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     setLoading(true);
     
     try {
-      // 1. Criar conta do usuário
-      const { error: signUpError } = await signUp(formData.email, 'temporaryPassword123!', {
+      // 1. Criar senha temporária
+      const tempPassword = Math.random().toString(36).substring(2, 15);
+      
+      // 2. Criar conta do usuário
+      const { error: signUpError } = await signUp(formData.email, tempPassword, {
         fullName: formData.fullName
       });
       
       if (signUpError) {
-        setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
+        if (signUpError.message.includes('already')) {
+          setErrors({ general: 'Este e-mail já está cadastrado.' });
+        } else {
+          setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
+        }
         setLoading(false);
         return;
       }
 
-      // 2. Salvar dados do perfil
-      const { error: profileError } = await saveUserProfile({
-        full_name: formData.fullName,
-        cpf: formData.cpf,
-        phone: formData.phone,
-        city: formData.city,
-        birth_date: formData.birthDate
-      });
+      // 3. Aguardar um pouco para garantir que o usuário foi criado
+      setTimeout(async () => {
+        try {
+          // 4. Salvar dados do perfil
+          const { error: profileError } = await saveUserProfile({
+            full_name: formData.fullName,
+            cpf: formData.cpf,
+            phone: formData.phone,
+            city: formData.city,
+            birth_date: formData.birthDate
+          });
 
-      if (profileError) {
-        console.error('Erro ao salvar perfil:', profileError);
-      }
+          if (profileError) {
+            console.error('Erro ao salvar perfil:', profileError);
+          }
 
-      // 3. Salvar esportes
-      const allSports = [
-        ...formData.favoriteStateSports.map(sport => ({ sport_name: sport, sport_type: 'favorite' as const })),
-        ...formData.practicedSports.map(sport => ({ sport_name: sport, sport_type: 'practiced' as const })),
-        ...formData.interestedSports.map(sport => ({ sport_name: sport, sport_type: 'interested' as const }))
-      ];
+          // 5. Salvar esportes
+          const allSports = [
+            ...formData.favoriteStateSports.map(sport => ({ sport_name: sport, sport_type: 'favorite' as const })),
+            ...formData.practicedSports.map(sport => ({ sport_name: sport, sport_type: 'practiced' as const })),
+            ...formData.interestedSports.map(sport => ({ sport_name: sport, sport_type: 'interested' as const }))
+          ];
 
-      if (allSports.length > 0) {
-        const { error: sportsError } = await saveUserSports(allSports);
-        if (sportsError) {
-          console.error('Erro ao salvar esportes:', sportsError);
+          if (allSports.length > 0) {
+            const { error: sportsError } = await saveUserSports(allSports);
+            if (sportsError) {
+              console.error('Erro ao salvar esportes:', sportsError);
+            }
+          }
+
+          console.log('Cadastro finalizado com sucesso!');
+          onClose();
+          navigate('/cadastro-realizado');
+        } catch (error) {
+          console.error('Erro ao salvar dados:', error);
+          setErrors({ general: 'Erro ao salvar dados. Tente novamente.' });
+        } finally {
+          setLoading(false);
         }
-      }
-
-      console.log('Cadastro finalizado com sucesso!');
-      onClose();
-      navigate('/cadastro-realizado');
+      }, 1000);
       
     } catch (error) {
       console.error('Erro no cadastro:', error);
       setErrors({ general: 'Erro inesperado. Tente novamente.' });
-    } finally {
       setLoading(false);
     }
   };
