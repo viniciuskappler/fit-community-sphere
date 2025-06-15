@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, Calendar, Home } from 'lucide-react';
+import { Search, Home, User, Building, Users } from 'lucide-react';
 import RegistrationModal from './RegistrationModal';
 
 const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
@@ -15,6 +15,11 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
 
   const handleCadastrarClick = () => {
     setIsModalOpen(true);
+  };
+
+  const handleLoginClick = () => {
+    // TODO: Implementar funcionalidade de login
+    console.log('Login clicked');
   };
 
   return (
@@ -40,23 +45,44 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <Home size={16} />
                     <span className="text-sm">Início</span>
                   </a>
+                  <a href="#praticante" className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-1.5">
+                    <User size={16} />
+                    <span className="text-sm">Praticante</span>
+                  </a>
+                  <a href="#estabelecimento" className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-1.5">
+                    <Building size={16} />
+                    <span className="text-sm">Estabelecimento</span>
+                  </a>
+                  <a href="#grupo-esportivo" className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-1.5">
+                    <Users size={16} />
+                    <span className="text-sm">Grupo Esportivo</span>
+                  </a>
                   <a href="#busca" className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-1.5">
                     <Search size={16} />
                     <span className="text-sm">Buscar</span>
                   </a>
-                  <a href="#eventos" className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-1.5">
-                    <Calendar size={16} />
-                    <span className="text-sm">Eventos</span>
-                  </a>
                 </nav>
 
-                {/* CTA Button */}
-                <button 
-                  onClick={handleCadastrarClick}
-                  className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm font-medium"
-                >
-                  Cadastrar agora →
-                </button>
+                {/* CTA Buttons */}
+                <div className="flex items-center space-x-3">
+                  <button 
+                    onClick={handleLoginClick}
+                    className="bg-white text-gray-800 border border-gray-200 px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm font-medium"
+                    style={{
+                      background: 'white',
+                      backgroundImage: 'linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%)',
+                      borderImage: 'linear-gradient(135deg, #ef4444, #f97316) 1'
+                    }}
+                  >
+                    Fazer Login ↽
+                  </button>
+                  <button 
+                    onClick={handleCadastrarClick}
+                    className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm font-medium"
+                  >
+                    Cadastrar agora ↽
+                  </button>
+                </div>
               </div>
             </div>
           </div>
