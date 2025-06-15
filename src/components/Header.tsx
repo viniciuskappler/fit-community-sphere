@@ -5,7 +5,7 @@ import { Search, Calendar, Home } from 'lucide-react';
 const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   return (
     <header className={`pt-3 px-6 fixed left-0 right-0 z-40 transition-all duration-300 ${isSecondaryVisible ? 'top-12' : 'top-0'}`}>
-      <div className="w-full max-w-none mx-auto px-4 sm:px-6 lg:w-3/4 lg:px-0">
+      <div className="w-4/5 max-w-none mx-auto px-4 sm:px-6">
         <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg">
           <div className="px-4">
             <div className="flex justify-between items-center h-14">
