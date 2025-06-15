@@ -3,6 +3,13 @@ import React from 'react';
 import { Search, Calendar, Home } from 'lucide-react';
 
 const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
+  const scrollToRegistration = () => {
+    const registrationSection = document.getElementById('registration-section');
+    if (registrationSection) {
+      registrationSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <header className={`pt-3 px-6 fixed left-0 right-0 z-40 transition-all duration-300 ${isSecondaryVisible ? 'top-12' : 'top-0'}`}>
       <div className="w-4/5 max-w-none mx-auto px-4 sm:px-6">
@@ -36,7 +43,10 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
               </nav>
 
               {/* CTA Button */}
-              <button className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm font-medium">
+              <button 
+                onClick={scrollToRegistration}
+                className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm font-medium"
+              >
                 Cadastrar agora →
               </button>
             </div>

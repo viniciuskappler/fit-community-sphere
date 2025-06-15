@@ -1,38 +1,49 @@
-
 import React from 'react';
+
 const HeroSection = () => {
-  const sportsBanners = [{
-    name: 'Musculação',
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Tênis',
-    image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Canoagem',
-    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Trekking',
-    image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Ciclismo',
-    image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Corrida',
-    image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Ginástica',
-    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Hipismo',
-    image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Futebol',
-    image: 'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=1200&h=800&fit=crop'
-  }, {
-    name: 'Rugby',
-    image: 'https://images.unsplash.com/photo-1588124107945-5a7a83a427f7?w=1200&h=800&fit=crop'
-  }];
-  return <section className="relative h-[80vh] md:min-h-screen overflow-hidden bg-white">
+  const sportsBanners = [
+    {
+      name: 'Musculação',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Tênis',
+      image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Canoagem',
+      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Trekking',
+      image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Ciclismo',
+      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Corrida',
+      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Ginástica',
+      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Hipismo',
+      image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Futebol',
+      image: 'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=1200&h=800&fit=crop'
+    }, {
+      name: 'Rugby',
+      image: 'https://images.unsplash.com/photo-1588124107945-5a7a83a427f7?w=1200&h=800&fit=crop'
+    }
+  ];
+
+  const scrollToRegistration = () => {
+    const registrationSection = document.getElementById('registration-section');
+    if (registrationSection) {
+      registrationSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  return (
+    <section className="relative h-[80vh] md:min-h-screen overflow-hidden bg-white">
       {/* Background Banners */}
       <div className="absolute inset-0">
         <div className="flex animate-slide-slow space-x-8 h-full">
@@ -67,11 +78,16 @@ const HeroSection = () => {
           </p>
 
           {/* CTA Button */}
-          <button className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105">
+          <button 
+            onClick={scrollToRegistration}
+            className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105"
+          >
             Cadastrar agora →
           </button>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default HeroSection;
