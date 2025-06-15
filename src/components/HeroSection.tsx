@@ -78,7 +78,7 @@ const HeroSection = () => {
       if (displayedText.length < currentPhrase.length) {
         const timeout = setTimeout(() => {
           setDisplayedText(currentPhrase.slice(0, displayedText.length + 1));
-        }, 50);
+        }, 35); // 50% faster typing
         return () => clearTimeout(timeout);
       } else {
         const timeout = setTimeout(() => {
@@ -92,7 +92,7 @@ const HeroSection = () => {
       if (displayedText.length > 0) {
         const timeout = setTimeout(() => {
           setDisplayedText(displayedText.slice(0, -1));
-        }, 30);
+        }, 20); // 50% faster deleting
         return () => clearTimeout(timeout);
       } else {
         setIsDeleting(false);
@@ -107,16 +107,16 @@ const HeroSection = () => {
     
     return words.map((word, index) => {
       const cleanWord = word.replace(/[.,]/g, '');
-      const isKeyWord = keyWords.includes(cleanWord.toLowerCase());
+      const isKeyWord = keyWords.includes(cleanWord.toLowerCase()) && cleanWord.length > 5;
       const isFirstLetter = index === 0;
       
       if (isFirstLetter) {
         return (
           <span key={index}>
-            <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent text-shadow-black">
               {word.charAt(0)}
             </span>
-            <span className="text-white">
+            <span className="text-white text-shadow-black">
               {word.slice(1)}
             </span>
             {index < words.length - 1 && ' '}
@@ -126,7 +126,7 @@ const HeroSection = () => {
       
       if (isKeyWord) {
         return (
-          <span key={index} className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+          <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent text-shadow-black">
             {word}
             {index < words.length - 1 && ' '}
           </span>
@@ -134,7 +134,7 @@ const HeroSection = () => {
       }
       
       return (
-        <span key={index} className="text-white">
+        <span key={index} className="text-white text-shadow-black">
           {word}
           {index < words.length - 1 && ' '}
         </span>
@@ -150,8 +150,8 @@ const HeroSection = () => {
     <>
       <section className="relative h-[70vh] md:h-[80vh] overflow-hidden bg-white">
         {/* Background Banners */}
-        <div className="absolute inset-0">
-          <div className="flex animate-scroll-left space-x-8 h-full">
+        <div className="absolute inset-0 -top-20">
+          <div className="flex animate-scroll-fast space-x-8 h-[calc(100%+80px)]">
             {[...sportsBanners, ...sportsBanners, ...sportsBanners].map((sport, index) => (
               <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
                 <div 
@@ -167,7 +167,8 @@ const HeroSection = () => {
           </div>
           
           {/* Gradient Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-white" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-white" />
+          <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/80 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
         </div>
         
@@ -177,14 +178,15 @@ const HeroSection = () => {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight min-h-[200px] flex items-center justify-center">
               <span className="block">
                 {getStyledText(displayedText)}
-                <span className="animate-pulse text-white">|</span>
+                <span className="animate-pulse bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">|</span>
               </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-white mb-8 max-w-2xl mx-auto leading-relaxed text-lg md:text-xl font-medium drop-shadow-lg">
-              Faça parte do movimento que está transformando vidas através da união do Esporte.
-            </p>
+            <div className="text-white mb-8 max-w-xl mx-auto leading-relaxed text-xl md:text-2xl font-medium text-shadow-black text-center">
+              <p className="mb-2">Faça parte do movimento que está</p>
+              <p>transformando vidas através da união do Esporte.</p>
+            </div>
 
             {/* CTA Button */}
             <button 
