@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const SportsSection = () => {
   const sports = [
@@ -14,7 +15,7 @@ const SportsSection = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-12 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
@@ -27,19 +28,20 @@ const SportsSection = () => {
 
         {/* Sports Carousel */}
         <div className="relative overflow-hidden">
-          <div className="flex animate-slide space-x-6">
+          <div className="flex animate-slide space-x-4">
             {[...sports, ...sports].map((sport, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 w-56 h-32 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer group"
-              >
-                <div className={`h-full bg-gradient-to-br ${sport.color} rounded-2xl p-5 flex flex-col items-center justify-center relative overflow-hidden`}>
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
-                  <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{sport.icon}</div>
-                  <h3 className="text-white font-semibold text-base text-center">{sport.name}</h3>
-                  <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full translate-y-6 -translate-x-6"></div>
+              <Link to="/modalidades-esportivas" key={index} className="flex-shrink-0">
+                <div
+                  className="w-32 h-20 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer group"
+                >
+                  <div className={`h-full bg-gradient-to-br ${sport.color} rounded-2xl p-3 flex flex-col items-center justify-center relative overflow-hidden`}>
+                    <div className="absolute top-0 right-0 w-10 h-10 bg-white/10 rounded-full -translate-y-5 translate-x-5"></div>
+                    <div className="text-xl mb-1 group-hover:scale-110 transition-transform">{sport.icon}</div>
+                    <h3 className="text-white font-semibold text-sm text-center">{sport.name}</h3>
+                    <div className="absolute bottom-0 left-0 w-8 h-8 bg-white/10 rounded-full translate-y-4 -translate-x-4"></div>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
