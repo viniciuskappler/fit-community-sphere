@@ -15,7 +15,7 @@ const options = [{
   desc: "Para grupos, equipes e coletivos esportivos."
 }];
 const RegistrationSection = () => {
-  return <section id="registration-section" className="w-full bg-[#f7f7fa] px-4 flex flex-col items-center py-[100px]">
+  return <section id="registration-section" className="w-full px-4 flex flex-col items-center py-[100px] bg-slate-500">
       <div className="w-3/4 mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900">
           Escolha seu perfil
