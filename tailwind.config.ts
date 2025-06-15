@@ -107,7 +107,7 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'slide': 'slide 30s linear infinite',
-				'slide-slow': 'slide-slow 60s linear infinite'
+				'slide-slow': 'slide-slow 30s linear infinite'
 			}
 		}
 	},

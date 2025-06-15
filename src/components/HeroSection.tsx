@@ -26,10 +26,16 @@ const HeroSection = () => {
   }, {
     name: 'Hipismo',
     image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=1200&h=800&fit=crop'
+  }, {
+    name: 'Futebol',
+    image: 'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=1200&h=800&fit=crop'
+  }, {
+    name: 'Rugby',
+    image: 'https://images.unsplash.com/photo-1588124107945-5a7a83a427f7?w=1200&h=800&fit=crop'
   }];
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-white">
+    <section className="relative h-[80vh] md:min-h-screen overflow-hidden bg-white">
       {/* Background Banners */}
       <div className="absolute inset-0">
         <div className="flex animate-slide-slow space-x-8 h-full">
@@ -48,23 +54,23 @@ const HeroSection = () => {
         
         {/* Gradient Overlays - stronger gradients */}
         <div className="absolute inset-0 bg-gradient-to-b from-white via-white/20 to-white" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-transparent to-white/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/10 to-white" />
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
       </div>
       
-      <div className="relative max-w-4xl mx-auto px-8 py-32 z-10 flex items-center justify-center min-h-screen">
+      <div className="relative max-w-4xl mx-auto px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
         <div className="text-center">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            <span className="text-white">Conectando pessoas </span>
+            <span className="text-gray-800">Conectando pessoas </span>
             <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
               ao Esporte
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed text-lg md:text-xl font-medium">
+          <p className="text-gray-800 mb-8 max-w-2xl mx-auto leading-relaxed text-lg md:text-xl font-medium">
             Faça parte do movimento que está transformando vidas através da união do Esporte.
           </p>
 
