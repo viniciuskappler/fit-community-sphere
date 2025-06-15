@@ -61,9 +61,7 @@ const HeroSection = () => {
           <p className="text-gray-300 mb-6 max-w-2xl mx-auto leading-relaxed text-2xl font-medium">Faça parte do movimento que está transformando vidas através da união do Esporte.</p>
 
           {/* CTA Button */}
-          <button className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105 mb-8">
-            Começar agora →
-          </button>
+          <button className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105 mb-8">Cadastrar agora →</button>
 
           {/* App Icon */}
           <div className="flex justify-center">
