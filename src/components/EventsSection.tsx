@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Calendar, MapPin, Users, Clock } from 'lucide-react';
 
@@ -103,7 +104,7 @@ const EventsSection = () => {
         </div>
 
         <div className="text-center mt-10">
-          <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-3 px-8 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+          <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 px-8 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
             Ver todos os eventos
           </button>
         </div>
