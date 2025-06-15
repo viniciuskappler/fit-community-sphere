@@ -24,7 +24,7 @@ const SecondaryHeader = ({ isVisible }: SecondaryHeaderProps) => {
 
   return (
     <div className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'} bg-white border-b border-gray-200`}>
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-4 lg:px-8 xl:px-8 2xl:px-8">
         <div className="flex justify-between items-center h-10">
           {/* Social Media Icons */}
           <div className="flex items-center space-x-3">

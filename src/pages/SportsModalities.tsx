@@ -10,7 +10,7 @@ const SportsModalities = () => {
       <SecondaryHeader isVisible={true} />
       <Header isSecondaryVisible={true} />
       <main className="pt-[120px]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-4 lg:px-8 xl:px-8 2xl:px-8 py-16">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900">Modalidades Esportivas</h1>
             <p className="mt-4 text-lg text-gray-600">Explore as diversas modalidades disponíveis na nossa plataforma.</p>

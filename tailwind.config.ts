@@ -15,10 +15,21 @@ export default {
 			center: true,
 			padding: '2rem',
 			screens: {
-				'2xl': '1400px'
+				'sm': '640px',
+				'md': '768px',
+				'lg': '1024px',
+				'xl': '1280px',
+				'2xl': '1440px'
 			}
 		},
 		extend: {
+			maxWidth: {
+				'container': '1280px',
+			},
+			spacing: {
+				'container-px': '32px',
+				'container-px-mobile': '16px',
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

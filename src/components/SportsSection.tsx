@@ -16,7 +16,7 @@ const SportsSection = () => {
 
   return (
     <section className="py-12 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-4 lg:px-8 xl:px-8 2xl:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
             Explore Modalidades <span className="text-orange-500">Esportivas</span>
@@ -31,9 +31,7 @@ const SportsSection = () => {
           <div className="flex animate-slide space-x-4">
             {[...sports, ...sports].map((sport, index) => (
               <Link to="/modalidades-esportivas" key={index} className="flex-shrink-0">
-                <div
-                  className="w-32 h-20 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer group"
-                >
+                <div className="w-32 h-20 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer group">
                   <div className={`h-full bg-gradient-to-br ${sport.color} rounded-2xl p-3 flex flex-col items-center justify-center relative overflow-hidden`}>
                     <div className="absolute top-0 right-0 w-10 h-10 bg-white/10 rounded-full -translate-y-5 translate-x-5"></div>
                     <div className="text-xl mb-1 group-hover:scale-110 transition-transform">{sport.icon}</div>

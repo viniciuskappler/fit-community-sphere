@@ -23,15 +23,15 @@ const options = [
 
 const RegistrationSection = () => {
   return (
-    <section className="w-full bg-[#f7f7fa] py-12 px-4 flex flex-col items-center">
-      <div className="max-w-4xl w-full mx-auto">
+    <section className="w-full bg-[#f7f7fa] py-12 px-4 sm:px-4 lg:px-8 xl:px-8 2xl:px-8">
+      <div className="max-w-[1280px] mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900">
           Escolha seu perfil
         </h2>
         <p className="text-gray-500 text-center mt-2 mb-8 text-base max-w-xl mx-auto">
           Selecione o tipo de cadastro que melhor se encaixa com você.
         </p>
-        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
           {options.map((opt) => (
             <div
               key={opt.title}
