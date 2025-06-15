@@ -1,12 +1,11 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { ValidationErrors, formatDateForDisplay } from '../../utils/formValidation';
-import TermsAndPrivacySheet from '../TermsAndPrivacySheet';
 
 interface FinalStepProps {
   registrationType: 'supporter' | 'establishment' | 'group';
@@ -16,8 +15,6 @@ interface FinalStepProps {
 }
 
 const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: FinalStepProps) => {
-  const [isTermsSheetOpen, setIsTermsSheetOpen] = useState(false);
-
   return (
     <div className="space-y-4">
       {registrationType === 'supporter' ? (
@@ -236,15 +233,7 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
             className={formData.acceptTerms ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
           />
           <Label htmlFor="terms" className="text-sm">
-            Concordo com os{' '}
-            <button
-              type="button"
-              onClick={() => setIsTermsSheetOpen(true)}
-              className="text-orange-500 underline cursor-pointer hover:text-orange-600"
-            >
-              termos de uso e política de privacidade
-            </button>{' '}
-            *
+            Concordo com os <span className="text-orange-500 underline cursor-pointer">termos de uso e política de privacidade</span> *
           </Label>
         </div>
         {errors.acceptTerms && (
@@ -263,11 +252,6 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
           </Label>
         </div>
       </div>
-
-      <TermsAndPrivacySheet 
-        isOpen={isTermsSheetOpen}
-        onClose={() => setIsTermsSheetOpen(false)}
-      />
     </div>
   );
 };
