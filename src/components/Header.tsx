@@ -2,9 +2,9 @@
 import React from 'react';
 import { Search, Calendar, Home } from 'lucide-react';
 
-const Header = () => {
+const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   return (
-    <header className="pt-4 px-8 fixed top-0 left-0 right-0 z-50">
+    <header className={`pt-4 px-8 fixed left-0 right-0 z-40 transition-all duration-300 ${isSecondaryVisible ? 'top-12' : 'top-0'}`}>
       <div className="max-w-6xl mx-auto">
         <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-lg">
           <div className="px-6">
