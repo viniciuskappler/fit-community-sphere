@@ -7,7 +7,14 @@ import PersonalDataStep from './registration/PersonalDataStep';
 import SportsPreferencesStep from './registration/SportsPreferencesStep';
 import FinalStep from './registration/FinalStep';
 import { sportsList } from '../utils/sportsData';
-import { FormData, isStep1Valid, isStep2Valid, isStep3Valid, getStepTitle } from '../utils/formValidation';
+import { 
+  FormData, 
+  validateStep1, 
+  validateStep2, 
+  validateStep3, 
+  getStepTitle,
+  ValidationErrors 
+} from '../utils/formValidation';
 
 interface RegistrationModalProps {
   isOpen: boolean;
@@ -18,6 +25,7 @@ interface RegistrationModalProps {
 const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: RegistrationModalProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [registrationType, setRegistrationType] = useState(initialType);
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [formData, setFormData] = useState<FormData>({
     // Dados Pessoais
     fullName: '',
@@ -47,38 +55,64 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Limpar erro do campo quando o usuário começar a digitar
+    if (errors[field as keyof ValidationErrors]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const handleSportToggle = (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: prev[field].includes(sport) 
-        ? prev[field].filter(s => s !== sport)
-        : [...prev[field], sport]
-    }));
+    setFormData(prev => {
+      const currentSports = prev[field];
+      const isSelected = currentSports.includes(sport);
+      
+      // Verificar limites
+      if (!isSelected && currentSports.length >= 20) {
+        return prev; // Não adiciona se já tem 20
+      }
+      
+      return {
+        ...prev,
+        [field]: isSelected 
+          ? currentSports.filter(s => s !== sport)
+          : [...currentSports, sport]
+      };
+    });
   };
 
   const nextStep = () => {
-    if (currentStep === 1 && !isStep1Valid(formData)) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+    let stepErrors: ValidationErrors = {};
+    
+    if (currentStep === 1) {
+      stepErrors = validateStep1(formData);
+    } else if (currentStep === 2) {
+      stepErrors = validateStep2(formData);
+    }
+    
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
       return;
     }
-    if (currentStep === 2 && !isStep2Valid(formData)) {
-      alert('Por favor, selecione exatamente 5 modalidades que você mais gosta.');
-      return;
-    }
+    
+    setErrors({});
     if (currentStep < 3) setCurrentStep(currentStep + 1);
   };
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(currentStep - 1);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      setErrors({});
+    }
   };
 
   const handleSubmit = () => {
-    if (!isStep3Valid(formData, registrationType)) {
-      alert('Por favor, preencha todos os campos obrigatórios e aceite os termos.');
+    const stepErrors = validateStep3(formData, registrationType);
+    
+    if (Object.keys(stepErrors).length > 0) {
+      setErrors(stepErrors);
       return;
     }
+    
     console.log('Cadastro finalizado:', formData);
     onClose();
   };
@@ -90,6 +124,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           <PersonalDataStep 
             formData={formData}
             onInputChange={handleInputChange}
+            errors={errors}
           />
         );
       case 2:
@@ -98,6 +133,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             formData={formData}
             onSportToggle={handleSportToggle}
             sportsList={sportsList}
+            errors={errors}
           />
         );
       case 3:
@@ -106,6 +142,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             registrationType={registrationType}
             formData={formData}
             onInputChange={handleInputChange}
+            errors={errors}
           />
         );
       default:
@@ -160,7 +197,6 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             ) : (
               <Button
                 onClick={handleSubmit}
-                disabled={!isStep3Valid(formData, registrationType)}
                 className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 flex items-center space-x-2"
               >
                 <Check size={16} />

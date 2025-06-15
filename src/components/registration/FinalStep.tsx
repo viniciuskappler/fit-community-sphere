@@ -5,20 +5,16 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { ValidationErrors, formatDateForDisplay } from '../../utils/formValidation';
 
 interface FinalStepProps {
   registrationType: 'supporter' | 'establishment' | 'group';
   formData: any;
   onInputChange: (field: string, value: any) => void;
+  errors?: ValidationErrors;
 }
 
-const FinalStep = ({ registrationType, formData, onInputChange }: FinalStepProps) => {
-  const formatDateForDisplay = (dateValue: string) => {
-    if (!dateValue) return '';
-    const [year, month, day] = dateValue.split('-');
-    return `${day}/${month}/${year}`;
-  };
-
+const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: FinalStepProps) => {
   return (
     <div className="space-y-4">
       {registrationType === 'supporter' ? (
@@ -96,7 +92,11 @@ const FinalStep = ({ registrationType, formData, onInputChange }: FinalStepProps
               onChange={(e) => onInputChange('businessName', e.target.value)}
               placeholder={registrationType === 'establishment' ? 'Nome da sua academia, clube, etc.' : 'Nome do seu grupo esportivo'}
               required
+              className={errors.businessName ? 'border-orange-500' : ''}
             />
+            {errors.businessName && (
+              <p className="text-orange-500 text-sm mt-1">{errors.businessName}</p>
+            )}
           </div>
 
           {registrationType === 'establishment' && (
@@ -120,7 +120,11 @@ const FinalStep = ({ registrationType, formData, onInputChange }: FinalStepProps
               placeholder={`Descreva ${registrationType === 'establishment' ? 'seu estabelecimento' : 'seu grupo'} e as atividades oferecidas`}
               rows={3}
               required
+              className={errors.description ? 'border-orange-500' : ''}
             />
+            {errors.description && (
+              <p className="text-orange-500 text-sm mt-1">{errors.description}</p>
+            )}
           </div>
 
           <div>
@@ -131,14 +135,18 @@ const FinalStep = ({ registrationType, formData, onInputChange }: FinalStepProps
               onChange={(e) => onInputChange('address', e.target.value)}
               placeholder="Rua, número, complemento"
               required
+              className={errors.address ? 'border-orange-500' : ''}
             />
+            {errors.address && (
+              <p className="text-orange-500 text-sm mt-1">{errors.address}</p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="state" className="text-orange-600">Estado *</Label>
               <Select value={formData.state} onValueChange={(value) => onInputChange('state', value)} required>
-                <SelectTrigger>
+                <SelectTrigger className={errors.state ? 'border-orange-500' : ''}>
                   <SelectValue placeholder="Selecione" />
                 </SelectTrigger>
                 <SelectContent>
@@ -148,6 +156,9 @@ const FinalStep = ({ registrationType, formData, onInputChange }: FinalStepProps
                   <SelectItem value="rs">Rio Grande do Sul</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.state && (
+                <p className="text-orange-500 text-sm mt-1">{errors.state}</p>
+              )}
             </div>
             <div className="md:col-span-2">
               <Label htmlFor="cep" className="text-orange-600">CEP *</Label>
@@ -157,7 +168,11 @@ const FinalStep = ({ registrationType, formData, onInputChange }: FinalStepProps
                 onChange={(e) => onInputChange('cep', e.target.value)}
                 placeholder="00000-000"
                 required
+                className={errors.cep ? 'border-orange-500' : ''}
               />
+              {errors.cep && (
+                <p className="text-orange-500 text-sm mt-1">{errors.cep}</p>
+              )}
             </div>
           </div>
 
@@ -215,17 +230,22 @@ const FinalStep = ({ registrationType, formData, onInputChange }: FinalStepProps
             checked={formData.acceptTerms}
             onCheckedChange={(checked) => onInputChange('acceptTerms', checked)}
             required
+            className={formData.acceptTerms ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
           />
           <Label htmlFor="terms" className="text-sm">
             Concordo com os <span className="text-orange-500 underline cursor-pointer">termos de uso e política de privacidade</span> *
           </Label>
         </div>
+        {errors.acceptTerms && (
+          <p className="text-orange-500 text-sm">{errors.acceptTerms}</p>
+        )}
 
         <div className="flex items-center space-x-2">
           <Checkbox
             id="newsletter"
             checked={formData.acceptNewsletter}
             onCheckedChange={(checked) => onInputChange('acceptNewsletter', checked)}
+            className={formData.acceptNewsletter ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
           />
           <Label htmlFor="newsletter" className="text-sm">
             Desejo receber newsletters e promoções
