@@ -41,9 +41,8 @@ const EstablishmentsSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Estabelecimentos em <span className="text-orange-500">Destaque</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto">
-            Encontre academias, boxes e centros esportivos próximos a você com as melhores avaliações
-          </p>
+          <p className="text-lg text-gray-600 max-w-xl mx-auto">Encontre academias, boxes e centros esportivos
+próximos à você com as melhores avaliações</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
