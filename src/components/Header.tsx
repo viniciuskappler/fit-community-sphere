@@ -1,12 +1,14 @@
 
 import React, { useState } from 'react';
 import { Home, User, Building, Users } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import RegistrationModal from './RegistrationModal';
 import LoginModal from './LoginModal';
 
 const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const scrollToRegistration = () => {
     const registrationSection = document.getElementById('registration-section');
@@ -24,7 +26,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   };
 
   const handleLogoClick = () => {
-    window.location.href = '/';
+    navigate('/');
   };
 
   return (
@@ -46,22 +48,22 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
 
                 {/* Navigation */}
                 <nav className="hidden md:flex items-center space-x-6">
-                  <a href="/" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  <Link to="/" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Home size={14} />
                     <span className="text-xs">Início</span>
-                  </a>
-                  <a href="/praticante" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  </Link>
+                  <Link to="/hub" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <User size={14} />
                     <span className="text-xs">Praticante</span>
-                  </a>
-                  <a href="/estabelecimento" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  </Link>
+                  <Link to="/hub" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Building size={14} />
-                    <span className="text-xs">Estabelecimento</span>
-                  </a>
-                  <a href="/grupo-esportivo" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                    <span className="text-xs">Buscar Locais</span>
+                  </Link>
+                  <Link to="/hub" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Users size={14} />
-                    <span className="text-xs">Grupo Esportivo</span>
-                  </a>
+                    <span className="text-xs">Buscar Grupos</span>
+                  </Link>
                 </nav>
 
                 {/* CTA Buttons - Reordered */}
