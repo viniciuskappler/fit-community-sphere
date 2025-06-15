@@ -46,7 +46,7 @@ const EstablishmentsSection = () => {
     <section className="py-16 bg-gray-50">
       <div className="w-3/4 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Estabelecimentos em <span className="text-orange-500">Destaque</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">

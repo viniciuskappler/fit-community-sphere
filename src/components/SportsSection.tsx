@@ -50,7 +50,7 @@ const SportsSection = () => {
     <section className="bg-gray-50 py-[101px]">
       <div className="w-3/4 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Explore Modalidades <span className="text-orange-500">Esportivas</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
