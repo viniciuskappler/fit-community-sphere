@@ -136,14 +136,16 @@ const InteractiveMapSection = () => {
           <div 
             className="absolute inset-0 bg-cover bg-center" 
             style={{
-              backgroundImage: `url(/lovable-uploads/42c43684-60db-4ba2-9e0e-a851954d5be9.png)`
+              backgroundImage: `url(/lovable-uploads/42c43684-60db-4ba2-9e0e-a851954d5be9.png)`,
+              backgroundPosition: 'center 20%'
             }} 
           />
           
-          {/* Gradient overlay to blend with white background */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-white/20 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/30" />
+          {/* Gradient overlay to blend with white background - mais intenso */}
+          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-white/60" />
+          <div className="absolute inset-0 bg-gradient-to-l from-white/50 via-transparent to-white/50" />
           
           {/* Map pins - estilo Google Maps */}
           {locations.map((location, index) => (
