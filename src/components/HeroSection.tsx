@@ -1,7 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import RegistrationModal from './RegistrationModal';
 
 const HeroSection = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const sportsBanners = [
     {
       name: 'Musculação',
@@ -43,51 +46,63 @@ const HeroSection = () => {
     }
   };
 
+  const handleCadastrarClick = () => {
+    setIsModalOpen(true);
+  };
+
   return (
-    <section className="relative h-[80vh] md:min-h-screen overflow-hidden bg-white">
-      {/* Background Banners */}
-      <div className="absolute inset-0">
-        <div className="flex animate-slide-slow space-x-8 h-full">
-          {[...sportsBanners, ...sportsBanners, ...sportsBanners].map((sport, index) => <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
-              {/* Background Image */}
-              <div className="absolute inset-0 bg-cover bg-center" style={{
-            backgroundImage: `url(${sport.image})`
-          }} />
-            </div>)}
+    <>
+      <section className="relative h-[80vh] md:min-h-screen overflow-hidden bg-white">
+        {/* Background Banners */}
+        <div className="absolute inset-0">
+          <div className="flex animate-slide-slow space-x-8 h-full">
+            {[...sportsBanners, ...sportsBanners, ...sportsBanners].map((sport, index) => <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
+                {/* Background Image */}
+                <div className="absolute inset-0 bg-cover bg-center" style={{
+              backgroundImage: `url(${sport.image})`
+            }} />
+              </div>)}
+          </div>
+          
+          {/* Gradient Overlays - stronger gradients */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white via-white/20 to-white" />
+          
+          
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
         </div>
         
-        {/* Gradient Overlays - stronger gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-white/20 to-white" />
-        
-        
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
-      </div>
-      
-      <div className="relative w-3/4 mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
-        <div className="text-center">
-          {/* Main Heading */}
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            <span className="text-gray-800">Conectando pessoas </span>
-            <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              ao Esporte
-            </span>
-          </h1>
+        <div className="relative w-3/4 mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
+          <div className="text-center">
+            {/* Main Heading */}
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <span className="text-gray-800">Conectando pessoas </span>
+              <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
+                ao Esporte
+              </span>
+            </h1>
 
-          {/* Subtitle */}
-          <p className="text-gray-800 mb-8 max-w-2xl mx-auto leading-relaxed text-lg md:text-xl font-medium">
-            Faça parte do movimento que está transformando vidas através da união do Esporte.
-          </p>
+            {/* Subtitle */}
+            <p className="text-gray-800 mb-8 max-w-2xl mx-auto leading-relaxed text-lg md:text-xl font-medium">
+              Faça parte do movimento que está transformando vidas através da união do Esporte.
+            </p>
 
-          {/* CTA Button */}
-          <button 
-            onClick={scrollToRegistration}
-            className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105"
-          >
-            Cadastrar agora →
-          </button>
+            {/* CTA Button */}
+            <button 
+              onClick={handleCadastrarClick}
+              className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105"
+            >
+              Cadastrar agora →
+            </button>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <RegistrationModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialType="supporter"
+      />
+    </>
   );
 };
 
