@@ -34,7 +34,7 @@ const SportsSection = () => {
     icon: '🏋️‍♀️',
     color: 'from-purple-500 to-pink-600'
   }];
-  return <section className="bg-gray-50 py-[100px]">
+  return <section className="bg-gray-50 py-[101px]">
       <div className="w-3/4 mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
