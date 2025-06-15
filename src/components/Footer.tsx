@@ -1,9 +1,6 @@
-
 import React from 'react';
-
 const Footer = () => {
-  return (
-    <footer className="bg-gray-900 text-white py-16">
+  return <footer className="bg-gray-900 text-white py-16">
       <div className="w-4/5 max-w-none mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -57,13 +54,11 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-gray-400">
+          <p className="text-gray-400 text-[fc4c02]">
             © 2024 Núcleo do Esporte. Todos os direitos reservados.
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
