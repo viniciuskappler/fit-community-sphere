@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 const HeroSection = () => {
@@ -19,7 +20,7 @@ const HeroSection = () => {
       image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&h=800&fit=crop'
     }, {
       name: 'Corrida',
-      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=1200&h=800&fit=crop'
+      image: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=1200&h=800&fit=crop'
     }, {
       name: 'Ginástica',
       image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&h=800&fit=crop'
@@ -80,7 +81,7 @@ const HeroSection = () => {
           {/* CTA Button */}
           <button 
             onClick={scrollToRegistration}
-            className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-3 rounded-xl text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105"
+            className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:shadow-2xl transition-all duration-300 hover:scale-105"
           >
             Cadastrar agora →
           </button>

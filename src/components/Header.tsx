@@ -45,7 +45,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
               {/* CTA Button */}
               <button 
                 onClick={scrollToRegistration}
-                className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm font-medium"
+                className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-sm font-medium"
               >
                 Cadastrar agora →
               </button>

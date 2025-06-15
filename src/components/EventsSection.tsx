@@ -95,7 +95,7 @@ const EventsSection = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-2 rounded-xl font-semibold text-sm hover:shadow-lg transition-all duration-300">
+                <button className="w-full bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
                   Participar
                 </button>
               </div>
@@ -104,7 +104,7 @@ const EventsSection = () => {
         </div>
 
         <div className="text-center mt-10">
-          <button className="bg-gray-100 text-gray-700 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-gray-200 transition-colors">
+          <button className="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors">
             Ver todos os eventos
           </button>
         </div>

@@ -112,7 +112,7 @@ const EstablishmentsSection = () => {
                 </div>
 
                 <div className="flex space-x-2">
-                  <button className="flex-1 bg-gradient-to-r from-orange-500 to-red-600 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
+                  <button className="flex-1 bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
                     Agendar
                   </button>
                   <button className="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm">
@@ -125,7 +125,7 @@ const EstablishmentsSection = () => {
         </div>
 
         <div className="text-center mt-10">
-          <button className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
+          <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-6 py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
             Ver mais estabelecimentos
           </button>
         </div>

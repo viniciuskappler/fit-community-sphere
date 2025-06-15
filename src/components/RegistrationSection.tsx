@@ -33,9 +33,9 @@ const RegistrationSection = () => {
               <div className="mb-3">{opt.icon}</div>
               <div className="text-lg font-semibold text-gray-900 text-center mb-2">{opt.title}</div>
               <div className="text-gray-500 text-center text-sm mb-4">{opt.desc}</div>
-              <Button className="bg-orange-500 hover:bg-orange-700 text-white font-semibold px-6 py-2 rounded-xl text-sm shadow-none transition" tabIndex={-1} type="button">
+              <button className="bg-gradient-to-r from-red-600 to-orange-500 hover:bg-gradient-to-r hover:from-red-700 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg text-sm shadow-none transition">
                 Selecionar
-              </Button>
+              </button>
             </div>
           ))}
         </div>
