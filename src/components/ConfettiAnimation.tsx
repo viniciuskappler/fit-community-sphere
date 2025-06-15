@@ -27,39 +27,43 @@ const ConfettiAnimation = () => {
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-      {confetti.map((piece) => (
-        <div
-          key={piece.id}
-          className="absolute animate-pulse"
-          style={{
-            left: `${piece.x}%`,
-            backgroundColor: piece.color,
-            width: `${piece.size}px`,
-            height: `${piece.size}px`,
-            animationDelay: `${piece.delay}s`,
-            animationDuration: `${piece.fall}s`,
-            animationIterationCount: 'infinite',
-            top: '-20px',
-            borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-            transform: `rotate(${piece.rotation}deg)`,
-            animation: `confetti-fall ${piece.fall}s linear ${piece.delay}s infinite`
-          }}
-        />
-      ))}
-      <style jsx>{`
-        @keyframes confetti-fall {
-          0% {
-            transform: translateY(-100vh) rotate(0deg);
-            opacity: 1;
+    <>
+      <style>
+        {`
+          @keyframes confetti-fall {
+            0% {
+              transform: translateY(-100vh) rotate(0deg);
+              opacity: 1;
+            }
+            100% {
+              transform: translateY(100vh) rotate(720deg);
+              opacity: 0;
+            }
           }
-          100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-          }
-        }
-      `}</style>
-    </div>
+        `}
+      </style>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+        {confetti.map((piece) => (
+          <div
+            key={piece.id}
+            className="absolute animate-pulse"
+            style={{
+              left: `${piece.x}%`,
+              backgroundColor: piece.color,
+              width: `${piece.size}px`,
+              height: `${piece.size}px`,
+              animationDelay: `${piece.delay}s`,
+              animationDuration: `${piece.fall}s`,
+              animationIterationCount: 'infinite',
+              top: '-20px',
+              borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+              transform: `rotate(${piece.rotation}deg)`,
+              animation: `confetti-fall ${piece.fall}s linear ${piece.delay}s infinite`
+            }}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
