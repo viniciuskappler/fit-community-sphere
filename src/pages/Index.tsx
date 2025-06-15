@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import SecondaryHeader from '../components/SecondaryHeader';
@@ -8,6 +7,7 @@ import EventsSection from '../components/EventsSection';
 import EstablishmentsSection from '../components/EstablishmentsSection';
 import Footer from '../components/Footer';
 import RegistrationSection from '../components/RegistrationSection';
+import InteractiveMapSection from '../components/InteractiveMapSection';
 
 const Index = () => {
   const [showTopBar, setShowTopBar] = useState(true);
@@ -38,9 +38,9 @@ const Index = () => {
       <SecondaryHeader isVisible={showTopBar} />
       <Header isSecondaryVisible={showTopBar} />
       <main className="pt-[120px]">
-        {/* Nova Section de Cadastro logo após o Hero */}
         <HeroSection />
         <RegistrationSection />
+        <InteractiveMapSection />
         <SportsSection />
         <EventsSection />
         <EstablishmentsSection />
