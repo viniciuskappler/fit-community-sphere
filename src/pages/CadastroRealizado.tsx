@@ -2,21 +2,20 @@
 import React, { useState } from 'react';
 import { Search, Building, Users } from 'lucide-react';
 import ConfettiAnimation from '../components/ConfettiAnimation';
-import RegistrationModal from '../components/RegistrationModal';
+import EstablishmentRegistrationModal from '../components/EstablishmentRegistrationModal';
+import GroupRegistrationModal from '../components/GroupRegistrationModal';
 
 const CadastroRealizado = () => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalType, setModalType] = useState<'establishment' | 'group'>('establishment');
+  const [isEstablishmentModalOpen, setIsEstablishmentModalOpen] = useState(false);
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
   const handleEstablishmentClick = () => {
-    setModalType('establishment');
-    setIsModalOpen(true);
+    setIsEstablishmentModalOpen(true);
   };
 
   const handleGroupClick = () => {
-    setModalType('group');
-    setIsModalOpen(true);
+    setIsGroupModalOpen(true);
   };
 
   const handleSearchClick = () => {
@@ -54,14 +53,14 @@ const CadastroRealizado = () => {
       <main className="px-6 py-16">
         <div className="max-w-4xl mx-auto text-center">
           <div className="py-16">
-            <h1 className="text-5xl font-bold text-gray-800 mb-6 animate-fade-in">
+            <h1 className="text-6xl font-bold text-gray-800 mb-6 animate-fade-in">
               Parabéns! 🎉
             </h1>
-            <h2 className="text-3xl font-semibold text-orange-500 mb-4">
+            <h2 className="text-4xl font-semibold text-orange-500 mb-6">
               Bem-vindo ao movimento!
             </h2>
-            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-              Obrigado por se juntar ao <span className="font-semibold text-orange-500">Núcleo do Esporte</span>! 
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+              Obrigado por se juntar ao <span className="font-bold text-orange-500">Núcleo do Esporte</span>! 
               Agora você faz parte da nossa comunidade que une pessoas através do esporte.
             </p>
 
@@ -109,10 +108,14 @@ const CadastroRealizado = () => {
         </div>
       </main>
 
-      <RegistrationModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        initialType={modalType}
+      <EstablishmentRegistrationModal 
+        isOpen={isEstablishmentModalOpen}
+        onClose={() => setIsEstablishmentModalOpen(false)}
+      />
+
+      <GroupRegistrationModal 
+        isOpen={isGroupModalOpen}
+        onClose={() => setIsGroupModalOpen(false)}
       />
     </div>
   );

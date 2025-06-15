@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -157,14 +158,14 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
+          <DialogTitle className="text-2xl font-bold text-center mb-8">
             Cadastro de {registrationType === 'supporter' ? 'Praticante' : 
                         registrationType === 'establishment' ? 'Estabelecimento' : 
                         'Grupo Esportivo'}
           </DialogTitle>
           <div className="w-full bg-gray-200 rounded-full h-2 mt-6">
             <div 
-              className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-500 ease-out"
+              className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-700 ease-out transform-gpu"
               style={{ width: `${(currentStep / 3) * 100}%` }}
             />
           </div>
@@ -172,9 +173,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
 
         {/* Aviso para Estabelecimento e Grupo Esportivo */}
         {(registrationType === 'establishment' || registrationType === 'group') && (
-          <Alert className="bg-orange-50 border-orange-200 mt-4">
+          <Alert className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-300 mt-4">
             <AlertTriangle className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800">
+            <AlertDescription className="text-orange-800 font-medium">
               Primeiro você criará seu cadastro de usuário no Núcleo do Esporte. Após finalizar, você poderá cadastrar seu {registrationType === 'establishment' ? 'estabelecimento' : 'grupo esportivo'}.
             </AlertDescription>
           </Alert>

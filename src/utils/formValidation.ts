@@ -1,4 +1,3 @@
-
 export interface FormData {
   fullName: string;
   cpf: string;
@@ -57,6 +56,16 @@ export const validateStep1 = (formData: FormData): ValidationErrors => {
   }
   if (!formData.birthDate.trim()) {
     errors.birthDate = 'Você esqueceu de preencher esse campo.';
+  } else {
+    // Validação de data de nascimento (apenas pessoas nascidas a partir de 1915)
+    const birthYear = new Date(formData.birthDate).getFullYear();
+    const currentYear = new Date().getFullYear();
+    
+    if (birthYear < 1915) {
+      errors.birthDate = 'Data de nascimento inválida. Apenas pessoas nascidas a partir de 1915.';
+    } else if (birthYear > currentYear - 13) {
+      errors.birthDate = 'Você deve ter pelo menos 13 anos para se cadastrar.';
+    }
   }
 
   return errors;
