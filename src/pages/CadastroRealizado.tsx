@@ -1,9 +1,6 @@
 
 import React, { useState } from 'react';
 import { Search, Building, Users } from 'lucide-react';
-import Header from '../components/Header';
-import SecondaryHeader from '../components/SecondaryHeader';
-import Footer from '../components/Footer';
 import ConfettiAnimation from '../components/ConfettiAnimation';
 import RegistrationModal from '../components/RegistrationModal';
 
@@ -53,10 +50,8 @@ const CadastroRealizado = () => {
   return (
     <div className="min-h-screen bg-white relative">
       <ConfettiAnimation />
-      <SecondaryHeader isVisible={true} />
-      <Header isSecondaryVisible={true} />
       
-      <main className="pt-[120px] px-6">
+      <main className="px-6 py-16">
         <div className="max-w-4xl mx-auto text-center">
           <div className="py-16">
             <h1 className="text-5xl font-bold text-gray-800 mb-6 animate-fade-in">
@@ -80,12 +75,12 @@ const CadastroRealizado = () => {
                 >
                   <button
                     onClick={button.onClick}
-                    className="w-full bg-white border-2 border-orange-200 rounded-xl p-8 hover:border-orange-400 hover:shadow-xl transition-all duration-300 hover:scale-105 group"
+                    className="w-full h-32 bg-white border-2 border-orange-200 rounded-xl p-6 hover:border-orange-400 hover:shadow-xl transition-all duration-300 hover:scale-105 group flex flex-col items-center justify-center"
                   >
-                    <div className="text-orange-500 mb-4 flex justify-center group-hover:scale-110 transition-transform duration-300">
+                    <div className="text-orange-500 mb-3 flex justify-center group-hover:scale-110 transition-transform duration-300">
                       {button.icon}
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                    <h3 className="text-base font-semibold text-gray-800 text-center leading-tight">
                       {button.title}
                     </h3>
                   </button>
@@ -101,11 +96,11 @@ const CadastroRealizado = () => {
               ))}
             </div>
 
-            <div className="mt-16 p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            <div className="mt-16 p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl max-w-2xl mx-auto">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">
                 Próximos passos
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm leading-relaxed">
                 Explore as opções acima para começar sua jornada no mundo dos esportes. 
                 Conecte-se, pratique e faça parte desta comunidade incrível!
               </p>
@@ -113,8 +108,6 @@ const CadastroRealizado = () => {
           </div>
         </div>
       </main>
-
-      <Footer />
 
       <RegistrationModal 
         isOpen={isModalOpen}
