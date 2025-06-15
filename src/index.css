@@ -101,3 +101,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom animations */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-scroll-left {
+  animation: scroll-left 30s linear infinite;
+}
+
+/* Existing slide animation - keep for compatibility */
+@keyframes slide-slow {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-slide-slow {
+  animation: slide-slow 20s linear infinite;
+}
