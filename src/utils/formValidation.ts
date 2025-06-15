@@ -43,8 +43,17 @@ export interface ValidationErrors {
   state?: string;
   cep?: string;
   acceptTerms?: string;
-  general?: string; // Adicionando a propriedade general que estava faltando
+  general?: string;
 }
+
+export const formatDateForDisplay = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  
+  return date.toLocaleDateString('pt-BR');
+};
 
 export const validateStep1 = (formData: FormData): ValidationErrors => {
   const errors: ValidationErrors = {};
