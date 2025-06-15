@@ -24,7 +24,7 @@ const options = [
 const RegistrationSection = () => {
   return (
     <section className="w-full bg-[#f7f7fa] py-12 px-4 flex flex-col items-center">
-      <div className="max-w-4xl w-full mx-auto">
+      <div className="w-3/4 mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-900">
           Escolha seu perfil
         </h2>

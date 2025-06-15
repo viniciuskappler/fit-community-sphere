@@ -1,3 +1,4 @@
+
 import React from 'react';
 const HeroSection = () => {
   const sportsBanners = [{
@@ -50,7 +51,7 @@ const HeroSection = () => {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
       </div>
       
-      <div className="relative max-w-4xl mx-auto px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
+      <div className="relative w-3/4 mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
         <div className="text-center">
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
