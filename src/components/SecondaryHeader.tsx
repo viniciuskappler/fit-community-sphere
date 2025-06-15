@@ -24,31 +24,31 @@ const SecondaryHeader = ({ isVisible }: SecondaryHeaderProps) => {
 
   return (
     <div className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'} bg-white border-b border-gray-200`}>
-      <div className="max-w-6xl mx-auto px-8">
-        <div className="flex justify-between items-center h-12">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="flex justify-between items-center h-10">
           {/* Social Media Icons */}
-          <div className="flex items-center space-x-4">
-            <a href="#" aria-label="Instagram"><Instagram size={18} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
-            <a href="#" aria-label="LinkedIn"><Linkedin size={18} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
-            <a href="#" aria-label="YouTube"><Youtube size={18} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
-            <a href="#" aria-label="X/Twitter"><Twitter size={18} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
-            <a href="#" aria-label="TikTok"><TikTokIcon className="w-[18px] h-[18px] text-gray-600 hover:text-orange-500 transition-colors" /></a>
+          <div className="flex items-center space-x-3">
+            <a href="#" aria-label="Instagram"><Instagram size={16} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
+            <a href="#" aria-label="LinkedIn"><Linkedin size={16} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
+            <a href="#" aria-label="YouTube"><Youtube size={16} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
+            <a href="#" aria-label="X/Twitter"><Twitter size={16} className="text-gray-600 hover:text-orange-500 transition-colors" /></a>
+            <a href="#" aria-label="TikTok"><TikTokIcon className="w-4 h-4 text-gray-600 hover:text-orange-500 transition-colors" /></a>
           </div>
 
           {/* Language Selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center space-x-2 text-sm font-medium text-gray-600 hover:text-orange-500 transition-colors">
-                <img src={`https://flagcdn.com/w20/${selectedLanguage.flag}.png`} alt={selectedLanguage.name} className="w-5 h-auto" />
+              <button className="flex items-center space-x-1.5 text-xs font-medium text-gray-600 hover:text-orange-500 transition-colors">
+                <img src={`https://flagcdn.com/w20/${selectedLanguage.flag}.png`} alt={selectedLanguage.name} className="w-4 h-auto" />
                 <span>{selectedLanguage.name}</span>
-                <ChevronDown size={16} />
+                <ChevronDown size={12} />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {languages.map((lang) => (
                 <DropdownMenuItem key={lang.code} onSelect={() => setSelectedLanguage(lang)}>
-                  <img src={`https://flagcdn.com/w20/${lang.flag}.png`} alt={lang.name} className="w-5 h-auto mr-2" />
-                  <span>{lang.name}</span>
+                  <img src={`https://flagcdn.com/w20/${lang.flag}.png`} alt={lang.name} className="w-4 h-auto mr-2" />
+                  <span className="text-xs">{lang.name}</span>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>

@@ -47,58 +47,58 @@ const EventsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+    <section className="py-16 bg-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
             Eventos <span className="text-orange-500">Próximos</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-xl mx-auto">
             Participe de eventos esportivos na sua região e conheça pessoas com os mesmos interesses
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {events.map((event) => (
             <div
               key={event.id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer"
+              className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer"
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-40 overflow-hidden">
                 <img
                   src={event.image}
                   alt={event.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <div className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                   {event.category}
                 </div>
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-gray-800 text-sm font-semibold">
+                <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full text-gray-800 text-xs font-semibold">
                   {event.date}
                 </div>
               </div>
 
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 group-hover:text-orange-500 transition-colors">
+              <div className="p-4">
+                <h3 className="text-base font-semibold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors">
                   {event.title}
                 </h3>
 
-                <div className="space-y-2 mb-4">
+                <div className="space-y-1 mb-3">
                   <div className="flex items-center text-gray-600">
-                    <Clock size={16} className="mr-2" />
-                    <span className="text-sm">{event.time}</span>
+                    <Clock size={14} className="mr-2" />
+                    <span className="text-xs">{event.time}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
-                    <MapPin size={16} className="mr-2" />
-                    <span className="text-sm">{event.location}</span>
+                    <MapPin size={14} className="mr-2" />
+                    <span className="text-xs">{event.location}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
-                    <Users size={16} className="mr-2" />
-                    <span className="text-sm">{event.participants} participantes</span>
+                    <Users size={14} className="mr-2" />
+                    <span className="text-xs">{event.participants} participantes</span>
                   </div>
                 </div>
 
-                <button className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                <button className="w-full bg-gradient-to-r from-orange-500 to-red-600 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
                   Participar
                 </button>
               </div>
@@ -106,8 +106,8 @@ const EventsSection = () => {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <button className="bg-gray-100 text-gray-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
+        <div className="text-center mt-10">
+          <button className="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors">
             Ver todos os eventos
           </button>
         </div>

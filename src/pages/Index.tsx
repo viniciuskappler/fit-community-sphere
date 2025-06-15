@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import SecondaryHeader from '../components/SecondaryHeader';
@@ -36,7 +37,7 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <SecondaryHeader isVisible={showTopBar} />
       <Header isSecondaryVisible={showTopBar} />
-      <main className="pt-[140px]">
+      <main className="pt-[120px]">
         {/* Nova Section de Cadastro logo após o Hero */}
         <HeroSection />
         <RegistrationSection />

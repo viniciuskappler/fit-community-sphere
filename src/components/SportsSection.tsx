@@ -14,13 +14,13 @@ const SportsSection = () => {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+    <section className="py-16 bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
             Explore Modalidades <span className="text-orange-500">Esportivas</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-xl mx-auto">
             Descubra a modalidade perfeita para você e conecte-se com estabelecimentos especializados
           </p>
         </div>
@@ -31,13 +31,13 @@ const SportsSection = () => {
             {[...sports, ...sports].map((sport, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 w-64 h-40 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer group"
+                className="flex-shrink-0 w-56 h-32 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer group"
               >
-                <div className={`h-full bg-gradient-to-br ${sport.color} rounded-2xl p-6 flex flex-col items-center justify-center relative overflow-hidden`}>
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div>
-                  <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{sport.icon}</div>
-                  <h3 className="text-white font-semibold text-lg text-center">{sport.name}</h3>
-                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-8 -translate-x-8"></div>
+                <div className={`h-full bg-gradient-to-br ${sport.color} rounded-2xl p-5 flex flex-col items-center justify-center relative overflow-hidden`}>
+                  <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
+                  <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{sport.icon}</div>
+                  <h3 className="text-white font-semibold text-base text-center">{sport.name}</h3>
+                  <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/10 rounded-full translate-y-6 -translate-x-6"></div>
                 </div>
               </div>
             ))}
