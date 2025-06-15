@@ -26,21 +26,21 @@ const CadastroRealizado = () => {
   const buttons = [
     {
       id: 'search',
-      icon: <Search size={36} />,
+      icon: <Search size={32} />,
       title: 'Buscar Esportes',
       info: 'Busque atividades físicas na sua região e pratique seus esportes preferidos!',
       onClick: handleSearchClick
     },
     {
       id: 'establishment',
-      icon: <Building size={36} />,
+      icon: <Building size={32} />,
       title: 'Cadastrar Estabelecimento',
       info: 'Você tem um espaço que oferece alguma modalidade esportiva? Cadastre seu Estabelecimento para que os praticantes encontrem você!',
       onClick: handleEstablishmentClick
     },
     {
       id: 'group',
-      icon: <Users size={36} />,
+      icon: <Users size={32} />,
       title: 'Cadastrar Grupo Esportivo',
       info: 'Você tem um grupo que organiza alguma modalidade esportiva? Cadastre seu grupo para que os praticantes conheçam você!',
       onClick: handleGroupClick
@@ -48,20 +48,20 @@ const CadastroRealizado = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 relative">
+    <div className="min-h-screen bg-white relative">
       <ConfettiAnimation />
       
       <main className="px-6 py-16">
         <div className="max-w-4xl mx-auto text-center">
           <div className="py-16">
-            <h1 className="text-7xl font-bold bg-gradient-to-r from-orange-600 via-red-500 to-orange-500 bg-clip-text text-transparent mb-8 animate-fade-in drop-shadow-lg">
+            <h1 className="text-5xl font-bold text-gray-800 mb-6 animate-fade-in">
               Parabéns! 🎉
             </h1>
-            <h2 className="text-4xl font-bold text-orange-600 mb-6 animate-fade-in drop-shadow-md">
+            <h2 className="text-3xl font-semibold text-orange-500 mb-4">
               Bem-vindo ao movimento!
             </h2>
-            <p className="text-2xl text-gray-700 mb-12 max-w-3xl mx-auto font-medium leading-relaxed animate-fade-in">
-              Obrigado por se juntar ao <span className="font-bold text-orange-600 text-3xl">Núcleo do Esporte</span>! 
+            <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+              Obrigado por se juntar ao <span className="font-semibold text-orange-500">Núcleo do Esporte</span>! 
               Agora você faz parte da nossa comunidade que une pessoas através do esporte.
             </p>
 
@@ -75,32 +75,32 @@ const CadastroRealizado = () => {
                 >
                   <button
                     onClick={button.onClick}
-                    className="w-full h-40 bg-white border-3 border-orange-300 rounded-2xl p-8 hover:border-orange-500 hover:shadow-2xl transition-all duration-300 hover:scale-110 group flex flex-col items-center justify-center transform hover:-translate-y-2"
+                    className="w-full h-32 bg-white border-2 border-orange-200 rounded-xl p-6 hover:border-orange-400 hover:shadow-xl transition-all duration-300 hover:scale-105 group flex flex-col items-center justify-center"
                   >
-                    <div className="text-orange-600 mb-4 flex justify-center group-hover:scale-125 transition-transform duration-300">
+                    <div className="text-orange-500 mb-3 flex justify-center group-hover:scale-110 transition-transform duration-300">
                       {button.icon}
                     </div>
-                    <h3 className="text-lg font-bold text-gray-800 text-center leading-tight group-hover:text-orange-600 transition-colors duration-300">
+                    <h3 className="text-base font-semibold text-gray-800 text-center leading-tight">
                       {button.title}
                     </h3>
                   </button>
 
                   {/* Tooltip com informações */}
                   {hoveredButton === button.id && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-6 w-80 bg-gray-900 text-white text-sm rounded-xl p-5 shadow-2xl z-10 animate-fade-in border border-orange-300">
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-80 bg-gray-900 text-white text-sm rounded-lg p-4 shadow-lg z-10 animate-fade-in">
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                      <p className="font-medium">{button.info}</p>
+                      {button.info}
                     </div>
                   )}
                 </div>
               ))}
             </div>
 
-            <div className="mt-20 p-8 bg-gradient-to-r from-orange-100 via-yellow-50 to-red-100 rounded-2xl max-w-3xl mx-auto border-2 border-orange-200 shadow-lg">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4 text-orange-700">
-                🚀 Próximos passos
+            <div className="mt-16 p-6 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl max-w-2xl mx-auto">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                Próximos passos
               </h3>
-              <p className="text-lg text-gray-700 leading-relaxed font-medium">
+              <p className="text-gray-600 text-sm leading-relaxed">
                 Explore as opções acima para começar sua jornada no mundo dos esportes. 
                 Conecte-se, pratique e faça parte desta comunidade incrível!
               </p>
