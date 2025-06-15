@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { MapPin, Filter, Search } from 'lucide-react';
 import Header from '../components/Header';
@@ -10,16 +11,75 @@ import EstablishmentCard, { Establishment } from '../components/hub/Establishmen
 import GroupCard, { Group } from '../components/hub/GroupCard';
 
 const establishmentsData: Establishment[] = [
-  { id: 'e1', name: 'Academia FitSport Power', type: 'establishment', sports: ['Musculação', 'Pilates', 'Yoga', 'Futebol'], region: 'São Paulo - SP', address: 'Rua Augusta, 123', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop' },
-  { id: 'e2', name: 'Box CrossFit Pinheiros', type: 'establishment', sports: ['CrossFit', 'Academia'], region: 'São Paulo - SP', address: 'Av. Faria Lima, 456', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop' },
-  { id: 'e3', name: 'Clube de Tênis Central', type: 'establishment', sports: ['Tênis', 'Beach Tennis'], region: 'Rio de Janeiro - RJ', address: 'Av. Atlântica, 789', image: 'https://images.unsplash.com/photo-1594420310243-63642a182b3a?q=80&w=2070&auto=format&fit=crop' },
-  { id: 'e4', name: 'Aquatic Center', type: 'establishment', sports: ['Natação'], region: 'Belo Horizonte - MG', address: 'R. da Bahia, 1500', image: 'https://images.unsplash.com/photo-1612053639462-61348b037332?q=80&w=2070&auto=format&fit=crop' }
+  { 
+    id: 'e1', 
+    name: 'Academia FitSport Power', 
+    type: 'establishment', 
+    sports: ['Musculação', 'Pilates', 'Yoga', 'Futebol'], 
+    region: 'São Paulo - SP', 
+    address: 'Rua Augusta, 123', 
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop' 
+  },
+  { 
+    id: 'e2', 
+    name: 'Box CrossFit Pinheiros', 
+    type: 'establishment', 
+    sports: ['CrossFit', 'Academia'], 
+    region: 'São Paulo - SP', 
+    address: 'Av. Faria Lima, 456', 
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop' 
+  },
+  { 
+    id: 'e3', 
+    name: 'Clube de Tênis Central', 
+    type: 'establishment', 
+    sports: ['Tênis', 'Beach Tennis'], 
+    region: 'Rio de Janeiro - RJ', 
+    address: 'Av. Atlântica, 789', 
+    image: 'https://images.unsplash.com/photo-1594420310243-63642a182b3a?q=80&w=2070&auto=format&fit=crop' 
+  },
+  { 
+    id: 'e4', 
+    name: 'Aquatic Center', 
+    type: 'establishment', 
+    sports: ['Natação'], 
+    region: 'Belo Horizonte - MG', 
+    address: 'R. da Bahia, 1500', 
+    image: 'https://images.unsplash.com/photo-1612053639462-61348b037332?q=80&w=2070&auto=format&fit=crop' 
+  }
 ];
 
 const groupsData: Group[] = [
-  { id: 'g1', name: 'Grupo de Corrida Manhã', type: 'group', sports: ['Corrida', 'Caminhada'], region: 'São Paulo - SP', members: 15, meeting_point: 'Parque Ibirapuera, Portão 3', image: 'https://images.unsplash.com/photo-1512428208316-80f034d026a7?q=80&w=1974&auto=format&fit=crop' },
-  { id: 'g2', name: 'Vôlei de Praia Copacabana', type: 'group', sports: ['Vôlei'], region: 'Rio de Janeiro - RJ', members: 22, meeting_point: 'Praia de Copacabana, Posto 4', image: 'https://images.unsplash.com/photo-1595179177695-8270e3957b47?q=80&w=2070&auto=format&fit=crop' },
-  { id: 'g3', name: 'Pedal Savassi', type: 'group', sports: ['Ciclismo'], region: 'Belo Horizonte - MG', members: 30, meeting_point: 'Praça da Savassi', image: 'https://images.unsplash.com/photo-1471542326543-09403a0a2a49?q=80&w=2070&auto=format&fit=crop' },
+  { 
+    id: 'g1', 
+    name: 'Grupo de Corrida Manhã', 
+    type: 'group', 
+    sports: ['Corrida', 'Caminhada'], 
+    region: 'São Paulo - SP', 
+    members: 15, 
+    meeting_point: 'Parque Ibirapuera, Portão 3', 
+    image: 'https://images.unsplash.com/photo-1512428208316-80f034d026a7?q=80&w=1974&auto=format&fit=crop' 
+  },
+  { 
+    id: 'g2', 
+    name: 'Vôlei de Praia Copacabana', 
+    type: 'group', 
+    sports: ['Vôlei'], 
+    region: 'Rio de Janeiro - RJ', 
+    members: 22, 
+    meeting_point: 'Praia de Copacabana, Posto 4', 
+    image: 'https://images.unsplash.com/photo-1595179177695-8270e3957b47?q=80&w=2070&auto=format&fit=crop' 
+  },
+  { 
+    id: 'g3', 
+    name: 'Pedal Savassi', 
+    type: 'group', 
+    sports: ['Ciclismo'], 
+    region: 'Belo Horizonte - MG', 
+    members: 30, 
+    meeting_point: 'Praça da Savassi', 
+    image: 'https://images.unsplash.com/photo-1471542326543-09403a0a2a49?q=80&w=2070&auto=format&fit=crop' 
+  },
 ];
 
 const allData = [...establishmentsData, ...groupsData];
@@ -110,7 +170,7 @@ const Hub = () => {
                     <SelectValue placeholder="Todas as modalidades" />
                   </SelectTrigger>
                   <SelectContent>
-                     <SelectItem value="">Todas as modalidades</SelectItem>
+                    <SelectItem value="">Todas as modalidades</SelectItem>
                     {sports.map((sport) => (
                       <SelectItem key={sport} value={sport}>
                         {sport}
@@ -184,33 +244,33 @@ const Hub = () => {
                 </h3>
                 
                 <div className="flex-grow overflow-y-auto pr-2 -mr-2">
-                {selectedRegion ? (
-                  filteredResults.length > 0 ? (
-                    <div className="space-y-4">
-                      {filteredResults.map(item =>
-                        item.type === 'establishment' ? (
-                          <EstablishmentCard key={item.id} establishment={item as Establishment} />
-                        ) : (
-                          <GroupCard key={item.id} group={item as Group} />
-                        )
-                      )}
-                    </div>
+                  {selectedRegion ? (
+                    filteredResults.length > 0 ? (
+                      <div className="space-y-4">
+                        {filteredResults.map(item =>
+                          item.type === 'establishment' ? (
+                            <EstablishmentCard key={item.id} establishment={item as Establishment} />
+                          ) : (
+                            <GroupCard key={item.id} group={item as Group} />
+                          )
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 h-full flex flex-col justify-center items-center">
+                        <Search size={32} className="text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500">
+                          Nenhum resultado encontrado. Tente ajustar seus filtros.
+                        </p>
+                      </div>
+                    )
                   ) : (
                     <div className="text-center py-8 h-full flex flex-col justify-center items-center">
-                      <Search size={32} className="text-gray-400 mx-auto mb-4" />
+                      <Filter size={32} className="text-gray-400 mx-auto mb-4" />
                       <p className="text-gray-500">
-                        Nenhum resultado encontrado. Tente ajustar seus filtros.
+                        Selecione uma região para ver os resultados.
                       </p>
                     </div>
-                  )
-                ) : (
-                  <div className="text-center py-8 h-full flex flex-col justify-center items-center">
-                    <Filter size={32} className="text-gray-400 mx-auto mb-4" />
-                    <p className="text-gray-500">
-                      Selecione uma região para ver os resultados.
-                    </p>
-                  </div>
-                )}
+                  )}
                 </div>
               </div>
             </div>
