@@ -68,19 +68,19 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                   </a>
                 </nav>
 
-                {/* CTA Buttons */}
+                {/* CTA Buttons - Reordered */}
                 <div className="flex items-center space-x-3">
-                  <button 
-                    onClick={handleLoginClick}
-                    className="bg-white text-gray-800 border border-gray-200 px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
-                  >
-                    Fazer Login
-                  </button>
                   <button 
                     onClick={handleCadastrarClick}
                     className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
                   >
                     Cadastrar agora
+                  </button>
+                  <button 
+                    onClick={handleLoginClick}
+                    className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
+                  >
+                    Fazer Login
                   </button>
                 </div>
               </div>
