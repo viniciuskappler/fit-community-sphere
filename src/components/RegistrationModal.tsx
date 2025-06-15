@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -163,9 +162,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
                         registrationType === 'establishment' ? 'Estabelecimento' : 
                         'Grupo Esportivo'}
           </DialogTitle>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-6">
             <div 
-              className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-500 ease-out"
               style={{ width: `${(currentStep / 3) * 100}%` }}
             />
           </div>
