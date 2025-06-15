@@ -27,7 +27,7 @@ const SportsSection = () => {
 
         {/* Sports Carousel */}
         <div className="relative overflow-hidden">
-          <div className="flex animate-[slide_30s_linear_infinite] space-x-6">
+          <div className="flex animate-slide space-x-6">
             {[...sports, ...sports].map((sport, index) => (
               <div
                 key={index}
@@ -44,17 +44,6 @@ const SportsSection = () => {
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes slide {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-      `}</style>
     </section>
   );
 };

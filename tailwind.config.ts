@@ -93,12 +93,21 @@ export default {
 					'100%': {
 						transform: 'translateX(-50%)'
 					}
+				},
+				'slide-slow': {
+					'0%': {
+						transform: 'translateX(0)'
+					},
+					'100%': {
+						transform: 'translateX(-50%)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'slide': 'slide 30s linear infinite'
+				'slide': 'slide 30s linear infinite',
+				'slide-slow': 'slide-slow 60s linear infinite'
 			}
 		}
 	},
