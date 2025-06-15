@@ -18,10 +18,10 @@ interface MapLocation {
 
 const locations: MapLocation[] = [{
   id: '1',
-  name: 'Olympia Academia',
+  name: 'FitMax Academia',
   type: 'establishment',
   x: 25,
-  y: 30,
+  y: 40,
   info: {
     city: 'São Paulo - SP',
     sports: ['Musculação', 'Pilates', 'Crossfit'],
@@ -30,10 +30,10 @@ const locations: MapLocation[] = [{
   }
 }, {
   id: '2',
-  name: 'Megarace Fitness',
+  name: 'PowerGym Elite',
   type: 'establishment',
   x: 70,
-  y: 25,
+  y: 35,
   info: {
     city: 'Rio de Janeiro - RJ',
     sports: ['Cross Training', 'HIIT', 'Funcional'],
@@ -42,10 +42,10 @@ const locations: MapLocation[] = [{
   }
 }, {
   id: '3',
-  name: 'AX CT',
+  name: 'Strong Performance',
   type: 'establishment',
   x: 45,
-  y: 60,
+  y: 70,
   info: {
     city: 'Belo Horizonte - MG',
     sports: ['Performance Atlética', 'Condicionamento'],
@@ -54,10 +54,10 @@ const locations: MapLocation[] = [{
   }
 }, {
   id: '4',
-  name: 'Manos da Pesca',
+  name: 'Pescadores Unidos',
   type: 'group',
   x: 80,
-  y: 70,
+  y: 80,
   info: {
     city: 'Florianópolis - SC',
     sports: ['Pesca Esportiva', 'Pesca Oceânica'],
@@ -66,10 +66,10 @@ const locations: MapLocation[] = [{
   }
 }, {
   id: '5',
-  name: 'Circuito dos Vales',
+  name: 'Bikers das Montanhas',
   type: 'group',
   x: 20,
-  y: 75,
+  y: 85,
   info: {
     city: 'Campos do Jordão - SP',
     sports: ['Mountain Bike', 'Ciclismo'],
@@ -78,10 +78,10 @@ const locations: MapLocation[] = [{
   }
 }, {
   id: '6',
-  name: 'Vamo Pro Corre',
+  name: 'Runners SP',
   type: 'group',
   x: 60,
-  y: 40,
+  y: 50,
   info: {
     city: 'São Paulo - SP',
     sports: ['Corrida de Rua', 'Maratona'],
@@ -137,15 +137,15 @@ const InteractiveMapSection = () => {
             className="absolute inset-0 bg-cover bg-center" 
             style={{
               backgroundImage: `url(/lovable-uploads/42c43684-60db-4ba2-9e0e-a851954d5be9.png)`,
-              backgroundPosition: 'center 20%'
+              backgroundPosition: 'center 30%'
             }} 
           />
           
-          {/* Gradient overlay to blend with white background - mais intenso */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/30 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/60 via-transparent to-white/60" />
-          <div className="absolute inset-0 bg-gradient-to-l from-white/50 via-transparent to-white/50" />
+          {/* Gradient overlay to blend with white background - reduzido */}
+          <div className="absolute inset-0 bg-gradient-to-t from-white/70 via-white/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/40 via-transparent to-white/40" />
+          <div className="absolute inset-0 bg-gradient-to-l from-white/30 via-transparent to-white/30" />
           
           {/* Map pins - estilo Google Maps */}
           {locations.map((location, index) => (
