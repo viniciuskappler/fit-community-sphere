@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription } from './ui/alert';
 import PersonalDataStep from './registration/PersonalDataStep';
 import SportsPreferencesStep from './registration/SportsPreferencesStep';
 import FinalStep from './registration/FinalStep';
@@ -157,9 +159,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
-            Cadastro de {registrationType === 'supporter' ? 'Esportista Apoiador' : 
-                        registrationType === 'establishment' ? 'Estabelecimento Parceiro' : 
-                        'Grupo de Esporte Parceiro'}
+            Cadastro de {registrationType === 'supporter' ? 'Praticante' : 
+                        registrationType === 'establishment' ? 'Estabelecimento' : 
+                        'Grupo Esportivo'}
           </DialogTitle>
           <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
             <div 
@@ -168,6 +170,16 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             />
           </div>
         </DialogHeader>
+
+        {/* Aviso para Estabelecimento e Grupo Esportivo */}
+        {(registrationType === 'establishment' || registrationType === 'group') && (
+          <Alert className="bg-orange-50 border-orange-200 mt-4">
+            <AlertTriangle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800">
+              Primeiro você criará seu cadastro de usuário no Núcleo do Esporte. Após finalizar, você poderá cadastrar seu {registrationType === 'establishment' ? 'estabelecimento' : 'grupo esportivo'}.
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="mt-6">
           <h3 className="text-xl font-semibold mb-6 text-orange-500">
