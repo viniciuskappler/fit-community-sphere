@@ -1,10 +1,7 @@
-
 import React from 'react';
 import { Search, Calendar, Home, Settings } from 'lucide-react';
-
 const Header = () => {
-  return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+  return <header className="bg-white/95 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -34,13 +31,9 @@ const Header = () => {
           </nav>
 
           {/* CTA Button */}
-          <button className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105">
-            Fale com um especialista →
-          </button>
+          <button className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105">Cadastrar agora →</button>
         </div>
       </div>
-    </header>
-  );
+    </header>;
 };
-
 export default Header;
