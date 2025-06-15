@@ -5,6 +5,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -15,9 +17,12 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const newErrors: { email?: string; password?: string } = {};
@@ -37,9 +42,23 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       return;
     }
     
-    // TODO: Implementar lógica de login
-    console.log('Login:', { email, password });
-    onClose();
+    setLoading(true);
+    setErrors({});
+    
+    const { error } = await signIn(email, password);
+    
+    if (error) {
+      if (error.message.includes('Invalid login credentials')) {
+        setErrors({ general: 'Email ou senha incorretos.' });
+      } else {
+        setErrors({ general: 'Erro ao fazer login. Tente novamente.' });
+      }
+    } else {
+      onClose();
+      navigate('/hub');
+    }
+    
+    setLoading(false);
   };
 
   return (
@@ -52,6 +71,12 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {errors.general && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-sm text-red-600">{errors.general}</p>
+            </div>
+          )}
+
           <div>
             <Label htmlFor="email" className="text-sm font-medium text-gray-700">
               E-mail
@@ -66,6 +91,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               }}
               className="mt-1"
               placeholder="seu@email.com"
+              disabled={loading}
             />
             {errors.email && (
               <p className="text-xs text-orange-500 mt-1">{errors.email}</p>
@@ -87,11 +113,13 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 }}
                 className="mt-1 pr-10"
                 placeholder="Sua senha"
+                disabled={loading}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                disabled={loading}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -109,9 +137,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
           <Button
             type="submit"
+            disabled={loading}
             className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600"
           >
-            Entrar
+            {loading ? 'Entrando...' : 'Entrar'}
           </Button>
 
           <div className="text-center text-sm text-gray-600">

@@ -4,6 +4,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { ArrowLeft, ArrowRight, Check, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUserData } from '@/hooks/useUserData';
+import { useNavigate } from 'react-router-dom';
 import PersonalDataStep from './registration/PersonalDataStep';
 import SportsPreferencesStep from './registration/SportsPreferencesStep';
 import FinalStep from './registration/FinalStep';
@@ -27,6 +30,11 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
   const [currentStep, setCurrentStep] = useState(1);
   const [registrationType, setRegistrationType] = useState(initialType);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const [loading, setLoading] = useState(false);
+  const { signUp } = useAuth();
+  const { saveUserProfile, saveUserSports } = useUserData();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<FormData>({
     // Dados Pessoais
     fullName: '',
@@ -106,7 +114,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const stepErrors = validateStep3(formData, registrationType);
     
     if (Object.keys(stepErrors).length > 0) {
@@ -114,11 +122,57 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
       return;
     }
     
-    console.log('Cadastro finalizado:', formData);
-    onClose();
+    setLoading(true);
     
-    // Redirecionar para página de agradecimento
-    window.location.href = '/cadastro-realizado';
+    try {
+      // 1. Criar conta do usuário
+      const { error: signUpError } = await signUp(formData.email, 'temporaryPassword123!', {
+        fullName: formData.fullName
+      });
+      
+      if (signUpError) {
+        setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
+        setLoading(false);
+        return;
+      }
+
+      // 2. Salvar dados do perfil
+      const { error: profileError } = await saveUserProfile({
+        full_name: formData.fullName,
+        cpf: formData.cpf,
+        phone: formData.phone,
+        city: formData.city,
+        birth_date: formData.birthDate
+      });
+
+      if (profileError) {
+        console.error('Erro ao salvar perfil:', profileError);
+      }
+
+      // 3. Salvar esportes
+      const allSports = [
+        ...formData.favoriteStateSports.map(sport => ({ sport_name: sport, sport_type: 'favorite' as const })),
+        ...formData.practicedSports.map(sport => ({ sport_name: sport, sport_type: 'practiced' as const })),
+        ...formData.interestedSports.map(sport => ({ sport_name: sport, sport_type: 'interested' as const }))
+      ];
+
+      if (allSports.length > 0) {
+        const { error: sportsError } = await saveUserSports(allSports);
+        if (sportsError) {
+          console.error('Erro ao salvar esportes:', sportsError);
+        }
+      }
+
+      console.log('Cadastro finalizado com sucesso!');
+      onClose();
+      navigate('/cadastro-realizado');
+      
+    } catch (error) {
+      console.error('Erro no cadastro:', error);
+      setErrors({ general: 'Erro inesperado. Tente novamente.' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderStepContent = () => {
@@ -181,6 +235,15 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           </Alert>
         )}
 
+        {errors.general && (
+          <Alert className="bg-red-50 border border-red-200 mt-4">
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800 font-medium">
+              {errors.general}
+            </AlertDescription>
+          </Alert>
+        )}
+
         <div className="mt-6">
           <h3 className="text-xl font-semibold mb-6 text-orange-500">
             {getStepTitle(currentStep, registrationType)}
@@ -193,7 +256,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             <Button
               variant="outline"
               onClick={prevStep}
-              disabled={currentStep === 1}
+              disabled={currentStep === 1 || loading}
               className="flex items-center space-x-2"
             >
               <ArrowLeft size={16} />
@@ -203,6 +266,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             {currentStep < 3 ? (
               <Button
                 onClick={nextStep}
+                disabled={loading}
                 className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 flex items-center space-x-2"
               >
                 <span>Próximo</span>
@@ -211,10 +275,11 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             ) : (
               <Button
                 onClick={handleSubmit}
+                disabled={loading}
                 className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 flex items-center space-x-2"
               >
                 <Check size={16} />
-                <span>Finalizar Cadastro</span>
+                <span>{loading ? 'Finalizando...' : 'Finalizar Cadastro'}</span>
               </Button>
             )}
           </div>

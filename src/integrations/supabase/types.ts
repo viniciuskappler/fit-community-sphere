@@ -9,7 +9,235 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      Cadastros: {
+        Row: {
+          column_name: string | null
+          created_at: string
+          id: number
+        }
+        Insert: {
+          column_name?: string | null
+          created_at?: string
+          id?: number
+        }
+        Update: {
+          column_name?: string | null
+          created_at?: string
+          id?: number
+        }
+        Relationships: []
+      }
+      establishment_sports: {
+        Row: {
+          created_at: string
+          establishment_id: string
+          id: string
+          sport_name: string
+          sport_type: string
+        }
+        Insert: {
+          created_at?: string
+          establishment_id: string
+          id?: string
+          sport_name: string
+          sport_type: string
+        }
+        Update: {
+          created_at?: string
+          establishment_id?: string
+          id?: string
+          sport_name?: string
+          sport_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_sports_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishments: {
+        Row: {
+          address: string
+          cep: string
+          city: string
+          cnpj: string | null
+          corporate_name: string
+          created_at: string
+          description: string | null
+          email: string
+          establishment_name: string
+          id: string
+          phone: string
+          state: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          cep: string
+          city: string
+          cnpj?: string | null
+          corporate_name: string
+          created_at?: string
+          description?: string | null
+          email: string
+          establishment_name: string
+          id?: string
+          phone: string
+          state: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          cep?: string
+          city?: string
+          cnpj?: string | null
+          corporate_name?: string
+          created_at?: string
+          description?: string | null
+          email?: string
+          establishment_name?: string
+          id?: string
+          phone?: string
+          state?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      group_sports: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          sport_name: string
+          sport_type: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          sport_name: string
+          sport_type: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          sport_name?: string
+          sport_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_sports_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "sports_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sports_groups: {
+        Row: {
+          cities: string[]
+          corporate_name: string
+          created_at: string
+          description: string | null
+          email: string
+          group_name: string
+          id: string
+          phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cities: string[]
+          corporate_name: string
+          created_at?: string
+          description?: string | null
+          email: string
+          group_name: string
+          id?: string
+          phone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cities?: string[]
+          corporate_name?: string
+          created_at?: string
+          description?: string | null
+          email?: string
+          group_name?: string
+          id?: string
+          phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          birth_date: string | null
+          city: string | null
+          cpf: string | null
+          created_at: string
+          full_name: string
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          full_name: string
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          birth_date?: string | null
+          city?: string | null
+          cpf?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_sports: {
+        Row: {
+          created_at: string
+          id: string
+          sport_name: string
+          sport_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          sport_name: string
+          sport_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          sport_name?: string
+          sport_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

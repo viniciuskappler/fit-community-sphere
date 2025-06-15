@@ -1,6 +1,8 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { MapPin, Filter, Search } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import Header from '../components/Header';
 import SecondaryHeader from '../components/SecondaryHeader';
 import Footer from '../components/Footer';
@@ -10,85 +12,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import EstablishmentCard, { Establishment } from '../components/hub/EstablishmentCard';
 import GroupCard, { Group } from '../components/hub/GroupCard';
 
-const establishmentsData: Establishment[] = [
-  { 
-    id: 'e1', 
-    name: 'Academia FitSport Power', 
-    type: 'establishment', 
-    sports: ['Musculação', 'Pilates', 'Yoga', 'Futebol'], 
-    region: 'São Paulo - SP', 
-    address: 'Rua Augusta, 123', 
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop' 
-  },
-  { 
-    id: 'e2', 
-    name: 'Box CrossFit Pinheiros', 
-    type: 'establishment', 
-    sports: ['CrossFit', 'Academia'], 
-    region: 'São Paulo - SP', 
-    address: 'Av. Faria Lima, 456', 
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop' 
-  },
-  { 
-    id: 'e3', 
-    name: 'Clube de Tênis Central', 
-    type: 'establishment', 
-    sports: ['Tênis', 'Beach Tennis'], 
-    region: 'Rio de Janeiro - RJ', 
-    address: 'Av. Atlântica, 789', 
-    image: 'https://images.unsplash.com/photo-1594420310243-63642a182b3a?q=80&w=2070&auto=format&fit=crop' 
-  },
-  { 
-    id: 'e4', 
-    name: 'Aquatic Center', 
-    type: 'establishment', 
-    sports: ['Natação'], 
-    region: 'Belo Horizonte - MG', 
-    address: 'R. da Bahia, 1500', 
-    image: 'https://images.unsplash.com/photo-1612053639462-61348b037332?q=80&w=2070&auto=format&fit=crop' 
-  }
-];
-
-const groupsData: Group[] = [
-  { 
-    id: 'g1', 
-    name: 'Grupo de Corrida Manhã', 
-    type: 'group', 
-    sports: ['Corrida', 'Caminhada'], 
-    region: 'São Paulo - SP', 
-    members: 15, 
-    meeting_point: 'Parque Ibirapuera, Portão 3', 
-    image: 'https://images.unsplash.com/photo-1512428208316-80f034d026a7?q=80&w=1974&auto=format&fit=crop' 
-  },
-  { 
-    id: 'g2', 
-    name: 'Vôlei de Praia Copacabana', 
-    type: 'group', 
-    sports: ['Vôlei'], 
-    region: 'Rio de Janeiro - RJ', 
-    members: 22, 
-    meeting_point: 'Praia de Copacabana, Posto 4', 
-    image: 'https://images.unsplash.com/photo-1595179177695-8270e3957b47?q=80&w=2070&auto=format&fit=crop' 
-  },
-  { 
-    id: 'g3', 
-    name: 'Pedal Savassi', 
-    type: 'group', 
-    sports: ['Ciclismo'], 
-    region: 'Belo Horizonte - MG', 
-    members: 30, 
-    meeting_point: 'Praça da Savassi', 
-    image: 'https://images.unsplash.com/photo-1471542326543-09403a0a2a49?q=80&w=2070&auto=format&fit=crop' 
-  },
-];
-
-const allData = [...establishmentsData, ...groupsData];
-
 const Hub = () => {
+  const { user } = useAuth();
   const [selectedRegion, setSelectedRegion] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSport, setSelectedSport] = useState('');
   const [searchType, setSearchType] = useState('all');
+  const [establishments, setEstablishments] = useState<Establishment[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const regions = [
     'São Paulo - SP',
@@ -112,17 +44,85 @@ const Hub = () => {
     'Academia'
   ];
 
+  // Buscar dados reais do banco
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    
+    try {
+      // Buscar estabelecimentos
+      const { data: establishmentsData } = await supabase
+        .from('establishments')
+        .select(`
+          id,
+          establishment_name,
+          address,
+          city,
+          state,
+          establishment_sports(sport_name)
+        `);
+
+      if (establishmentsData) {
+        const formattedEstablishments: Establishment[] = establishmentsData.map(est => ({
+          id: est.id,
+          name: est.establishment_name,
+          type: 'establishment',
+          sports: est.establishment_sports?.map((s: any) => s.sport_name) || [],
+          region: `${est.city} - ${est.state}`,
+          address: est.address,
+          image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop'
+        }));
+        setEstablishments(formattedEstablishments);
+      }
+
+      // Buscar grupos esportivos
+      const { data: groupsData } = await supabase
+        .from('sports_groups')
+        .select(`
+          id,
+          group_name,
+          cities,
+          description,
+          group_sports(sport_name)
+        `);
+
+      if (groupsData) {
+        const formattedGroups: Group[] = groupsData.map(group => ({
+          id: group.id,
+          name: group.group_name,
+          type: 'group',
+          sports: group.group_sports?.map((s: any) => s.sport_name) || [],
+          region: group.cities?.[0] || '',
+          members: Math.floor(Math.random() * 30) + 10, // Número aleatório por enquanto
+          meeting_point: group.description || 'Local a definir',
+          image: 'https://images.unsplash.com/photo-1512428208316-80f034d026a7?q=80&w=1974&auto=format&fit=crop'
+        }));
+        setGroups(formattedGroups);
+      }
+
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const allData = [...establishments, ...groups];
+
   const filteredResults = useMemo(() => {
     if (!selectedRegion) return [];
 
     return allData.filter(item => {
-      const regionMatch = item.region === selectedRegion;
+      const regionMatch = item.region.includes(selectedRegion.split(' - ')[0]) || item.region === selectedRegion;
       const sportMatch = !selectedSport || item.sports.includes(selectedSport);
       const searchTermMatch = !searchTerm || item.name.toLowerCase().includes(searchTerm.toLowerCase());
       const typeMatch = searchType === 'all' || item.type === searchType;
       return regionMatch && sportMatch && searchTermMatch && typeMatch;
     });
-  }, [selectedRegion, selectedSport, searchTerm, searchType]);
+  }, [selectedRegion, selectedSport, searchTerm, searchType, allData]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -138,6 +138,11 @@ const Hub = () => {
             <p className="text-lg text-gray-600">
               Encontre atividades, locais e grupos esportivos na sua região.
             </p>
+            {user && (
+              <p className="text-sm text-orange-600 mt-2">
+                Bem-vindo, {user.user_metadata?.full_name || user.email}!
+              </p>
+            )}
           </div>
 
           {/* Filtros de busca */}
@@ -208,9 +213,13 @@ const Hub = () => {
               </div>
 
               <div className="w-full">
-                <Button className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600">
+                <Button 
+                  className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600"
+                  onClick={fetchData}
+                  disabled={loading}
+                >
                   <Search size={16} className="mr-2" />
-                  Buscar
+                  {loading ? 'Buscando...' : 'Buscar'}
                 </Button>
               </div>
             </div>
@@ -241,10 +250,20 @@ const Hub = () => {
               <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 h-[600px] flex flex-col">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4 flex-shrink-0">
                   Resultados da Busca
+                  {filteredResults.length > 0 && (
+                    <span className="text-sm font-normal text-gray-500 ml-2">
+                      ({filteredResults.length} encontrado{filteredResults.length !== 1 ? 's' : ''})
+                    </span>
+                  )}
                 </h3>
                 
                 <div className="flex-grow overflow-y-auto pr-2 -mr-2">
-                  {selectedRegion ? (
+                  {loading ? (
+                    <div className="text-center py-8 h-full flex flex-col justify-center items-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mb-4"></div>
+                      <p className="text-gray-500">Carregando dados...</p>
+                    </div>
+                  ) : selectedRegion ? (
                     filteredResults.length > 0 ? (
                       <div className="space-y-4">
                         {filteredResults.map(item =>

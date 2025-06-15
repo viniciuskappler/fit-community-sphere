@@ -1,13 +1,15 @@
 
 import React, { useState } from 'react';
-import { Home, User, Building, Users } from 'lucide-react';
+import { Home, User, Building, Users, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import RegistrationModal from './RegistrationModal';
 import LoginModal from './LoginModal';
 
 const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const scrollToRegistration = () => {
@@ -23,6 +25,11 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
 
   const handleLoginClick = () => {
     setIsLoginModalOpen(true);
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
   };
 
   const handleLogoClick = () => {
@@ -66,20 +73,39 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                   </Link>
                 </nav>
 
-                {/* CTA Buttons - Reordered */}
+                {/* CTA Buttons */}
                 <div className="flex items-center space-x-3">
-                  <button 
-                    onClick={handleCadastrarClick}
-                    className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
-                  >
-                    Cadastrar agora
-                  </button>
-                  <button 
-                    onClick={handleLoginClick}
-                    className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
-                  >
-                    Fazer Login
-                  </button>
+                  {user ? (
+                    // Usuário logado - mostrar nome e logout
+                    <div className="flex items-center space-x-3">
+                      <span className="text-sm text-gray-600">
+                        Olá, {user.user_metadata?.full_name || user.email}
+                      </span>
+                      <button 
+                        onClick={handleLogout}
+                        className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium flex items-center space-x-1"
+                      >
+                        <LogOut size={12} />
+                        <span>Sair</span>
+                      </button>
+                    </div>
+                  ) : (
+                    // Usuário não logado - mostrar botões de cadastro e login
+                    <>
+                      <button 
+                        onClick={handleCadastrarClick}
+                        className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
+                      >
+                        Cadastrar agora
+                      </button>
+                      <button 
+                        onClick={handleLoginClick}
+                        className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
+                      >
+                        Fazer Login
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
