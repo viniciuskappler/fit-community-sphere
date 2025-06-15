@@ -2,12 +2,64 @@
 import React from 'react';
 
 const HeroSection = () => {
+  const sportsBanners = [
+    { 
+      name: 'Musculação', 
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop',
+    },
+    { 
+      name: 'Tênis', 
+      image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&h=400&fit=crop',
+    },
+    { 
+      name: 'Canoagem', 
+      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=400&fit=crop',
+    },
+    { 
+      name: 'Trekking', 
+      image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=400&fit=crop',
+    },
+    { 
+      name: 'Ciclismo', 
+      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=400&fit=crop',
+    },
+    { 
+      name: 'Corrida', 
+      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&h=400&fit=crop',
+    },
+    { 
+      name: 'Ginástica', 
+      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&h=400&fit=crop',
+    },
+    { 
+      name: 'Hipismo', 
+      image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=800&h=400&fit=crop',
+    },
+  ];
+
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,87,34,0.1),transparent_50%)]"></div>
+    <section className="relative min-h-screen overflow-hidden">
+      {/* Background Banners */}
+      <div className="absolute inset-0">
+        <div className="flex animate-slide-slow space-x-6 h-full">
+          {[...sportsBanners, ...sportsBanners, ...sportsBanners].map((sport, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 w-80 h-full relative"
+            >
+              {/* Background Image */}
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${sport.image})` }}
+              />
+            </div>
+          ))}
+        </div>
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-black/70" />
+      </div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 z-10">
         <div className="text-center">
           {/* Badge */}
           <div className="inline-flex items-center bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-full px-4 py-2 mb-8">
@@ -51,10 +103,6 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-
-      {/* Floating Elements */}
-      <div className="absolute top-1/4 left-10 w-20 h-20 bg-gradient-to-br from-orange-500/20 to-red-600/20 rounded-full blur-xl animate-pulse"></div>
-      <div className="absolute bottom-1/4 right-10 w-32 h-32 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-full blur-xl animate-pulse delay-1000"></div>
     </section>
   );
 };
