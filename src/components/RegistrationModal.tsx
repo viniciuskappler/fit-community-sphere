@@ -162,11 +162,13 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
                         registrationType === 'establishment' ? 'Estabelecimento' : 
                         'Grupo Esportivo'}
           </DialogTitle>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-6">
+          <div className="w-full bg-gray-200 rounded-full h-3 mt-8 shadow-inner">
             <div 
-              className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-500 ease-out"
+              className="bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 h-3 rounded-full transition-all duration-1000 ease-out relative overflow-hidden animate-pulse"
               style={{ width: `${(currentStep / 3) * 100}%` }}
-            />
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_2s_infinite] transform -skew-x-12"></div>
+            </div>
           </div>
         </DialogHeader>
 
