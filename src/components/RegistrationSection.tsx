@@ -6,18 +6,20 @@ import RegistrationModal from "./RegistrationModal";
 
 const options = [{
   icon: <User size={36} color="#ff6600" strokeWidth={2.4} />,
-  title: "Esportista Apoiador",
+  title: "Praticante",
   desc: "Para pessoas que praticam ou têm interesse em esportes.",
   type: "supporter" as const
 }, {
   icon: <Store size={36} color="#ff6600" strokeWidth={2.4} />,
-  title: "Estabelecimento Parceiro",
+  title: "Estabelecimento",
   desc: "Para academias, clubes e outros locais esportivos.",
+  subtitle: "Primeiro você criará seu cadastro de usuário no Núcleo do Esporte",
   type: "establishment" as const
 }, {
   icon: <Users size={36} color="#ff6600" strokeWidth={2.4} />,
-  title: "Grupo de Esporte Parceiro",
+  title: "Grupo Esportivo",
   desc: "Para grupos, equipes e coletivos esportivos.",
+  subtitle: "Primeiro você criará seu cadastro de usuário no Núcleo do Esporte",
   type: "group" as const
 }];
 
@@ -45,7 +47,13 @@ const RegistrationSection = () => {
               <div key={opt.title} className="flex flex-col items-center bg-white rounded-xl p-6 shadow-sm border border-[#ebebef] max-w-xs w-full transition-all duration-300 hover:shadow-xl hover:scale-105 group cursor-pointer">
                 <div className="mb-3">{opt.icon}</div>
                 <div className="text-lg font-semibold text-gray-900 text-center mb-2 group-hover:text-orange-500 transition-colors">{opt.title}</div>
-                <div className="text-gray-500 text-center text-sm mb-4">{opt.desc}</div>
+                <div className="text-gray-500 text-center text-sm mb-2">{opt.desc}</div>
+                {opt.subtitle && (
+                  <div className="text-gray-400 text-center text-xs mb-4 italic">
+                    {opt.subtitle}
+                  </div>
+                )}
+                {!opt.subtitle && <div className="mb-4"></div>}
                 <button 
                   onClick={() => handleSelectOption(opt.type)}
                   className="bg-gradient-to-r from-red-600 to-orange-500 hover:bg-gradient-to-r hover:from-red-700 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-lg text-sm shadow-none transition hover:shadow-lg"
