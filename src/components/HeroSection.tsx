@@ -1,6 +1,4 @@
-
 import React from 'react';
-
 const HeroSection = () => {
   const sportsBanners = [{
     name: 'Musculação',
@@ -33,29 +31,22 @@ const HeroSection = () => {
     name: 'Rugby',
     image: 'https://images.unsplash.com/photo-1588124107945-5a7a83a427f7?w=1200&h=800&fit=crop'
   }];
-
-  return (
-    <section className="relative h-[80vh] md:min-h-screen overflow-hidden bg-white">
+  return <section className="relative h-[80vh] md:min-h-screen overflow-hidden bg-white">
       {/* Background Banners */}
       <div className="absolute inset-0">
         <div className="flex animate-slide-slow space-x-8 h-full">
-          {[...sportsBanners, ...sportsBanners, ...sportsBanners].map((sport, index) => (
-            <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
+          {[...sportsBanners, ...sportsBanners, ...sportsBanners].map((sport, index) => <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
               {/* Background Image */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${sport.image})`,
-                }}
-              />
-            </div>
-          ))}
+              <div className="absolute inset-0 bg-cover bg-center" style={{
+            backgroundImage: `url(${sport.image})`
+          }} />
+            </div>)}
         </div>
         
         {/* Gradient Overlays - stronger gradients */}
         <div className="absolute inset-0 bg-gradient-to-b from-white via-white/20 to-white" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/10 to-white" />
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent" />
+        
+        
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
       </div>
       
@@ -80,8 +71,6 @@ const HeroSection = () => {
           </button>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
