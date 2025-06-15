@@ -38,7 +38,7 @@ const HeroSection = () => {
   ];
 
   return (
-    <section className="relative h-screen overflow-hidden">
+    <section className="relative h-[80vh] overflow-hidden">
       {/* Background Banners */}
       <div className="absolute inset-0">
         <div className="flex animate-slide-slow space-x-8 h-full">
@@ -72,14 +72,8 @@ const HeroSection = () => {
 
           {/* Main Heading */}
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-            Tecnologia{' '}
             <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              Esportiva
-            </span>
-            <br />
-            para um{' '}
-            <span className="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">
-              Futuro Ativo
+              Conectando pessoas ao Esporte
             </span>
           </h1>
 
