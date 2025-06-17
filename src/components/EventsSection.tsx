@@ -1,5 +1,6 @@
 import React from 'react';
-import { Calendar, MapPin, Users, Clock } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, ArrowRight } from 'lucide-react';
+import AuthGuard from './AuthGuard';
 
 const EventsSection = () => {
   const events = [{
@@ -40,20 +41,22 @@ const EventsSection = () => {
     category: 'Ciclismo'
   }];
   return (
-    <section className="bg-white py-[100px]">
-      <div className="w-full md:w-11/12 lg:w-3/4 mx-auto px-4 md:px-8 lg:px-8">
+    <section className="bg-white py-[100px] reveal-on-scroll">
+      <div className="w-full px-6 md:w-11/12 lg:w-3/4 mx-auto md:px-8 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3 md:text-5xl">
+          <h2 className="text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-3">
             Eventos <span className="text-orange-500">Próximos</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
-            Participe de eventos esportivos na sua região e conheça pessoas com os mesmos interesses
+            Participe de eventos esportivos na sua região e 
+            <br className="md:hidden" />
+            {' '}conheça pessoas com os mesmos interesses
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {events.map(event => (
-            <div key={event.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer">
+            <div key={event.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer reveal-on-scroll">
               <div className="relative h-40 overflow-hidden">
                 <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                 <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">
@@ -84,18 +87,24 @@ const EventsSection = () => {
                   </div>
                 </div>
 
-                <button className="w-full bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
-                  Participar
-                </button>
+                <AuthGuard className="w-full">
+                  <button className="w-full bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2">
+                    <span>Participar</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </AuthGuard>
               </div>
             </div>
           ))}
         </div>
 
         <div className="text-center mt-10">
-          <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-3 px-8 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
-            Ver todos os eventos
-          </button>
+          <AuthGuard className="inline-block">
+            <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-3 px-8 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center space-x-2">
+              <span>Ver todos os eventos</span>
+              <ArrowRight size={18} />
+            </button>
+          </AuthGuard>
         </div>
       </div>
     </section>

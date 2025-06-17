@@ -56,14 +56,16 @@ const SportsSection = () => {
     color: 'from-brown-500 to-amber-700'
   }];
   return (
-    <section className="bg-gray-50 py-[101px]">
-      <div className="w-full md:w-11/12 lg:w-3/4 mx-auto px-4 md:px-8 lg:px-8">
+    <section className="bg-gray-50 py-[101px] reveal-on-scroll">
+      <div className="w-full px-6 md:w-11/12 lg:w-3/4 mx-auto md:px-8 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-3 md:text-5xl">
+          <h2 className="text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-3">
             Explore Modalidades <span className="text-orange-500">Esportivas</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
-            Descubra a modalidade perfeita para você e conecte-se com estabelecimentos especializados
+            Descubra a modalidade perfeita para você e 
+            <br className="md:hidden" />
+            {' '}conecte-se com estabelecimentos especializados
           </p>
         </div>
 
