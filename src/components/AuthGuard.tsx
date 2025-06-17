@@ -18,7 +18,10 @@ const AuthGuard = ({ children, redirectTo = '/hub', className, onClick }: AuthGu
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (user) {
       if (onClick) {
         onClick();
@@ -44,35 +47,42 @@ const AuthGuard = ({ children, redirectTo = '/hub', className, onClick }: AuthGu
     setShowRegistrationModal(true);
   };
 
+  const handleRegistrationSuccess = () => {
+    setShowRegistrationModal(false);
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(redirectTo);
+    }
+  };
+
   return (
     <>
-      <div onClick={handleClick} className={className}>
+      <div onClick={handleClick} className={className} style={{ cursor: 'pointer' }}>
         {children}
       </div>
       
       {showLoginModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
-            <h2 className="text-xl font-bold text-center mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
+            <h2 className="text-xl font-bold text-center mb-4 text-gray-800">
               Faça login para continuar
             </h2>
             <p className="text-gray-600 text-center mb-6">
               Você precisa estar logado para acessar esta funcionalidade.
             </p>
             
-            <div className="space-y-3">
-              <LoginModal 
-                isOpen={showLoginModal}
-                onClose={() => setShowLoginModal(false)}
-              />
-              
-              <button
-                onClick={handleShowRegistration}
-                className="w-full text-center text-orange-500 hover:text-orange-600 text-sm"
-              >
-                Não tem uma conta? Cadastre-se aqui
-              </button>
-            </div>
+            <LoginModal 
+              isOpen={showLoginModal}
+              onClose={() => setShowLoginModal(false)}
+            />
+            
+            <button
+              onClick={handleShowRegistration}
+              className="w-full text-center text-orange-500 hover:text-orange-600 text-sm mt-4"
+            >
+              Não tem uma conta? Cadastre-se aqui
+            </button>
           </div>
         </div>
       )}

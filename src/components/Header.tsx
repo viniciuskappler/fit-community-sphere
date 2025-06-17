@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Home, User, Building, Users, LogOut, ArrowRight } from 'lucide-react';
+import { Home, User, Building, Users, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import RegistrationModal from './RegistrationModal';
@@ -91,23 +91,19 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                       </button>
                     </div>
                   ) : (
-                    // Usuário não logado - mostrar botões de cadastro e login
+                    // Usuário não logado - mostrar botões de cadastro e login (sem setas)
                     <>
                       <button 
                         onClick={handleCadastrarClick}
-                        className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium flex items-center space-x-1"
+                        className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
                       >
                         <span>Cadastrar agora</span>
-                        <ArrowRight size={10} className="md:hidden" />
-                        <ArrowRight size={12} className="hidden md:block" />
                       </button>
                       <button 
                         onClick={handleLoginClick}
-                        className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium flex items-center space-x-1"
+                        className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
                       >
                         <span>Fazer Login</span>
-                        <ArrowRight size={10} className="md:hidden" />
-                        <ArrowRight size={12} className="hidden md:block" />
                       </button>
                     </>
                   )}

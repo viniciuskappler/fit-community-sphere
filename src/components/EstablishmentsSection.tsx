@@ -1,5 +1,7 @@
+
 import React from 'react';
-import { Star, MapPin, Phone, Clock } from 'lucide-react';
+import { Star, MapPin, Phone, Clock, ArrowRight } from 'lucide-react';
+import AuthGuard from './AuthGuard';
 
 const EstablishmentsSection = () => {
   const establishments = [{
@@ -36,11 +38,12 @@ const EstablishmentsSection = () => {
     price: 'R$ 120/mês',
     amenities: ['Natação', 'Hidro', 'Aqua Fitness']
   }];
+  
   return (
     <section className="py-16 bg-gray-50">
       <div className="w-full md:w-11/12 lg:w-3/4 mx-auto px-4 md:px-8 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-3">
             Estabelecimentos em <span className="text-orange-500">Destaque</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
@@ -96,9 +99,12 @@ const EstablishmentsSection = () => {
                 </div>
 
                 <div className="flex space-x-2">
-                  <button className="flex-1 bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300">
-                    Agendar
-                  </button>
+                  <AuthGuard className="flex-1">
+                    <button className="w-full bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1">
+                      <span>Agendar</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  </AuthGuard>
                   <button className="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm">
                     ♡
                   </button>
@@ -109,9 +115,12 @@ const EstablishmentsSection = () => {
         </div>
 
         <div className="text-center mt-10">
-          <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 px-[32px] py-[12px]">
-            Ver mais estabelecimentos
-          </button>
+          <AuthGuard className="inline-block">
+            <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 px-[32px] py-[12px] flex items-center space-x-2">
+              <span>Ver mais estabelecimentos</span>
+              <ArrowRight size={16} />
+            </button>
+          </AuthGuard>
         </div>
       </div>
     </section>

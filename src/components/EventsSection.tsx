@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Calendar, MapPin, Users, Clock, ArrowRight } from 'lucide-react';
 import AuthGuard from './AuthGuard';
@@ -40,11 +41,12 @@ const EventsSection = () => {
     image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
     category: 'Ciclismo'
   }];
+  
   return (
     <section className="bg-white py-[100px] reveal-on-scroll">
       <div className="w-full px-6 md:w-11/12 lg:w-3/4 mx-auto md:px-8 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-3">
+          <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-3">
             Eventos <span className="text-orange-500">Próximos</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
@@ -56,7 +58,7 @@ const EventsSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {events.map(event => (
-            <div key={event.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer reveal-on-scroll">
+            <div key={event.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer reveal-on-scroll flex flex-col">
               <div className="relative h-40 overflow-hidden">
                 <img src={event.image} alt={event.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                 <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">
@@ -67,12 +69,12 @@ const EventsSection = () => {
                 </div>
               </div>
 
-              <div className="p-4">
+              <div className="p-4 flex flex-col flex-1">
                 <h3 className="text-base font-semibold text-gray-900 mb-2 group-hover:text-orange-500 transition-colors">
                   {event.title}
                 </h3>
 
-                <div className="space-y-1 mb-3">
+                <div className="space-y-1 mb-3 flex-1">
                   <div className="flex items-center text-gray-600">
                     <Clock size={14} className="mr-2" />
                     <span className="text-xs">{event.time}</span>
