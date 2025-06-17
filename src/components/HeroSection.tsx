@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import RegistrationModal from './RegistrationModal';
+
 const HeroSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+
   const phrases = ["Todo esporte encontra seu espaço. Toda pessoa encontra seu esporte.", "Conectando pessoas, estabelecimentos e grupos em um único ecossistema esportivo.", "O movimento que transforma a maneira como vivemos o esporte."];
   const sportsBanners = [{
     name: 'Musculação',
@@ -48,14 +50,13 @@ const HeroSection = () => {
     image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1200&h=800&fit=crop'
   }];
 
-  // Typewriter effect
   useEffect(() => {
     const currentPhrase = phrases[currentPhraseIndex];
     if (isTyping && !isDeleting) {
       if (displayedText.length < currentPhrase.length) {
         const timeout = setTimeout(() => {
           setDisplayedText(currentPhrase.slice(0, displayedText.length + 1));
-        }, 35); // 50% faster typing
+        }, 35);
         return () => clearTimeout(timeout);
       } else {
         const timeout = setTimeout(() => {
@@ -68,7 +69,7 @@ const HeroSection = () => {
       if (displayedText.length > 0) {
         const timeout = setTimeout(() => {
           setDisplayedText(displayedText.slice(0, -1));
-        }, 20); // 50% faster deleting
+        }, 20);
         return () => clearTimeout(timeout);
       } else {
         setIsDeleting(false);
@@ -76,6 +77,7 @@ const HeroSection = () => {
       }
     }
   }, [displayedText, isTyping, isDeleting, currentPhraseIndex, phrases]);
+
   const getStyledText = (text: string) => {
     const words = text.split(' ');
     const keyWords = ['esporte', 'pessoas', 'estabelecimentos', 'grupos', 'ecossistema', 'movimento', 'transforma'];
@@ -84,7 +86,8 @@ const HeroSection = () => {
       const isKeyWord = keyWords.includes(cleanWord.toLowerCase()) && cleanWord.length > 5;
       const isFirstLetter = index === 0;
       if (isFirstLetter) {
-        return <span key={index}>
+        return (
+          <span key={index}>
             <span className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
               {word.charAt(0)}
             </span>
@@ -92,37 +95,42 @@ const HeroSection = () => {
               {word.slice(1)}
             </span>
             {index < words.length - 1 && ' '}
-          </span>;
+          </span>
+        );
       }
       if (isKeyWord) {
-        return <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
+        return (
+          <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
             {word}
             {index < words.length - 1 && ' '}
-          </span>;
+          </span>
+        );
       }
-      return <span key={index} className="text-white">
+      return (
+        <span key={index} className="text-white">
           {word}
           {index < words.length - 1 && ' '}
-        </span>;
+        </span>
+      );
     });
   };
+
   const handleCadastrarClick = () => {
     setIsModalOpen(true);
   };
-  return <>
+
+  return (
+    <>
       <section className="relative h-[70vh] md:h-[80vh] overflow-hidden bg-white">
         {/* Background Banners */}
-        <div className="absolute inset-0" style={{
-        top: '-120px'
-      }}>
+        <div className="absolute inset-0" style={{ top: '-120px' }}>
           <div className="flex animate-scroll-fast space-x-8 h-[calc(100%+120px)]">
-            {[...sportsBanners, ...sportsBanners].map((sport, index) => <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
-                <div className="absolute inset-0 bg-cover bg-center" style={{
-              backgroundImage: `url(${sport.image})`
-            }} />
-                {/* Dark overlay for better contrast */}
+            {[...sportsBanners, ...sportsBanners].map((sport, index) => (
+              <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
+                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${sport.image})` }} />
                 <div className="absolute inset-0 bg-black/60" />
-              </div>)}
+              </div>
+            ))}
           </div>
           
           {/* Gradient Overlays */}
@@ -131,10 +139,10 @@ const HeroSection = () => {
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
         </div>
         
-        <div className="relative w-3/4 mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
+        <div className="relative w-full md:w-11/12 lg:w-3/4 mx-auto px-4 md:px-8 lg:px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
           <div className="text-center">
             {/* Animated Heading */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight min-h-[200px] flex items-center justify-center">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight min-h-[200px] flex items-center justify-center">
               <span className="block">
                 {getStyledText(displayedText)}
                 <span className="animate-pulse bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">|</span>
@@ -142,7 +150,7 @@ const HeroSection = () => {
             </h1>
 
             {/* Subtitle */}
-            <div className="text-white mb-8 max-w-xl mx-auto leading-relaxed text-xl md:text-2xl font-medium text-center">
+            <div className="text-white mb-8 max-w-xl mx-auto leading-relaxed text-lg md:text-2xl font-medium text-center">
               <p className="mb-2">Faça parte do movimento que está transformando</p>
               <p>vidas através da união do Esporte.</p>
             </div>
@@ -156,6 +164,8 @@ const HeroSection = () => {
       </section>
 
       <RegistrationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} initialType="supporter" />
-    </>;
+    </>
+  );
 };
+
 export default HeroSection;

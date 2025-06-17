@@ -32,8 +32,8 @@ const RegistrationSection = () => {
 
   return (
     <>
-      <section id="registration-section" className="w-full px-4 flex flex-col items-center py-[100px] bg-gray-50">
-        <div className="w-3/4 mx-auto">
+      <section id="registration-section" className="w-full px-4 md:px-8 lg:px-4 flex flex-col items-center py-[100px] bg-gray-50">
+        <div className="w-full md:w-11/12 lg:w-3/4 mx-auto">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-gray-900">
             Escolha seu perfil
           </h1>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, MapPin, Phone, Clock } from 'lucide-react';
+
 const EstablishmentsSection = () => {
   const establishments = [{
     id: 1,
@@ -35,18 +36,21 @@ const EstablishmentsSection = () => {
     price: 'R$ 120/mês',
     amenities: ['Natação', 'Hidro', 'Aqua Fitness']
   }];
-  return <section className="py-16 bg-gray-50">
-      <div className="w-3/4 mx-auto px-4 sm:px-6 lg:px-8">
+  return (
+    <section className="py-16 bg-gray-50">
+      <div className="w-full md:w-11/12 lg:w-3/4 mx-auto px-4 md:px-8 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Estabelecimentos em <span className="text-orange-500">Destaque</span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto">Encontre academias, boxes e centros esportivos
-próximos à você com as melhores avaliações</p>
+          <p className="text-lg text-gray-600 max-w-xl mx-auto">
+            Encontre academias, boxes e centros esportivos próximos à você com as melhores avaliações
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {establishments.map(establishment => <div key={establishment.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer">
+          {establishments.map(establishment => (
+            <div key={establishment.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer">
               <div className="relative h-48 overflow-hidden">
                 <img src={establishment.image} alt={establishment.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                 <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
@@ -83,9 +87,11 @@ próximos à você com as melhores avaliações</p>
 
                 <div className="mb-3">
                   <div className="flex flex-wrap gap-1">
-                    {establishment.amenities.map((amenity, index) => <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
+                    {establishment.amenities.map((amenity, index) => (
+                      <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">
                         {amenity}
-                      </span>)}
+                      </span>
+                    ))}
                   </div>
                 </div>
 
@@ -98,7 +104,8 @@ próximos à você com as melhores avaliações</p>
                   </button>
                 </div>
               </div>
-            </div>)}
+            </div>
+          ))}
         </div>
 
         <div className="text-center mt-10">
@@ -107,6 +114,8 @@ próximos à você com as melhores avaliações</p>
           </button>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default EstablishmentsSection;
