@@ -44,7 +44,16 @@
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes slide-fast {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
     }
   }
 
@@ -59,7 +68,11 @@
   }
 
   .animate-slide {
-    animation: slide 15s linear infinite; /* Aumentada velocidade de 30s para 15s */
+    animation: slide 15s linear infinite;
+  }
+
+  .animate-slide-fast {
+    animation: slide-fast 7.5s linear infinite;
   }
 
   .animate-shake {

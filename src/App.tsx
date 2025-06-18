@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SportsModalities from "./pages/SportsModalities";
+import Esportes from "./pages/Esportes";
 import Praticante from "./pages/Praticante";
 import Estabelecimento from "./pages/Estabelecimento";
 import GrupoEsportivo from "./pages/GrupoEsportivo";
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/modalidades-esportivas" element={<SportsModalities />} />
+            <Route path="/esportes" element={<Esportes />} />
             <Route path="/praticante" element={<Praticante />} />
             <Route path="/estabelecimento" element={<Estabelecimento />} />
             <Route path="/grupo-esportivo" element={<GrupoEsportivo />} />

@@ -11,8 +11,8 @@ interface MapLocation {
   info: {
     city: string;
     sports: string[];
-    photo: string;
     description: string;
+    logo: string;
   };
 }
 
@@ -21,64 +21,52 @@ const locations: MapLocation[] = [{
   name: 'FitMax Academia',
   type: 'establishment',
   x: 30,
-  y: 35,
+  y: 25,
   info: {
     city: 'São Paulo - SP',
     sports: ['Musculação', 'Pilates', 'Crossfit'],
-    photo: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=200&fit=crop',
-    description: 'Academia completa com equipamentos modernos'
+    description: 'Academia completa com equipamentos modernos',
+    logo: '🏋️'
   }
 }, {
   id: '2',
   name: 'PowerGym Elite',
   type: 'establishment',
   x: 65,
-  y: 40,
+  y: 30,
   info: {
     city: 'Rio de Janeiro - RJ',
     sports: ['Cross Training', 'HIIT', 'Funcional'],
-    photo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=300&h=200&fit=crop',
-    description: 'Espaço dedicado ao treinamento funcional'
+    description: 'Espaço dedicado ao treinamento funcional',
+    logo: '💪'
   }
 }, {
   id: '3',
-  name: 'Strong Performance',
-  type: 'establishment',
-  x: 45,
-  y: 65,
-  info: {
-    city: 'Belo Horizonte - MG',
-    sports: ['Performance Atlética', 'Condicionamento'],
-    photo: 'https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=300&h=200&fit=crop',
-    description: 'Centro de treinamento especializado'
-  }
-}, {
-  id: '4',
   name: 'Runners SP',
   type: 'group',
-  x: 55,
-  y: 50,
+  x: 45,
+  y: 45,
   info: {
     city: 'São Paulo - SP',
     sports: ['Corrida de Rua', 'Maratona'],
-    photo: 'https://images.unsplash.com/photo-1544967882-f61367c5476b?w=300&h=200&fit=crop',
-    description: 'Grupo de corrida urbana'
+    description: 'Grupo de corrida urbana',
+    logo: '🏃'
   }
 }, {
-  id: '5',
+  id: '4',
   name: 'Bikers das Montanhas',
   type: 'group',
   x: 25,
-  y: 75,
+  y: 55,
   info: {
     city: 'Campos do Jordão - SP',
     sports: ['Mountain Bike', 'Ciclismo'],
-    photo: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=300&h=200&fit=crop',
-    description: 'Grupo de ciclismo de montanha'
+    description: 'Grupo de ciclismo de montanha',
+    logo: '🚴'
   }
 }];
 
-const locationColors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500'];
+const locationColors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500'];
 
 const InteractiveMapSection = () => {
   const [visibleCards, setVisibleCards] = useState<Set<string>>(new Set());
@@ -96,7 +84,7 @@ const InteractiveMapSection = () => {
       let progress = 0;
       if (rect.top < windowHeight && rect.bottom > 0) {
         const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
-        progress = Math.max(0, Math.min(1, visibleHeight / (rect.height * 0.8)));
+        progress = Math.max(0, Math.min(1, (visibleHeight / rect.height) * 1.5));
       }
       
       setScrollProgress(progress);
@@ -128,12 +116,16 @@ const InteractiveMapSection = () => {
           Descubra academias, centros de treinamento e grupos esportivos próximos à você.
         </p>
         
-        <div id="interactive-map" className="relative w-full h-[600px] rounded-xl overflow-hidden">
+        <div id="interactive-map" className="relative w-full h-[400px] md:h-[600px] rounded-xl overflow-hidden">
           {/* Imagem de fundo do mapa */}
-          <div className="absolute inset-0 bg-cover bg-center" style={{
-            backgroundImage: `url(/lovable-uploads/744f2913-0736-467a-b5de-f6757c8dc471.png)`,
-            backgroundPosition: 'center center'
-          }} />
+          <div 
+            className="absolute inset-0 bg-cover bg-center" 
+            style={{
+              backgroundImage: `url(/lovable-uploads/744f2913-0736-467a-b5de-f6757c8dc471.png)`,
+              backgroundPosition: 'center center',
+              backgroundSize: 'cover'
+            }} 
+          />
           
           <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white/30" />
@@ -150,8 +142,8 @@ const InteractiveMapSection = () => {
               }}
             >
               <div className="flex flex-col items-center">
-                <div className={`relative ${locationColors[index % locationColors.length]} w-8 h-8 rounded-full shadow-lg transform hover:scale-125 transition-transform duration-300 flex items-center justify-center`}>
-                  <MapPin size={16} className="text-white" />
+                <div className={`relative ${locationColors[index % locationColors.length]} w-6 h-6 md:w-8 md:h-8 rounded-full shadow-lg transform hover:scale-125 transition-transform duration-300 flex items-center justify-center`}>
+                  <MapPin size={12} className="text-white md:w-4 md:h-4" />
                 </div>
               </div>
             </div>
@@ -160,37 +152,34 @@ const InteractiveMapSection = () => {
           {/* Cards dos estabelecimentos sobrepostos */}
           {locations.map((location, index) => {
             const isVisible = visibleCards.has(location.id);
+            const cardOpacity = isVisible ? Math.min(scrollProgress * 2, 1) : 0;
+            
             return (
               <div 
                 key={`card-${location.id}`}
-                className={`absolute bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden transition-all duration-700 ease-out z-20 w-64 ${
-                  isVisible 
-                    ? 'opacity-100 scale-100 translate-y-0' 
-                    : 'opacity-0 scale-95 translate-y-8'
-                }`}
+                className={`absolute bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden transition-all duration-1000 ease-in-out z-20 w-44 md:w-52`}
                 style={{
-                  left: `${Math.min(Math.max(location.x - 15, 5), 70)}%`,
-                  top: `${Math.max(location.y - 25, 5)}%`,
-                  transitionDelay: isVisible ? `${index * 200}ms` : '0ms'
+                  left: `${Math.min(Math.max(location.x - 10, 5), 75)}%`,
+                  top: `${Math.max(location.y - 20, 5)}%`,
+                  opacity: cardOpacity,
+                  transform: `translateY(${isVisible ? 0 : 20}px) scale(${isVisible ? 1 : 0.9})`,
+                  transitionDelay: `${index * 150}ms`
                 }}
               >
-                <div className="relative">
-                  <img src={location.info.photo} alt={location.name} className="w-full h-20 object-cover" />
-                  
-                  {/* Logo do estabelecimento/grupo */}
-                  <div className="absolute top-2 left-2 w-6 h-6 bg-white rounded-lg shadow-md flex items-center justify-center">
-                    <Camera size={12} className="text-gray-600" />
-                  </div>
-                  
-                  <div className={`absolute top-2 right-2 p-1 rounded-full ${location.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} text-white`}>
-                    {location.type === 'establishment' ? <Dumbbell size={10} /> : <Users size={10} />}
-                  </div>
-                </div>
-                
                 <div className="p-3">
-                  <h3 className="font-bold text-gray-900 mb-1 text-xs">{location.name}</h3>
+                  {/* Logo do estabelecimento/grupo */}
+                  <div className="flex items-center mb-2">
+                    <div className="w-8 h-8 bg-gray-100 rounded-lg shadow-sm flex items-center justify-center mr-2 text-lg">
+                      {location.info.logo}
+                    </div>
+                    <div className={`p-1 rounded-full ${location.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} text-white`}>
+                      {location.type === 'establishment' ? <Dumbbell size={8} /> : <Users size={8} />}
+                    </div>
+                  </div>
+                  
+                  <h3 className="font-bold text-gray-900 mb-1 text-xs md:text-sm">{location.name}</h3>
                   <p className="text-xs text-gray-500 mb-2">{location.info.city}</p>
-                  <p className="text-xs text-gray-600 mb-2">{location.info.description}</p>
+                  <p className="text-xs text-gray-600 mb-2 line-clamp-2">{location.info.description}</p>
                   
                   <div className="space-y-1">
                     <h4 className="font-semibold text-gray-800 text-xs">Modalidades:</h4>

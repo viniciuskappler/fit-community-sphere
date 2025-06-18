@@ -242,7 +242,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl mx-4">
+      <DialogContent className="max-w-4xl w-[95%] sm:w-full max-h-[90vh] overflow-y-auto bg-white rounded-xl mx-auto border-0 shadow-2xl fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-8">
             Cadastro de {registrationType === 'supporter' ? 'Praticante' : 
@@ -258,19 +258,10 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
         </DialogHeader>
 
         {/* Mensagem de aviso para Estabelecimento */}
-        {showEstablishmentWarning && (
+        {(registrationType === 'establishment' || registrationType === 'group') && (
           <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
             <p className="text-sm text-orange-700">
-              Primeiro você precisa fazer o seu cadastro como Participante, depois você poderá cadastrar seu Estabelecimento :)
-            </p>
-          </div>
-        )}
-
-        {/* Mensagem de aviso para Grupo Esportivo */}
-        {showGroupWarning && (
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
-            <p className="text-sm text-orange-700">
-              Primeiro você precisa fazer o seu cadastro como Participante, depois você poderá cadastrar seu Grupo Esportivo :)
+              Primeiro você precisa fazer o seu cadastro como Participante, depois você poderá cadastrar seu {registrationType === 'establishment' ? 'Estabelecimento' : 'Grupo Esportivo'} :)
             </p>
           </div>
         )}
