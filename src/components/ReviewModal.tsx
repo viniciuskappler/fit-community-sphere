@@ -1,10 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
+import { sanitizeInput, escapeHtml } from '@/utils/validation';
 import RatingStars from './RatingStars';
 
 interface ReviewModalProps {
@@ -30,8 +32,11 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { requireAuth, user } = useAuthGuard();
 
-  const handleSubmit = async () => {
+  const handleSubmit = useCallback(async () => {
+    if (!requireAuth('avaliar')) return;
+
     if (rating === 0) {
       toast({
         title: 'Erro',
@@ -41,14 +46,37 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
       return;
     }
 
+    if (rating < 1 || rating > 5) {
+      toast({
+        title: 'Erro',
+        description: 'A avaliação deve ser entre 1 e 5 estrelas',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
+        throw new Error('Usuário não autenticado');
+      }
+
+      // Sanitize and validate input
+      const sanitizedComment = comment.trim() ? sanitizeInput(comment) : null;
+      
+      // Check for duplicate review
+      const { data: existingReview } = await supabase
+        .from('reviews')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq(establishmentId ? 'establishment_id' : 'group_id', establishmentId || groupId)
+        .maybeSingle();
+
+      if (existingReview) {
         toast({
-          title: 'Erro',
-          description: 'Você precisa estar logado para avaliar',
+          title: 'Avaliação já existe',
+          description: 'Você já avaliou este item anteriormente',
           variant: 'destructive',
         });
         return;
@@ -61,7 +89,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
           establishment_id: establishmentId || null,
           group_id: groupId || null,
           rating,
-          comment: comment.trim() || null,
+          comment: sanitizedComment,
         });
 
       if (error) throw error;
@@ -76,15 +104,28 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
       setComment('');
       onOpenChange(false);
       onReviewSubmitted();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erro ao enviar avaliação:', error);
+      
+      let errorMessage = 'Não foi possível enviar sua avaliação';
+      if (error.message?.includes('duplicate')) {
+        errorMessage = 'Você já avaliou este item anteriormente';
+      }
+      
       toast({
         title: 'Erro',
-        description: 'Não foi possível enviar sua avaliação',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
+    }
+  }, [rating, comment, requireAuth, user, establishmentId, groupId, toast, onOpenChange, onReviewSubmitted]);
+
+  const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (value.length <= 500) { // Limit comment length
+      setComment(value);
     }
   };
 
@@ -117,11 +158,15 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
             </label>
             <Textarea
               id="comment"
-              placeholder="Conte sobre sua experiência..."
+              placeholder="Conte sobre sua experiência... (máximo 500 caracteres)"
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={handleCommentChange}
               rows={4}
+              maxLength={500}
             />
+            <div className="text-xs text-gray-500 mt-1">
+              {comment.length}/500 caracteres
+            </div>
           </div>
 
           <div className="flex gap-2 justify-end">

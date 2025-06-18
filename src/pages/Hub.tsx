@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { MapPin, Filter, Search, Star, Heart } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -135,12 +134,12 @@ const Hub = () => {
             </p>
             {user && (
               <p className="text-sm text-orange-600 mt-2">
-                Bem-vindo, {user.user_metadata?.full_name || user.email}!
+                Bem-vindo, {user.user_metadata?.full_name || 'usuário'}!
               </p>
             )}
             {locationError && (
               <p className="text-sm text-red-500 mt-2">
-                {locationError}
+                Erro ao obter localização
               </p>
             )}
           </div>
