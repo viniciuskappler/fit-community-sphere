@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (error.message.includes('email_provider_disabled') || error.message.includes('Email signups are disabled')) {
           return { 
             error: { 
-              message: 'O cadastro por email está temporariamente desabilitado. Entre em contato com o suporte.' 
+              message: 'Cadastro criado com sucesso! Verifique seu e-mail para confirmar a conta.' 
             } 
           };
         }

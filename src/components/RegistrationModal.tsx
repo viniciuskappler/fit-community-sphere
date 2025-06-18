@@ -9,13 +9,15 @@ import { useUserData } from '@/hooks/useUserData';
 import { useNavigate } from 'react-router-dom';
 import PersonalDataStep from './registration/PersonalDataStep';
 import SportsPreferencesStep from './registration/SportsPreferencesStep';
+import PasswordStep from './registration/PasswordStep';
 import FinalStep from './registration/FinalStep';
 import { sportsList } from '../utils/sportsData';
 import { 
   FormData, 
   validateStep1, 
   validateStep2, 
-  validateStep3, 
+  validateStep3,
+  validateStep4, 
   getStepTitle,
   ValidationErrors 
 } from '../utils/formValidation';
@@ -51,6 +53,10 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     practicedSports: [],
     interestedSports: [],
     
+    // Senha
+    password: '',
+    confirmPassword: '',
+    
     // Dados do Estabelecimento/Grupo
     businessName: '',
     cnpj: '',
@@ -82,12 +88,21 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
         return prev; // Não adiciona se já tem 20
       }
       
-      return {
+      const newFormData = {
         ...prev,
         [field]: isSelected 
           ? currentSports.filter(s => s !== sport)
           : [...currentSports, sport]
       };
+
+      // Se selecionando um esporte favorito, incluir automaticamente nos praticados
+      if (field === 'favoriteStateSports' && !isSelected) {
+        if (!newFormData.practicedSports.includes(sport)) {
+          newFormData.practicedSports = [...newFormData.practicedSports, sport];
+        }
+      }
+      
+      return newFormData;
     });
   };
 
@@ -112,6 +127,8 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
       stepErrors = validateStep1(formData);
     } else if (currentStep === 2) {
       stepErrors = validateStep2(formData);
+    } else if (currentStep === 3) {
+      stepErrors = validateStep3(formData);
     }
     
     if (Object.keys(stepErrors).length > 0) {
@@ -120,7 +137,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     }
     
     setErrors({});
-    if (currentStep < 3) setCurrentStep(currentStep + 1);
+    if (currentStep < 4) setCurrentStep(currentStep + 1);
   };
 
   const prevStep = () => {
@@ -133,7 +150,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
   const handleSubmit = async () => {
     console.log('🚀 Starting registration submission...');
     
-    const stepErrors = validateStep3(formData, registrationType);
+    const stepErrors = validateStep4(formData, registrationType);
     
     if (Object.keys(stepErrors).length > 0) {
       setErrors(stepErrors);
@@ -144,13 +161,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     setErrors({});
     
     try {
-      // 1. Criar senha temporária
-      const tempPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      console.log('🔐 Generated temporary password');
-      
-      // 2. Criar conta do usuário
+      // 1. Criar conta do usuário com a senha fornecida
       console.log('👤 Creating user account...');
-      const { error: signUpError } = await signUp(formData.email, tempPassword, {
+      const { error: signUpError } = await signUp(formData.email, formData.password, {
         fullName: formData.fullName
       });
       
@@ -163,12 +176,12 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
 
       console.log('✅ User account created successfully');
 
-      // 3. Aguardar um pouco para garantir que o usuário foi criado
+      // 2. Aguardar um pouco para garantir que o usuário foi criado
       setTimeout(async () => {
         try {
           console.log('💾 Saving user profile...');
           
-          // 4. Salvar dados do perfil
+          // 3. Salvar dados do perfil
           const { error: profileError } = await saveUserProfile({
             full_name: formData.fullName,
             cpf: formData.cpf,
@@ -183,7 +196,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             console.log('✅ Profile saved successfully');
           }
 
-          // 5. Salvar esportes
+          // 4. Salvar esportes
           const allSports = [
             ...formData.favoriteStateSports.map(sport => ({ sport_name: sport, sport_type: 'favorite' as const })),
             ...formData.practicedSports.map(sport => ({ sport_name: sport, sport_type: 'practiced' as const })),
@@ -239,6 +252,14 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
         );
       case 3:
         return (
+          <PasswordStep 
+            formData={formData}
+            onInputChange={handleInputChange}
+            errors={errors}
+          />
+        );
+      case 4:
+        return (
           <FinalStep 
             registrationType={registrationType}
             formData={formData}
@@ -263,7 +284,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           <div className="w-full bg-gray-200 rounded-full h-2 mt-6">
             <div 
               className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-700 ease-out transform-gpu"
-              style={{ width: `${(currentStep / 3) * 100}%` }}
+              style={{ width: `${(currentStep / 4) * 100}%` }}
             />
           </div>
         </DialogHeader>
@@ -306,7 +327,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
               <span>Voltar</span>
             </Button>
 
-            {currentStep < 3 ? (
+            {currentStep < 4 ? (
               <Button
                 onClick={nextStep}
                 disabled={loading}
@@ -319,7 +340,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 flex items-center space-x-2"
+                className="bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 flex items-center space-x-2"
               >
                 <Check size={16} />
                 <span>{loading ? 'Finalizando...' : 'Finalizar Cadastro'}</span>

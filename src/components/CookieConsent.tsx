@@ -24,31 +24,28 @@ const CookieConsent = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-end justify-center p-4">
-      <div className="bg-gray-900 text-white rounded-lg p-6 max-w-2xl w-full shadow-2xl">
-        <p className="text-sm leading-relaxed mb-6">
-          Usamos cookies essenciais para fazer nosso site funcionar. 
-          Também definimos cookies adicionais que nos ajudam a melhorar 
-          sua experiência, mantê-lo seguro, realizar análises e veicular 
-          anúncios relevantes. Esses cookies adicionais serão definidos 
-          apenas se você clicar em 'Aceitar' abaixo. Para mais informações 
-          sobre os cookies que usamos, ou para alterar suas preferências, 
-          visite nossa Política de Cookies.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            onClick={handleAccept}
-            className="flex-1 bg-white text-gray-900 py-3 px-6 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-          >
-            Aceitar
-          </button>
-          <button
-            onClick={handleReject}
-            className="flex-1 bg-transparent border border-gray-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
-          >
-            Rejeitar
-          </button>
+    <div className="fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <p className="text-sm text-gray-600 flex-1">
+            Este site utiliza cookies para garantir que você obtenha a melhor experiência. 
+            Ao continuar navegando, você concorda com nossa Política de Cookies.
+          </p>
+          
+          <div className="flex gap-3">
+            <button
+              onClick={handleReject}
+              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Rejeitar
+            </button>
+            <button
+              onClick={handleAccept}
+              className="px-6 py-2 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white text-sm rounded-lg font-medium transition-all"
+            >
+              Aceitar
+            </button>
+          </div>
         </div>
       </div>
     </div>

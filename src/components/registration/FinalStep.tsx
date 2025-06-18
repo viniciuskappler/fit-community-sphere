@@ -15,6 +15,16 @@ interface FinalStepProps {
 }
 
 const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: FinalStepProps) => {
+  // Marcar checkboxes por padrão quando o componente é carregado
+  React.useEffect(() => {
+    if (formData.acceptTerms === undefined || formData.acceptTerms === null) {
+      onInputChange('acceptTerms', true);
+    }
+    if (formData.acceptNewsletter === undefined || formData.acceptNewsletter === null) {
+      onInputChange('acceptNewsletter', true);
+    }
+  }, []);
+
   return (
     <div className="space-y-4">
       {registrationType === 'supporter' ? (
@@ -233,7 +243,7 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
             className={formData.acceptTerms ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
           />
           <Label htmlFor="terms" className="text-sm">
-            Concordo com os <span className="text-orange-500 underline cursor-pointer">termos de uso e política de privacidade</span> *
+            Concordo com os <a href="/termos-privacidade" target="_blank" className="text-orange-500 underline cursor-pointer">termos de uso e política de privacidade</a> *
           </Label>
         </div>
         {errors.acceptTerms && (

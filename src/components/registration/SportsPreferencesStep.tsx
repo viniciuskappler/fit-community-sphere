@@ -24,11 +24,21 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
     sport.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleSportToggle = (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => {
+    // Se está desmarcando de favoritos, remover também dos outros campos
+    if (field === 'favoriteStateSports' && formData.favoriteStateSports.includes(sport)) {
+      onSportToggle('practicedSports', sport);
+      onSportToggle('interestedSports', sport);
+    }
+    
+    onSportToggle(field, sport);
+  };
+
   return (
     <div className="space-y-6">
       <div>
         <Label className="text-base font-semibold text-orange-600">
-          Esportes que mais gosta (selecione entre 5 e 20) *
+          Esportes que você mais gosta (selecione entre 5 e 20) *
         </Label>
         <p className="text-sm text-gray-600 mb-3">
           Selecionados: {formData.favoriteStateSports.length}/20
@@ -54,7 +64,7 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
               <Checkbox
                 id={`favorite-${sport}`}
                 checked={formData.favoriteStateSports.includes(sport)}
-                onCheckedChange={() => onSportToggle('favoriteStateSports', sport)}
+                onCheckedChange={() => handleSportToggle('favoriteStateSports', sport)}
                 disabled={formData.favoriteStateSports.length >= 20 && !formData.favoriteStateSports.includes(sport)}
                 className={formData.favoriteStateSports.includes(sport) ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
               />
@@ -72,12 +82,14 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
       </div>
 
       <div>
-        <Label className="text-base font-semibold">Esportes que já praticou (máximo 20)</Label>
+        <Label className="text-base font-semibold">Esportes que você já praticou (máximo 20)</Label>
         <p className="text-sm text-gray-600 mb-3">
           Selecionados: {formData.practicedSports.length}/20
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3 max-h-40 overflow-y-auto border rounded-lg p-3">
-          {filteredSports.map((sport) => (
+          {filteredSports
+            .filter(sport => !formData.favoriteStateSports.includes(sport))
+            .map((sport) => (
             <div key={sport} className="flex items-center space-x-2">
               <Checkbox
                 id={`practiced-${sport}`}
@@ -97,6 +109,11 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
             </div>
           ))}
         </div>
+        {formData.favoriteStateSports.length > 0 && (
+          <p className="text-xs text-gray-500 mt-2">
+            * Os esportes que você mais gosta já estão incluídos automaticamente
+          </p>
+        )}
       </div>
 
       <div>
@@ -105,7 +122,9 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
           Selecionados: {formData.interestedSports.length}/20
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3 max-h-40 overflow-y-auto border rounded-lg p-3">
-          {filteredSports.map((sport) => (
+          {filteredSports
+            .filter(sport => !formData.favoriteStateSports.includes(sport))
+            .map((sport) => (
             <div key={sport} className="flex items-center space-x-2">
               <Checkbox
                 id={`interested-${sport}`}
@@ -125,6 +144,11 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
             </div>
           ))}
         </div>
+        {formData.favoriteStateSports.length > 0 && (
+          <p className="text-xs text-gray-500 mt-2">
+            * Os esportes que você mais gosta já estão incluídos automaticamente
+          </p>
+        )}
       </div>
     </div>
   );

@@ -13,6 +13,10 @@ export interface FormData {
   practicedSports: string[];
   interestedSports: string[];
   
+  // Senha
+  password: string;
+  confirmPassword: string;
+  
   // Dados do Estabelecimento/Grupo
   businessName: string;
   cnpj: string;
@@ -36,6 +40,8 @@ export interface ValidationErrors {
   favoriteStateSports?: string;
   practicedSports?: string;
   interestedSports?: string;
+  password?: string;
+  confirmPassword?: string;
   businessName?: string;
   cnpj?: string;
   description?: string;
@@ -97,7 +103,25 @@ export const validateStep2 = (formData: FormData): ValidationErrors => {
   return errors;
 };
 
-export const validateStep3 = (formData: FormData, registrationType: string): ValidationErrors => {
+export const validateStep3 = (formData: FormData): ValidationErrors => {
+  const errors: ValidationErrors = {};
+  
+  if (!formData.password.trim()) {
+    errors.password = 'Senha é obrigatória';
+  } else if (formData.password.length < 6) {
+    errors.password = 'A senha deve ter pelo menos 6 caracteres';
+  }
+  
+  if (!formData.confirmPassword.trim()) {
+    errors.confirmPassword = 'Confirmação de senha é obrigatória';
+  } else if (formData.password !== formData.confirmPassword) {
+    errors.confirmPassword = 'As senhas não coincidem';
+  }
+  
+  return errors;
+};
+
+export const validateStep4 = (formData: FormData, registrationType: string): ValidationErrors => {
   const errors: ValidationErrors = {};
   
   if (!formData.acceptTerms) {
@@ -112,9 +136,11 @@ export const getStepTitle = (step: number, registrationType: string): string => 
     case 1:
       return 'Dados Pessoais';
     case 2:
-      return 'Preferências Esportivas';
+      return 'Escolha seus Esportes preferidos!';
     case 3:
-      return 'Finalização';
+      return 'Criar Senha';
+    case 4:
+      return 'Conclua seu cadastro';
     default:
       return '';
   }
