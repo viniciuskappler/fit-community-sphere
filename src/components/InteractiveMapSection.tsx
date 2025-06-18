@@ -1,6 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { MapPin, Dumbbell, Users, Camera } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface MapLocation {
   id: string;
@@ -112,9 +114,19 @@ const InteractiveMapSection = () => {
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-2 md:text-5xl">
           Mapa de Estabelecimentos e Grupos
         </h2>
-        <p className="text-gray-500 text-center mb-12 text-base max-w-xl mx-auto">
+        <p className="text-gray-500 text-center mb-8 text-base max-w-xl mx-auto">
           Descubra academias, centros de treinamento e grupos esportivos próximos à você.
         </p>
+        
+        {/* Botão para ver mapa completo */}
+        <div className="text-center mb-8">
+          <Link to="/mapa">
+            <Button size="lg" className="bg-orange-500 hover:bg-orange-600">
+              <MapPin className="w-5 h-5 mr-2" />
+              Ver Mapa Completo
+            </Button>
+          </Link>
+        </div>
         
         <div id="interactive-map" className="relative w-full h-[400px] md:h-[600px] rounded-xl overflow-hidden">
           {/* Imagem de fundo do mapa */}

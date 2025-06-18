@@ -27,6 +27,41 @@ export type Database = {
         }
         Relationships: []
       }
+      establishment_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          establishment_id: string
+          id: string
+          is_main: boolean | null
+          photo_url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          establishment_id: string
+          id?: string
+          is_main?: boolean | null
+          photo_url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          establishment_id?: string
+          id?: string
+          is_main?: boolean | null
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_photos_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_sports: {
         Row: {
           created_at: string
@@ -71,6 +106,8 @@ export type Database = {
           email: string
           establishment_name: string
           id: string
+          latitude: number | null
+          longitude: number | null
           phone: string
           state: string
           updated_at: string
@@ -87,6 +124,8 @@ export type Database = {
           email: string
           establishment_name: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           phone: string
           state: string
           updated_at?: string
@@ -103,12 +142,49 @@ export type Database = {
           email?: string
           establishment_name?: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           phone?: string
           state?: string
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      group_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          group_id: string
+          id: string
+          is_main: boolean | null
+          photo_url: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          group_id: string
+          id?: string
+          is_main?: boolean | null
+          photo_url: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          group_id?: string
+          id?: string
+          is_main?: boolean | null
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_photos_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "sports_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       group_sports: {
         Row: {
@@ -142,6 +218,54 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          establishment_id: string | null
+          group_id: string | null
+          id: string
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          establishment_id?: string | null
+          group_id?: string | null
+          id?: string
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          establishment_id?: string | null
+          group_id?: string | null
+          id?: string
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "sports_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sports_groups: {
         Row: {
           cities: string[]
@@ -151,6 +275,9 @@ export type Database = {
           email: string
           group_name: string
           id: string
+          latitude: number | null
+          longitude: number | null
+          meeting_point: string | null
           phone: string
           updated_at: string
           user_id: string
@@ -163,6 +290,9 @@ export type Database = {
           email: string
           group_name: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
+          meeting_point?: string | null
           phone: string
           updated_at?: string
           user_id: string
@@ -175,11 +305,53 @@ export type Database = {
           email?: string
           group_name?: string
           id?: string
+          latitude?: number | null
+          longitude?: number | null
+          meeting_point?: string | null
           phone?: string
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      user_favorites: {
+        Row: {
+          created_at: string
+          establishment_id: string | null
+          group_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          establishment_id?: string | null
+          group_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          establishment_id?: string | null
+          group_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_favorites_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_favorites_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "sports_groups"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_profiles: {
         Row: {

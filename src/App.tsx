@@ -13,6 +13,7 @@ import Praticante from "./pages/Praticante";
 import Esportes from "./pages/Esportes";
 import SportsModalities from "./pages/SportsModalities";
 import Busca from "./pages/Busca";
+import Mapa from "./pages/Mapa";
 import CadastroRealizado from "./pages/CadastroRealizado";
 import CadastroFinalizadoEstabelecimento from "./pages/CadastroFinalizadoEstabelecimento";
 import CadastroFinalizadoGrupo from "./pages/CadastroFinalizadoGrupo";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/esportes" element={<Esportes />} />
             <Route path="/modalidades" element={<SportsModalities />} />
             <Route path="/busca" element={<Busca />} />
+            <Route path="/mapa" element={<Mapa />} />
             <Route path="/cadastro-realizado" element={<CadastroRealizado />} />
             <Route path="/cadastro-finalizado-estabelecimento" element={<CadastroFinalizadoEstabelecimento />} />
             <Route path="/cadastro-finalizado-grupo" element={<CadastroFinalizadoGrupo />} />
