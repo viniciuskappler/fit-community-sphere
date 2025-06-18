@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Building, Users, Trophy, Star } from 'lucide-react';
 import ConfettiAnimation from '../components/ConfettiAnimation';
 import EstablishmentRegistrationModal from '../components/EstablishmentRegistrationModal';
@@ -9,6 +9,13 @@ const CadastroRealizado = () => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const [isEstablishmentModalOpen, setIsEstablishmentModalOpen] = useState(false);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+  const [registrationNumber, setRegistrationNumber] = useState<string>('');
+
+  useEffect(() => {
+    // Gerar número de cadastro único
+    const uniqueNumber = `#${Math.floor(100000 + Math.random() * 900000)}`;
+    setRegistrationNumber(uniqueNumber);
+  }, []);
 
   const handleEstablishmentClick = () => {
     setIsEstablishmentModalOpen(true);
@@ -53,16 +60,31 @@ const CadastroRealizado = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 relative">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-red-50 relative overflow-hidden">
+      {/* Video Background */}
+      <div className="absolute inset-0 z-0">
+        <div className="w-full h-full bg-gradient-to-br from-orange-100/30 to-red-100/30">
+          {/* Placeholder for video - you can replace this with actual video */}
+          <div className="w-full h-full bg-gradient-to-r from-orange-200/20 to-red-200/20 animate-pulse"></div>
+        </div>
+      </div>
+      
       <ConfettiAnimation />
       
-      <main className="px-6 py-16">
+      <main className="relative z-10 px-6 py-16">
         <div className="max-w-5xl mx-auto text-center">
           <div className="py-16">
+            {/* Número de cadastro */}
+            <div className="mb-4">
+              <span className="bg-gradient-to-r from-orange-600 to-orange-400 text-white px-4 py-2 rounded-full text-lg font-bold">
+                Cadastro {registrationNumber}
+              </span>
+            </div>
+
             {/* Ícone de celebração */}
             <div className="flex justify-center mb-8">
               <div className="relative">
-                <div className="w-32 h-32 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center animate-pulse">
+                <div className="w-32 h-32 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center animate-pulse shadow-2xl">
                   <Trophy size={64} className="text-white" />
                 </div>
                 <div className="absolute -top-2 -right-2">
@@ -74,26 +96,26 @@ const CadastroRealizado = () => {
             <h1 className="text-7xl font-bold text-gray-800 mb-6 animate-fade-in">
               Parabéns! 🎉
             </h1>
-            <h2 className="text-5xl font-semibold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent mb-8">
-              Você deu o primeiro passo!
+            <h2 className="text-5xl font-semibold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent mb-8">
+              Você é o Atleta {registrationNumber}!
             </h2>
             
             <p className="text-2xl text-gray-700 mb-6 max-w-4xl mx-auto leading-relaxed">
-              Bem-vindo ao <span className="font-bold text-orange-500">Núcleo do Esporte</span>! 
-              Agora você faz parte de uma comunidade que une pessoas através do esporte.
+              Bem-vindo ao <span className="font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">Núcleo do Esporte</span>! 
+              Agora você faz parte de uma comunidade que une pessoas através do esporte e está contribuindo para o crescimento deste movimento incrível!
             </p>
 
             {/* Frase motivacional */}
-            <div className="bg-gradient-to-r from-orange-100 to-red-100 rounded-2xl p-8 mb-12 max-w-3xl mx-auto">
+            <div className="bg-gradient-to-r from-orange-100 to-red-100 rounded-2xl p-8 mb-12 max-w-3xl mx-auto border-l-4 border-gradient-to-b border-orange-500">
               <blockquote className="text-xl italic text-gray-700 mb-4">
                 "O esporte tem o poder de transformar e inspirar. Tem o poder de unir as pessoas."
               </blockquote>
-              <cite className="text-lg font-semibold text-orange-600">- Nelson Mandela</cite>
+              <cite className="text-lg font-semibold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">- Nelson Mandela</cite>
             </div>
 
             {/* Próximos passos */}
             <div className="mb-12">
-              <h3 className="text-3xl font-bold text-gray-800 mb-4">
+              <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent mb-4">
                 Seus próximos passos:
               </h3>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -137,19 +159,20 @@ const CadastroRealizado = () => {
             </div>
 
             {/* Seção de boas-vindas */}
-            <div className="mt-20 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-8 max-w-4xl mx-auto border border-orange-200">
+            <div className="mt-20 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-8 max-w-4xl mx-auto border border-orange-200 shadow-lg">
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
                   <Trophy className="text-white" size={32} />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent mb-4">
                 Você agora é parte do movimento! 🚀
               </h3>
               <p className="text-gray-700 text-lg leading-relaxed">
-                Sua jornada no esporte começa agora. Explore, conecte-se com outros praticantes, 
-                descubra novos lugares para treinar e compartilhe suas experiências. 
-                <span className="font-semibold text-orange-600"> Juntos, somos mais fortes!</span>
+                Sua jornada no esporte começa agora. Como <span className="font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">Atleta {registrationNumber}</span>, 
+                você está ajudando a construir a maior comunidade esportiva do Brasil. 
+                Explore, conecte-se com outros praticantes, descubra novos lugares para treinar e compartilhe suas experiências. 
+                <span className="font-semibold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent"> Juntos, somos mais fortes!</span>
               </p>
             </div>
           </div>

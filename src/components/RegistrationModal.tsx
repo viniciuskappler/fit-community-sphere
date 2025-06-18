@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -66,8 +65,8 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     cep: '',
     
     // Termos
-    acceptTerms: false,
-    acceptNewsletter: false
+    acceptTerms: true,
+    acceptNewsletter: true
   });
 
   const handleInputChange = (field: string, value: any) => {
@@ -88,21 +87,12 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
         return prev; // Não adiciona se já tem 20
       }
       
-      const newFormData = {
+      return {
         ...prev,
         [field]: isSelected 
           ? currentSports.filter(s => s !== sport)
           : [...currentSports, sport]
       };
-
-      // Se selecionando um esporte favorito, incluir automaticamente nos praticados
-      if (field === 'favoriteStateSports' && !isSelected) {
-        if (!newFormData.practicedSports.includes(sport)) {
-          newFormData.practicedSports = [...newFormData.practicedSports, sport];
-        }
-      }
-      
-      return newFormData;
     });
   };
 
@@ -215,7 +205,15 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
 
           console.log('🎉 Registration completed successfully!');
           onClose();
-          navigate('/cadastro-realizado');
+          
+          // Redirecionar para a página correta baseada no tipo de cadastro
+          if (registrationType === 'supporter') {
+            navigate('/cadastro-realizado');
+          } else if (registrationType === 'establishment') {
+            navigate('/cadastro-finalizado-estabelecimento');
+          } else if (registrationType === 'group') {
+            navigate('/cadastro-finalizado-grupo');
+          }
         } catch (error) {
           console.error('💥 Error saving additional data:', error);
           setErrors({ general: 'Conta criada, mas houve erro ao salvar dados adicionais.' });

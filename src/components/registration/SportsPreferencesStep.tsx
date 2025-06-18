@@ -32,32 +32,19 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
       }
     }
     
-    // Se está desmarcando de favoritos, remover também dos outros campos
-    if (field === 'favoriteStateSports' && formData.favoriteStateSports.includes(sport)) {
-      if (formData.practicedSports.includes(sport)) {
-        onSportToggle('practicedSports', sport);
-      }
-      if (formData.interestedSports.includes(sport)) {
-        onSportToggle('interestedSports', sport);
-      }
-    }
-    
     onSportToggle(field, sport);
   };
 
-  // Esportes disponíveis para cada seção
-  const availablePracticedSports = filteredSports.filter(sport => 
-    !formData.favoriteStateSports.includes(sport)
-  );
-  
+  // Esportes disponíveis para cada seção (sem remover favoritos dos outros campos)
+  const availablePracticedSports = filteredSports;
   const availableInterestedSports = filteredSports.filter(sport => 
-    !formData.favoriteStateSports.includes(sport) && !formData.practicedSports.includes(sport)
+    !formData.practicedSports.includes(sport)
   );
 
   return (
     <div className="space-y-6">
       <div>
-        <Label className="text-base font-semibold text-orange-600">
+        <Label className="text-base font-semibold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
           Esportes que você mais gosta (selecione entre 5 e 20) *
         </Label>
         <p className="text-sm text-gray-600 mb-3">
@@ -91,7 +78,7 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
               <Label 
                 htmlFor={`favorite-${sport}`} 
                 className={`text-sm cursor-pointer ${
-                  formData.favoriteStateSports.includes(sport) ? 'text-orange-500 font-medium' : ''
+                  formData.favoriteStateSports.includes(sport) ? 'bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent font-medium' : ''
                 }`}
               >
                 {sport}
@@ -119,7 +106,7 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
               <Label 
                 htmlFor={`practiced-${sport}`} 
                 className={`text-sm cursor-pointer ${
-                  formData.practicedSports.includes(sport) ? 'text-orange-500 font-medium' : ''
+                  formData.practicedSports.includes(sport) ? 'bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent font-medium' : ''
                 }`}
               >
                 {sport}
@@ -127,11 +114,6 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
             </div>
           ))}
         </div>
-        {formData.favoriteStateSports.length > 0 && (
-          <p className="text-xs text-gray-500 mt-2">
-            * Os esportes que você mais gosta já estão incluídos automaticamente
-          </p>
-        )}
       </div>
 
       <div>
@@ -152,7 +134,7 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
               <Label 
                 htmlFor={`interested-${sport}`} 
                 className={`text-sm cursor-pointer ${
-                  formData.interestedSports.includes(sport) ? 'text-orange-500 font-medium' : ''
+                  formData.interestedSports.includes(sport) ? 'bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent font-medium' : ''
                 }`}
               >
                 {sport}
@@ -160,9 +142,9 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
             </div>
           ))}
         </div>
-        {(formData.favoriteStateSports.length > 0 || formData.practicedSports.length > 0) && (
+        {formData.practicedSports.length > 0 && (
           <p className="text-xs text-gray-500 mt-2">
-            * Esportes já selecionados em outras categorias são removidos automaticamente
+            * Esportes já praticados são removidos automaticamente desta lista
           </p>
         )}
       </div>

@@ -103,7 +103,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <>
                       <button 
                         onClick={handleCadastrarClick}
-                        className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
+                        className="bg-gradient-to-r from-orange-600 to-orange-400 text-white px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
                       >
                         <span>Cadastrar agora</span>
                       </button>
@@ -122,16 +122,21 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
         </div>
       </header>
 
-      <RegistrationModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        initialType="supporter"
-      />
-      
-      <LoginModal 
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
+      {/* Only show modals when user is not authenticated */}
+      {!user && (
+        <>
+          <RegistrationModal 
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            initialType="supporter"
+          />
+          
+          <LoginModal 
+            isOpen={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
+          />
+        </>
+      )}
     </>
   );
 };
