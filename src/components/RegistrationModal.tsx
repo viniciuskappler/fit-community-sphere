@@ -131,6 +131,8 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
   };
 
   const handleSubmit = async () => {
+    console.log('🚀 Starting registration submission...');
+    
     const stepErrors = validateStep3(formData, registrationType);
     
     if (Object.keys(stepErrors).length > 0) {
@@ -139,29 +141,33 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     }
     
     setLoading(true);
+    setErrors({});
     
     try {
       // 1. Criar senha temporária
-      const tempPassword = Math.random().toString(36).substring(2, 15);
+      const tempPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      console.log('🔐 Generated temporary password');
       
       // 2. Criar conta do usuário
+      console.log('👤 Creating user account...');
       const { error: signUpError } = await signUp(formData.email, tempPassword, {
         fullName: formData.fullName
       });
       
       if (signUpError) {
-        if (signUpError.message.includes('already')) {
-          setErrors({ general: 'Este e-mail já está cadastrado.' });
-        } else {
-          setErrors({ general: 'Erro ao criar conta. Tente novamente.' });
-        }
+        console.error('❌ Signup failed:', signUpError);
+        setErrors({ general: signUpError.message || 'Erro ao criar conta. Tente novamente.' });
         setLoading(false);
         return;
       }
 
+      console.log('✅ User account created successfully');
+
       // 3. Aguardar um pouco para garantir que o usuário foi criado
       setTimeout(async () => {
         try {
+          console.log('💾 Saving user profile...');
+          
           // 4. Salvar dados do perfil
           const { error: profileError } = await saveUserProfile({
             full_name: formData.fullName,
@@ -172,7 +178,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           });
 
           if (profileError) {
-            console.error('Erro ao salvar perfil:', profileError);
+            console.error('❌ Error saving profile:', profileError);
+          } else {
+            console.log('✅ Profile saved successfully');
           }
 
           // 5. Salvar esportes
@@ -183,25 +191,28 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           ];
 
           if (allSports.length > 0) {
+            console.log('🏃 Saving user sports...');
             const { error: sportsError } = await saveUserSports(allSports);
             if (sportsError) {
-              console.error('Erro ao salvar esportes:', sportsError);
+              console.error('❌ Error saving sports:', sportsError);
+            } else {
+              console.log('✅ Sports saved successfully');
             }
           }
 
-          console.log('Cadastro finalizado com sucesso!');
+          console.log('🎉 Registration completed successfully!');
           onClose();
           navigate('/cadastro-realizado');
         } catch (error) {
-          console.error('Erro ao salvar dados:', error);
-          setErrors({ general: 'Erro ao salvar dados. Tente novamente.' });
+          console.error('💥 Error saving additional data:', error);
+          setErrors({ general: 'Conta criada, mas houve erro ao salvar dados adicionais.' });
         } finally {
           setLoading(false);
         }
       }, 1000);
       
     } catch (error) {
-      console.error('Erro no cadastro:', error);
+      console.error('💥 Unexpected registration error:', error);
       setErrors({ general: 'Erro inesperado. Tente novamente.' });
       setLoading(false);
     }
@@ -257,21 +268,12 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           </div>
         </DialogHeader>
 
-        {/* Mensagem de aviso para Estabelecimento */}
-        {(registrationType === 'establishment' || registrationType === 'group') && (
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
-            <p className="text-sm text-orange-700">
-              Primeiro você precisa fazer o seu cadastro como Participante, depois você poderá cadastrar seu {registrationType === 'establishment' ? 'Estabelecimento' : 'Grupo Esportivo'} :)
-            </p>
-          </div>
-        )}
-
-        {/* Aviso para Estabelecimento e Grupo Esportivo */}
+        {/* Mensagem de aviso para Estabelecimento e Grupo Esportivo */}
         {(registrationType === 'establishment' || registrationType === 'group') && (
           <Alert className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-300 mt-4">
             <AlertTriangle className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800 font-medium">
-              Primeiro você criará seu cadastro de usuário no Núcleo do Esporte. Após finalizar, você poderá cadastrar seu {registrationType === 'establishment' ? 'estabelecimento' : 'grupo esportivo'}.
+            <AlertDescription className="text-orange-800 font-medium text-sm">
+              Primeiro você precisa fazer o seu cadastro como Participante, depois você poderá cadastrar seu {registrationType === 'establishment' ? 'Estabelecimento' : 'Grupo Esportivo'} :)
             </AlertDescription>
           </Alert>
         )}

@@ -13,9 +13,11 @@ import EstablishmentCard, { Establishment } from '../components/hub/Establishmen
 import GroupCard, { Group } from '../components/hub/GroupCard';
 
 const Hub = () => {
-  console.log('Hub component is loading...');
+  console.log('🚀 Hub component is starting to load...');
   
   const { user } = useAuth();
+  console.log('👤 User from auth context:', user);
+  
   const [selectedRegion, setSelectedRegion] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSport, setSelectedSport] = useState('');
@@ -23,6 +25,16 @@ const Hub = () => {
   const [establishments, setEstablishments] = useState<Establishment[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(false);
+
+  console.log('📊 Current state:', {
+    selectedRegion,
+    searchTerm,
+    selectedSport,
+    searchType,
+    establishmentsCount: establishments.length,
+    groupsCount: groups.length,
+    loading
+  });
 
   const regions = [
     'São Paulo - SP',
@@ -48,15 +60,17 @@ const Hub = () => {
 
   // Buscar dados reais do banco
   useEffect(() => {
-    console.log('Hub useEffect triggered');
+    console.log('⚡ Hub useEffect triggered - about to fetch data');
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    console.log('Fetching data...');
+    console.log('🔄 Starting fetchData function...');
     setLoading(true);
     
     try {
+      console.log('🏢 Fetching establishments from Supabase...');
+      
       // Buscar estabelecimentos
       const { data: establishmentsData, error: establishmentsError } = await supabase
         .from('establishments')
@@ -70,9 +84,9 @@ const Hub = () => {
         `);
 
       if (establishmentsError) {
-        console.error('Error fetching establishments:', establishmentsError);
+        console.error('❌ Error fetching establishments:', establishmentsError);
       } else {
-        console.log('Establishments data:', establishmentsData);
+        console.log('✅ Establishments data fetched successfully:', establishmentsData);
       }
 
       if (establishmentsData) {
@@ -85,8 +99,11 @@ const Hub = () => {
           address: est.address,
           image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop'
         }));
+        console.log('🏢 Formatted establishments:', formattedEstablishments);
         setEstablishments(formattedEstablishments);
       }
+
+      console.log('👥 Fetching groups from Supabase...');
 
       // Buscar grupos esportivos
       const { data: groupsData, error: groupsError } = await supabase
@@ -100,9 +117,9 @@ const Hub = () => {
         `);
 
       if (groupsError) {
-        console.error('Error fetching groups:', groupsError);
+        console.error('❌ Error fetching groups:', groupsError);
       } else {
-        console.log('Groups data:', groupsData);
+        console.log('✅ Groups data fetched successfully:', groupsData);
       }
 
       if (groupsData) {
@@ -116,32 +133,42 @@ const Hub = () => {
           meeting_point: group.description || 'Local a definir',
           image: 'https://images.unsplash.com/photo-1512428208316-80f034d026a7?q=80&w=1974&auto=format&fit=crop'
         }));
+        console.log('👥 Formatted groups:', formattedGroups);
         setGroups(formattedGroups);
       }
 
     } catch (error) {
-      console.error('Erro ao buscar dados:', error);
+      console.error('💥 Unexpected error in fetchData:', error);
     } finally {
       setLoading(false);
-      console.log('Data fetching completed');
+      console.log('🏁 Data fetching completed');
     }
   };
 
   const allData = [...establishments, ...groups];
+  console.log('📋 Combined data:', allData);
 
   const filteredResults = useMemo(() => {
-    if (!selectedRegion) return [];
+    console.log('🔍 Filtering results with:', { selectedRegion, selectedSport, searchTerm, searchType });
+    
+    if (!selectedRegion) {
+      console.log('🚫 No region selected, returning empty array');
+      return [];
+    }
 
-    return allData.filter(item => {
+    const filtered = allData.filter(item => {
       const regionMatch = item.region.includes(selectedRegion.split(' - ')[0]) || item.region === selectedRegion;
       const sportMatch = !selectedSport || item.sports.includes(selectedSport);
       const searchTermMatch = !searchTerm || item.name.toLowerCase().includes(searchTerm.toLowerCase());
       const typeMatch = searchType === 'all' || item.type === searchType;
       return regionMatch && sportMatch && searchTermMatch && typeMatch;
     });
+    
+    console.log('✅ Filtered results:', filtered);
+    return filtered;
   }, [selectedRegion, selectedSport, searchTerm, searchType, allData]);
 
-  console.log('Hub component rendering...');
+  console.log('🎨 Hub component is rendering...');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -162,6 +189,15 @@ const Hub = () => {
                 Bem-vindo, {user.user_metadata?.full_name || user.email}!
               </p>
             )}
+            
+            {/* Debug info - remover depois */}
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg text-left text-sm">
+              <p><strong>Debug Info:</strong></p>
+              <p>User: {user ? '✅ Logado' : '❌ Não logado'}</p>
+              <p>Establishments: {establishments.length}</p>
+              <p>Groups: {groups.length}</p>
+              <p>Loading: {loading ? 'Sim' : 'Não'}</p>
+            </div>
           </div>
 
           {/* Filtros de busca */}

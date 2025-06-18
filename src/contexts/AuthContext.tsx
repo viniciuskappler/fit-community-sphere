@@ -28,9 +28,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('🔐 Setting up auth state listener...');
+    
     // Configurar listener de mudanças de autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('🔄 Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -39,41 +42,101 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Verificar sessão existente
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('📱 Existing session check:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('🧹 Cleaning up auth subscription...');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, userData: any) => {
-    const redirectUrl = `${window.location.origin}/`;
+    console.log('✍️ Attempting to sign up user:', email);
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          full_name: userData.fullName
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      console.log('🔗 Using redirect URL:', redirectUrl);
+      
+      const { error, data } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: userData.fullName
+          }
         }
-      }
-    });
+      });
 
-    return { error };
+      if (error) {
+        console.error('❌ Signup error:', error);
+        
+        // Tratamento específico para diferentes tipos de erro
+        if (error.message.includes('email_provider_disabled') || error.message.includes('Email signups are disabled')) {
+          return { 
+            error: { 
+              message: 'O cadastro por email está temporariamente desabilitado. Entre em contato com o suporte.' 
+            } 
+          };
+        }
+        
+        if (error.message.includes('already')) {
+          return { 
+            error: { 
+              message: 'Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.' 
+            } 
+          };
+        }
+        
+        return { error };
+      }
+
+      console.log('✅ Signup successful:', data);
+      return { error: null };
+      
+    } catch (err) {
+      console.error('💥 Unexpected signup error:', err);
+      return { 
+        error: { 
+          message: 'Erro inesperado durante o cadastro. Tente novamente.' 
+        } 
+      };
+    }
   };
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    console.log('🔑 Attempting to sign in user:', email);
+    
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    return { error };
+      if (error) {
+        console.error('❌ Login error:', error);
+      } else {
+        console.log('✅ Login successful');
+      }
+
+      return { error };
+      
+    } catch (err) {
+      console.error('💥 Unexpected login error:', err);
+      return { 
+        error: { 
+          message: 'Erro inesperado durante o login. Tente novamente.' 
+        } 
+      };
+    }
   };
 
   const signOut = async () => {
+    console.log('👋 Signing out user...');
     await supabase.auth.signOut();
   };
 
@@ -85,6 +148,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     signIn,
     signOut
   };
+
+  console.log('🔐 Auth context value:', {
+    hasUser: !!user,
+    userEmail: user?.email,
+    loading
+  });
 
   return (
     <AuthContext.Provider value={value}>

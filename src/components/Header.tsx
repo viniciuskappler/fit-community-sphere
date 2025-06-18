@@ -28,12 +28,20 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   };
 
   const handleLogout = async () => {
+    console.log('🚪 User logging out...');
     await signOut();
     navigate('/');
   };
 
   const handleLogoClick = () => {
+    console.log('🏠 Logo clicked, navigating to home...');
     navigate('/');
+  };
+
+  const handleHubNavigation = (e: React.MouseEvent) => {
+    e.preventDefault();
+    console.log('🎯 Hub navigation clicked...');
+    navigate('/hub');
   };
 
   return (
@@ -59,18 +67,18 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <Home size={14} />
                     <span className="text-xs">Início</span>
                   </Link>
-                  <Link to="/hub" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  <button onClick={handleHubNavigation} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <User size={14} />
                     <span className="text-xs">Praticante</span>
-                  </Link>
-                  <Link to="/hub" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  </button>
+                  <button onClick={handleHubNavigation} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Building size={14} />
                     <span className="text-xs">Buscar Locais</span>
-                  </Link>
-                  <Link to="/hub" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  </button>
+                  <button onClick={handleHubNavigation} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Users size={14} />
                     <span className="text-xs">Buscar Grupos</span>
-                  </Link>
+                  </button>
                 </nav>
 
                 {/* CTA Buttons */}
@@ -91,7 +99,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                       </button>
                     </div>
                   ) : (
-                    // Usuário não logado - mostrar botões de cadastro e login (sem setas)
+                    // Usuário não logado - mostrar botões de cadastro e login
                     <>
                       <button 
                         onClick={handleCadastrarClick}
