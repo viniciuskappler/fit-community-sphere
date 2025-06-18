@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -6,7 +5,7 @@ import Footer from '../components/Footer';
 const TermosPrivacidade = () => {
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      <Header isSecondaryVisible={false} />
       
       <div className="max-w-4xl mx-auto px-4 py-16">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Termos de Uso e Política de Privacidade</h1>
