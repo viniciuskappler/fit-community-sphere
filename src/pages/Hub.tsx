@@ -25,7 +25,7 @@ const Hub = () => {
   
   const [selectedRegion, setSelectedRegion] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSport, setSelectedSport] = useState('');
+  const [selectedSport, setSelectedSport] = useState('all');
   const [searchType, setSearchType] = useState('all');
 
   const {
@@ -106,7 +106,7 @@ const Hub = () => {
       const regionMatch = 'city' in item 
         ? item.city.includes(selectedRegion.split(' - ')[0]) || `${item.city} - ${item.state}` === selectedRegion
         : item.cities.some(city => city.includes(selectedRegion.split(' - ')[0]));
-      const sportMatch = !selectedSport || item.sports.includes(selectedSport);
+      const sportMatch = selectedSport === 'all' || item.sports.includes(selectedSport);
       const searchTermMatch = !searchTerm || 
         ('establishment_name' in item ? item.establishment_name.toLowerCase().includes(searchTerm.toLowerCase()) :
          'group_name' in item ? item.group_name.toLowerCase().includes(searchTerm.toLowerCase()) : false);
@@ -201,7 +201,7 @@ const Hub = () => {
                             <SelectValue placeholder="Todas as modalidades" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">Todas as modalidades</SelectItem>
+                            <SelectItem value="all">Todas as modalidades</SelectItem>
                             {sports.map((sport) => (
                               <SelectItem key={sport} value={sport}>
                                 {sport}
