@@ -31,6 +31,8 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
   const [registrationType, setRegistrationType] = useState(initialType);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [loading, setLoading] = useState(false);
+  const [showEstablishmentWarning, setShowEstablishmentWarning] = useState(false);
+  const [showGroupWarning, setShowGroupWarning] = useState(false);
   const { signUp } = useAuth();
   const { saveUserProfile, saveUserSports } = useUserData();
   const navigate = useNavigate();
@@ -87,6 +89,20 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           : [...currentSports, sport]
       };
     });
+  };
+
+  const handleRegistrationTypeChange = (type: 'supporter' | 'establishment' | 'group') => {
+    if (type === 'establishment') {
+      setShowEstablishmentWarning(true);
+      setShowGroupWarning(false);
+    } else if (type === 'group') {
+      setShowGroupWarning(true);
+      setShowEstablishmentWarning(false);
+    } else {
+      setShowEstablishmentWarning(false);
+      setShowGroupWarning(false);
+    }
+    setRegistrationType(type);
   };
 
   const nextStep = () => {
@@ -226,7 +242,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-xl mx-4">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center mb-8">
             Cadastro de {registrationType === 'supporter' ? 'Praticante' : 
@@ -240,6 +256,24 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
             />
           </div>
         </DialogHeader>
+
+        {/* Mensagem de aviso para Estabelecimento */}
+        {showEstablishmentWarning && (
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
+            <p className="text-sm text-orange-700">
+              Primeiro você precisa fazer o seu cadastro como Participante, depois você poderá cadastrar seu Estabelecimento :)
+            </p>
+          </div>
+        )}
+
+        {/* Mensagem de aviso para Grupo Esportivo */}
+        {showGroupWarning && (
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
+            <p className="text-sm text-orange-700">
+              Primeiro você precisa fazer o seu cadastro como Participante, depois você poderá cadastrar seu Grupo Esportivo :)
+            </p>
+          </div>
+        )}
 
         {/* Aviso para Estabelecimento e Grupo Esportivo */}
         {(registrationType === 'establishment' || registrationType === 'group') && (

@@ -63,7 +63,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md bg-white">
+      <DialogContent className="max-w-md bg-white rounded-xl mx-4">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center text-gray-800">
             Fazer Login
