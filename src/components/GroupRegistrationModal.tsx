@@ -3,324 +3,187 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
-import { sportsList } from '../utils/sportsData';
+import { ArrowLeft, Check, AlertTriangle } from 'lucide-react';
+import { Alert, AlertDescription } from './ui/alert';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface GroupRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-interface GroupFormData {
-  groupName: string;
-  corporateName: string;
-  cities: string[];
-  phone: string;
-  email: string;
-  mainSports: string[];
-  otherSports: string[];
-}
-
 const GroupRegistrationModal = ({ isOpen, onClose }: GroupRegistrationModalProps) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<GroupFormData>({
+  const [formData, setFormData] = useState({
     groupName: '',
     corporateName: '',
-    cities: [],
+    description: '',
+    cities: '',
+    meetingPoint: '',
     phone: '',
-    email: '',
-    mainSports: [],
-    otherSports: []
+    email: ''
   });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [cityInput, setCityInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+    if (error) setError('');
+  };
+
+  const handleSubmit = async () => {
+    if (!user) {
+      setError('Você precisa estar logado para cadastrar um grupo esportivo');
+      return;
     }
-  };
 
-  const handleCityAdd = () => {
-    if (cityInput.trim() && formData.cities.length < 5 && !formData.cities.includes(cityInput.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        cities: [...prev.cities, cityInput.trim()]
-      }));
-      setCityInput('');
+    // Validação básica
+    if (!formData.groupName || !formData.corporateName || !formData.email || !formData.phone) {
+      setError('Por favor, preencha todos os campos obrigatórios');
+      return;
     }
-  };
 
-  const handleCityRemove = (city: string) => {
-    setFormData(prev => ({
-      ...prev,
-      cities: prev.cities.filter(c => c !== city)
-    }));
-  };
-
-  const handleSportToggle = (field: 'mainSports' | 'otherSports', sport: string) => {
-    setFormData(prev => {
-      const currentSports = prev[field];
-      const isSelected = currentSports.includes(sport);
-      const maxLimit = field === 'mainSports' ? 5 : 20;
+    setLoading(true);
+    
+    try {
+      // Aqui você implementaria a lógica de salvamento no Supabase
+      console.log('Salvando grupo esportivo:', formData);
       
-      if (!isSelected && currentSports.length >= maxLimit) {
-        return prev;
-      }
+      // Simular delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      return {
-        ...prev,
-        [field]: isSelected 
-          ? currentSports.filter(s => s !== sport)
-          : [...currentSports, sport]
-      };
-    });
-  };
-
-  const validateStep1 = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.groupName.trim()) newErrors.groupName = 'Campo obrigatório';
-    if (!formData.corporateName.trim()) newErrors.corporateName = 'Campo obrigatório';
-    if (formData.cities.length === 0) newErrors.cities = 'Adicione pelo menos 1 cidade';
-    if (!formData.phone.trim()) newErrors.phone = 'Campo obrigatório';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Campo obrigatório';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'E-mail inválido';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const validateStep2 = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (formData.mainSports.length === 0) {
-      newErrors.mainSports = 'Selecione pelo menos 1 esporte principal';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const nextStep = () => {
-    if (currentStep === 1 && validateStep1()) {
-      setCurrentStep(2);
-    } else if (currentStep === 2 && validateStep2()) {
-      // Finalizar cadastro
-      console.log('Cadastro de grupo esportivo finalizado:', formData);
-      window.location.href = '/cadastro-finalizado-grupo';
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-      setErrors({});
+      onClose();
+      navigate('/cadastro-finalizado-grupo');
+    } catch (err) {
+      setError('Erro ao cadastrar grupo esportivo. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
+      <DialogContent className="max-w-4xl w-[95%] sm:w-full max-h-[90vh] overflow-y-auto bg-white rounded-xl mx-auto border-0 shadow-2xl">
+        <DialogHeader className="bg-white">
+          <DialogTitle className="text-lg md:text-2xl font-bold text-center mb-4 bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
             Cadastro de Grupo Esportivo
           </DialogTitle>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-8">
-            <div 
-              className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-700 ease-out"
-              style={{ width: `${(currentStep / 2) * 100}%` }}
-            />
-          </div>
         </DialogHeader>
 
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold mb-6 text-orange-500">
-            {currentStep === 1 ? 'Dados do Grupo Esportivo' : 'Modalidades Esportivas'}
-          </h3>
+        {error && (
+          <Alert className="bg-red-50 border border-red-200">
+            <AlertTriangle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800 font-medium text-sm">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
 
-          {currentStep === 1 && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="groupName">Nome do Grupo Esportivo *</Label>
-                  <Input
-                    id="groupName"
-                    value={formData.groupName}
-                    onChange={(e) => handleInputChange('groupName', e.target.value)}
-                    className={errors.groupName ? 'border-red-500' : ''}
-                  />
-                  {errors.groupName && <p className="text-red-500 text-sm mt-1">{errors.groupName}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="corporateName">Razão Social *</Label>
-                  <Input
-                    id="corporateName"
-                    value={formData.corporateName}
-                    onChange={(e) => handleInputChange('corporateName', e.target.value)}
-                    className={errors.corporateName ? 'border-red-500' : ''}
-                  />
-                  {errors.corporateName && <p className="text-red-500 text-sm mt-1">{errors.corporateName}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="phone">Telefone *</Label>
-                  <Input
-                    id="phone"
-                    value={formData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                    placeholder="(00) 00000-0000"
-                    className={errors.phone ? 'border-red-500' : ''}
-                  />
-                  {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
-                </div>
-
-                <div>
-                  <Label htmlFor="email">E-mail *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    className={errors.email ? 'border-red-500' : ''}
-                  />
-                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="cities">Cidades de atuação * (máximo 5)</Label>
-                <div className="flex gap-2 mt-2">
-                  <Input
-                    id="cities"
-                    value={cityInput}
-                    onChange={(e) => setCityInput(e.target.value)}
-                    placeholder="Digite uma cidade e pressione Enter"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleCityAdd();
-                      }
-                    }}
-                    className={errors.cities ? 'border-red-500' : ''}
-                  />
-                  <Button 
-                    type="button" 
-                    onClick={handleCityAdd}
-                    disabled={formData.cities.length >= 5 || !cityInput.trim()}
-                  >
-                    Adicionar
-                  </Button>
-                </div>
-                {errors.cities && <p className="text-red-500 text-sm mt-1">{errors.cities}</p>}
-                
-                {formData.cities.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {formData.cities.map((city, index) => (
-                      <span
-                        key={index}
-                        className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
-                      >
-                        {city}
-                        <button
-                          type="button"
-                          onClick={() => handleCityRemove(city)}
-                          className="text-orange-600 hover:text-orange-800"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <p className="text-sm text-gray-500 mt-2">
-                  Cidades selecionadas: {formData.cities.length}/5
-                </p>
-              </div>
+        <div className="space-y-4 bg-white p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="groupName" className="text-sm font-medium">Nome do Grupo *</Label>
+              <Input
+                id="groupName"
+                value={formData.groupName}
+                onChange={(e) => handleInputChange('groupName', e.target.value)}
+                className="mt-1"
+                placeholder="Ex: Grupo de Corrida Matinal"
+              />
             </div>
-          )}
-
-          {currentStep === 2 && (
-            <div className="space-y-6">
-              <div>
-                <h4 className="text-lg font-semibold mb-4">Principais esportes que o seu grupo pratica *</h4>
-                <p className="text-sm text-gray-600 mb-4">Selecione até 5 modalidades principais</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-6">
-                  {sportsList.map((sport) => (
-                    <button
-                      key={sport}
-                      type="button"
-                      onClick={() => handleSportToggle('mainSports', sport)}
-                      className={`p-3 text-sm rounded-lg border transition-all ${
-                        formData.mainSports.includes(sport)
-                          ? 'bg-orange-500 text-white border-orange-500'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-orange-300'
-                      }`}
-                    >
-                      {sport}
-                    </button>
-                  ))}
-                </div>
-                {errors.mainSports && <p className="text-red-500 text-sm">{errors.mainSports}</p>}
-                <p className="text-sm text-gray-500 mt-2">
-                  Selecionados: {formData.mainSports.length}/5
-                </p>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold mb-4">Demais esportes que o seu grupo pratica</h4>
-                <p className="text-sm text-gray-600 mb-4">Selecione até 20 modalidades adicionais</p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {sportsList.map((sport) => (
-                    <button
-                      key={sport}
-                      type="button"
-                      onClick={() => handleSportToggle('otherSports', sport)}
-                      className={`p-3 text-sm rounded-lg border transition-all ${
-                        formData.otherSports.includes(sport)
-                          ? 'bg-orange-500 text-white border-orange-500'
-                          : 'bg-white text-gray-700 border-gray-300 hover:border-orange-300'
-                      }`}
-                    >
-                      {sport}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  Selecionados: {formData.otherSports.length}/20
-                </p>
-              </div>
+            <div>
+              <Label htmlFor="corporateName" className="text-sm font-medium">Nome da Organização *</Label>
+              <Input
+                id="corporateName"
+                value={formData.corporateName}
+                onChange={(e) => handleInputChange('corporateName', e.target.value)}
+                className="mt-1"
+                placeholder="Ex: Associação Esportiva"
+              />
             </div>
-          )}
-
-          <div className="flex justify-between mt-8">
-            <Button
-              variant="outline"
-              onClick={prevStep}
-              disabled={currentStep === 1}
-              className="flex items-center space-x-2"
-            >
-              <ArrowLeft size={16} />
-              <span>Voltar</span>
-            </Button>
-
-            <Button
-              onClick={nextStep}
-              className={currentStep === 2 
-                ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 flex items-center space-x-2"
-                : "bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 flex items-center space-x-2"
-              }
-            >
-              {currentStep === 2 ? <Check size={16} /> : <ArrowRight size={16} />}
-              <span>{currentStep === 2 ? 'Finalizar Cadastro' : 'Próximo'}</span>
-            </Button>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="phone" className="text-sm font-medium">Telefone *</Label>
+              <Input
+                id="phone"
+                value={formData.phone}
+                onChange={(e) => handleInputChange('phone', e.target.value)}
+                className="mt-1"
+                placeholder="(11) 99999-9999"
+              />
+            </div>
+            <div>
+              <Label htmlFor="email" className="text-sm font-medium">E-mail *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className="mt-1"
+                placeholder="contato@grupo.com"
+              />
+            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="description" className="text-sm font-medium">Descrição do Grupo</Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              className="mt-1 h-20"
+              placeholder="Descreva o grupo, atividades e objetivos..."
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="cities" className="text-sm font-medium">Cidades de Atuação</Label>
+            <Input
+              id="cities"
+              value={formData.cities}
+              onChange={(e) => handleInputChange('cities', e.target.value)}
+              className="mt-1"
+              placeholder="Ex: São Paulo, Guarulhos, Osasco"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="meetingPoint" className="text-sm font-medium">Ponto de Encontro</Label>
+            <Input
+              id="meetingPoint"
+              value={formData.meetingPoint}
+              onChange={(e) => handleInputChange('meetingPoint', e.target.value)}
+              className="mt-1"
+              placeholder="Local onde o grupo se reúne"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-between gap-4 mt-6 bg-white px-4 pb-4">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            disabled={loading}
+            className="flex items-center space-x-2"
+          >
+            <ArrowLeft size={16} />
+            <span className="text-xs md:text-sm">Cancelar</span>
+          </Button>
+
+          <Button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 flex items-center space-x-2"
+          >
+            <Check size={16} />
+            <span className="text-xs md:text-sm">{loading ? 'Cadastrando...' : 'Finalizar Cadastro'}</span>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

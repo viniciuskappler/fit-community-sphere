@@ -1,6 +1,10 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
-  return <footer className="text-white py-16 bg-zinc-50">
+  return (
+    <footer className="text-white py-16 bg-zinc-50">
       <div className="w-4/5 max-w-none mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
@@ -18,47 +22,81 @@ const Footer = () => {
               Encontre seu esporte ideal e faça parte de uma comunidade ativa.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
                 Instagram
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
                 LinkedIn
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
                 YouTube
               </a>
             </div>
           </div>
 
-          {/* Links */}
+          {/* Plataforma */}
           <div>
             <h3 className="text-lg font-semibold mb-4 text-zinc-800">Plataforma</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Buscar</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Eventos</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Grupos</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Academias</a></li>
+              <li>
+                <Link to="/hub" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Hub Principal
+                </Link>
+              </li>
+              <li>
+                <Link to="/busca" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Buscar
+                </Link>
+              </li>
+              <li>
+                <Link to="/esportes" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Esportes
+                </Link>
+              </li>
+              <li>
+                <Link to="/modalidades" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Modalidades
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Usuários */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-zinc-800">Contato</h3>
+            <h3 className="text-lg font-semibold mb-4 text-zinc-800">Usuários</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Suporte</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Parceiros</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Sobre</a></li>
+              <li>
+                <Link to="/praticante" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Praticantes
+                </Link>
+              </li>
+              <li>
+                <Link to="/estabelecimento" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Estabelecimentos
+                </Link>
+              </li>
+              <li>
+                <Link to="/grupo-esportivo" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Grupos Esportivos
+                </Link>
+              </li>
+              <li>
+                <Link to="/termos-privacidade" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Termos e Privacidade
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-[fc4c02] text-[#fc4c02]">
+          <p className="text-orange-600">
             © 2024 Núcleo do Esporte. Todos os direitos reservados.
           </p>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;

@@ -102,7 +102,7 @@ const Hub = () => {
       <SecondaryHeader isVisible={true} />
       <Header isSecondaryVisible={true} />
       
-      <main className="pt-[120px] px-6 pb-12">
+      <main className="pt-[120px] px-4 md:px-6 pb-12">
         <div className="max-w-7xl mx-auto">
           <HubHeader user={user} locationError={locationError} />
 
@@ -112,64 +112,79 @@ const Hub = () => {
             isLocating={locationLoading}
           />
 
-          <Tabs defaultValue="map-view" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="map-view">Vista do Mapa</TabsTrigger>
-              <TabsTrigger value="establishments">
-                Estabelecimentos ({filteredEstablishments.length})
-              </TabsTrigger>
-              <TabsTrigger value="groups">
-                Grupos Esportivos ({filteredGroups.length})
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="map-view" className="mt-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-1">
-                  <FilterPanel
-                    selectedRegion={selectedRegion}
-                    setSelectedRegion={setSelectedRegion}
-                    selectedSport={selectedSport}
-                    setSelectedSport={setSelectedSport}
-                    searchType={searchType}
-                    setSearchType={setSearchType}
-                  />
-
-                  <ResultsList
-                    selectedRegion={selectedRegion}
-                    regionFilteredResults={regionFilteredResults}
-                    refetchEstablishments={refetchEstablishments}
-                    refetchGroups={refetchGroups}
-                  />
-                </div>
-
-                <div className="lg:col-span-2">
-                  <MapPlaceholder
-                    selectedRegion={selectedRegion}
-                    resultCount={regionFilteredResults.length}
-                  />
-                </div>
+          <div className="mb-6">
+            <Tabs defaultValue="map-view" className="w-full">
+              <div className="mb-6">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto bg-white border border-gray-200 rounded-xl p-1">
+                  <TabsTrigger 
+                    value="map-view" 
+                    className="text-xs md:text-sm font-medium py-3 px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white"
+                  >
+                    🗺️ Vista do Mapa
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="establishments" 
+                    className="text-xs md:text-sm font-medium py-3 px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white"
+                  >
+                    🏢 Estabelecimentos ({filteredEstablishments.length})
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="groups" 
+                    className="text-xs md:text-sm font-medium py-3 px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white"
+                  >
+                    👥 Grupos ({filteredGroups.length})
+                  </TabsTrigger>
+                </TabsList>
               </div>
-            </TabsContent>
 
-            <TabsContent value="establishments" className="mt-6">
-              <TabContentEstablishments
-                establishmentsLoading={establishmentsLoading}
-                filteredEstablishments={filteredEstablishments}
-                searchTerm={searchTerm}
-                refetchEstablishments={refetchEstablishments}
-              />
-            </TabsContent>
+              <TabsContent value="map-view" className="mt-0">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-1">
+                    <FilterPanel
+                      selectedRegion={selectedRegion}
+                      setSelectedRegion={setSelectedRegion}
+                      selectedSport={selectedSport}
+                      setSelectedSport={setSelectedSport}
+                      searchType={searchType}
+                      setSearchType={setSearchType}
+                    />
 
-            <TabsContent value="groups" className="mt-6">
-              <TabContentGroups
-                groupsLoading={groupsLoading}
-                filteredGroups={filteredGroups}
-                searchTerm={searchTerm}
-                refetchGroups={refetchGroups}
-              />
-            </TabsContent>
-          </Tabs>
+                    <ResultsList
+                      selectedRegion={selectedRegion}
+                      regionFilteredResults={regionFilteredResults}
+                      refetchEstablishments={refetchEstablishments}
+                      refetchGroups={refetchGroups}
+                    />
+                  </div>
+
+                  <div className="lg:col-span-2">
+                    <MapPlaceholder
+                      selectedRegion={selectedRegion}
+                      resultCount={regionFilteredResults.length}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="establishments" className="mt-0">
+                <TabContentEstablishments
+                  establishmentsLoading={establishmentsLoading}
+                  filteredEstablishments={filteredEstablishments}
+                  searchTerm={searchTerm}
+                  refetchEstablishments={refetchEstablishments}
+                />
+              </TabsContent>
+
+              <TabsContent value="groups" className="mt-0">
+                <TabContentGroups
+                  groupsLoading={groupsLoading}
+                  filteredGroups={filteredGroups}
+                  searchTerm={searchTerm}
+                  refetchGroups={refetchGroups}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
 
           <CallToAction />
         </div>
