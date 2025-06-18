@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { MapPin, Filter, Search } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -230,7 +229,7 @@ const Hub = () => {
                     <SelectValue placeholder="Todas as modalidades" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Todas as modalidades</SelectItem>
+                    <SelectItem value="todas">Todas as modalidades</SelectItem>
                     {sports.map((sport) => (
                       <SelectItem key={sport} value={sport}>
                         {sport}
