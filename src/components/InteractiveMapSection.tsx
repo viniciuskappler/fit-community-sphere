@@ -112,18 +112,18 @@ const InteractiveMapSection = () => {
     <section className="w-full px-4 md:px-8 lg:px-4 flex flex-col items-center bg-white py-[31px]">
       <div className="w-full md:w-11/12 lg:w-3/4 mx-auto">
         <h2 className="text-2xl font-bold text-center text-gray-900 mb-2 md:text-5xl">
-          Mapa de Estabelecimentos e Grupos
+          Hub do Núcleo do Esporte
         </h2>
         <p className="text-gray-500 text-center mb-8 text-base max-w-xl mx-auto">
-          Descubra academias, centros de treinamento e grupos esportivos próximos à você.
+          Descubra, avalie e conecte-se com estabelecimentos e grupos esportivos próximos à você.
         </p>
         
-        {/* Botão para ver mapa completo */}
+        {/* Botão para acessar o hub completo */}
         <div className="text-center mb-8">
-          <Link to="/mapa">
+          <Link to="/hub">
             <Button size="lg" className="bg-orange-500 hover:bg-orange-600">
               <MapPin className="w-5 h-5 mr-2" />
-              Ver Mapa Completo
+              Acessar Hub Completo
             </Button>
           </Link>
         </div>
