@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { MapPin, Dumbbell, Users } from 'lucide-react';
+import { MapPin, Dumbbell, Users, Camera } from 'lucide-react';
 
 interface MapLocation {
   id: string;
@@ -94,52 +94,41 @@ const locationColors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-
 
 const InteractiveMapSection = () => {
   const [visibleLocations, setVisibleLocations] = useState<Set<string>>(new Set());
-  const [hoveredLocation, setHoveredLocation] = useState<MapLocation | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // Aparecer com delay escalonado
-            locations.forEach((location, index) => {
-              setTimeout(() => {
-                setVisibleLocations(prev => new Set(prev).add(location.id));
-              }, index * 200);
-            });
-          } else {
-            // Desaparecer rapidamente quando sair da tela
-            setVisibleLocations(new Set());
-          }
-        });
-      },
-      {
-        threshold: 0.3,
-        rootMargin: '0px 0px -100px 0px'
+    const handleScroll = () => {
+      const mapElement = document.querySelector('#interactive-map');
+      if (!mapElement) return;
+
+      const rect = mapElement.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Calcular o progresso do scroll baseado na posição da seção do mapa
+      let progress = 0;
+      if (rect.top < windowHeight && rect.bottom > 0) {
+        const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+        progress = Math.max(0, Math.min(1, visibleHeight / (rect.height * 0.8)));
       }
-    );
+      
+      setScrollProgress(progress);
+      
+      // Determinar quantos locais mostrar baseado no progresso
+      const locationsToShow = Math.floor(progress * locations.length);
+      const newVisibleLocations = new Set<string>();
+      
+      for (let i = 0; i < locationsToShow; i++) {
+        newVisibleLocations.add(locations[i].id);
+      }
+      
+      setVisibleLocations(newVisibleLocations);
+    };
 
-    const mapElement = document.querySelector('#interactive-map');
-    if (mapElement) {
-      observer.observe(mapElement);
-    }
-
-    return () => observer.disconnect();
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Executar uma vez na inicialização
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handlePinHover = (location: MapLocation, event: React.MouseEvent) => {
-    setHoveredLocation(location);
-    const rect = event.currentTarget.getBoundingClientRect();
-    setTooltipPosition({
-      x: rect.left + rect.width / 2,
-      y: rect.top - 10
-    });
-  };
-
-  const handlePinLeave = () => {
-    setHoveredLocation(null);
-  };
 
   return (
     <section className="w-full px-4 md:px-8 lg:px-4 flex flex-col items-center bg-white py-[31px]">
@@ -151,90 +140,101 @@ const InteractiveMapSection = () => {
           Descubra academias, centros de treinamento e grupos esportivos próximos à você.
         </p>
         
-        <div id="interactive-map" className="relative w-full h-[600px] rounded-xl overflow-hidden">
-          {/* Background image - nova imagem da cidade */}
-          <div className="absolute inset-0 bg-cover bg-center" style={{
-            backgroundImage: `url(/lovable-uploads/744f2913-0736-467a-b5de-f6757c8dc471.png)`,
-            backgroundPosition: 'center center'
-          }} />
-          
-          {/* Gradient overlay mais sutil */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/30" />
-          
-          {/* Map pins com animação aprimorada */}
-          {locations.map((location, index) => {
-            const isVisible = visibleLocations.has(location.id);
-            return (
-              <div 
-                key={location.id} 
-                className={`absolute transform -translate-x-1/2 -translate-y-full cursor-pointer transition-all duration-700 ease-out z-10 ${
-                  isVisible 
-                    ? 'opacity-100 scale-100 translate-y-0' 
-                    : 'opacity-0 scale-75 translate-y-8'
-                }`}
-                style={{
-                  left: `${location.x}%`,
-                  top: `${location.y}%`,
-                  transitionDelay: isVisible ? `${index * 200}ms` : '0ms'
-                }}
-                onMouseEnter={e => handlePinHover(location, e)} 
-                onMouseLeave={handlePinLeave}
-              >
-                <div className="flex flex-col items-center">
-                  {/* Pin estilo Google Maps */}
-                  <div className={`relative ${locationColors[index % locationColors.length]} w-8 h-8 rounded-full shadow-lg transform hover:scale-125 transition-transform duration-300 flex items-center justify-center`}>
-                    <MapPin size={16} className="text-white" />
-                    {/* Sombra do pin */}
-                    <div className={`absolute top-6 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-transparent ${locationColors[index % locationColors.length].replace('bg-', 'border-t-')}`}></div>
-                  </div>
-                  
-                  {/* Nome do local - card menor */}
-                  <div className={`mt-3 px-2 py-1 rounded-lg text-xs font-medium text-white shadow-md ${locationColors[index % locationColors.length]} max-w-[100px] text-center opacity-90`}>
-                    {location.name}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Mapa */}
+          <div id="interactive-map" className="relative w-full lg:w-2/3 h-[600px] rounded-xl overflow-hidden">
+            <div className="absolute inset-0 bg-cover bg-center" style={{
+              backgroundImage: `url(/lovable-uploads/744f2913-0736-467a-b5de-f6757c8dc471.png)`,
+              backgroundPosition: 'center center'
+            }} />
+            
+            <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-transparent to-white/30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white/30 via-transparent to-white/30" />
+            
+            {/* Map pins */}
+            {locations.map((location, index) => {
+              const isVisible = visibleLocations.has(location.id);
+              return (
+                <div 
+                  key={location.id} 
+                  className={`absolute transform -translate-x-1/2 -translate-y-full cursor-pointer transition-all duration-700 ease-out z-10 ${
+                    isVisible 
+                      ? 'opacity-100 scale-100 translate-y-0' 
+                      : 'opacity-0 scale-75 translate-y-8'
+                  }`}
+                  style={{
+                    left: `${location.x}%`,
+                    top: `${location.y}%`,
+                    transitionDelay: isVisible ? `${index * 200}ms` : '0ms'
+                  }}
+                >
+                  <div className="flex flex-col items-center">
+                    <div className={`relative ${locationColors[index % locationColors.length]} w-8 h-8 rounded-full shadow-lg transform hover:scale-125 transition-transform duration-300 flex items-center justify-center`}>
+                      <MapPin size={16} className="text-white" />
+                      <div className={`absolute top-6 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-6 border-transparent ${locationColors[index % locationColors.length].replace('bg-', 'border-t-')}`}></div>
+                    </div>
+                    
+                    <div className={`mt-3 px-2 py-1 rounded-lg text-xs font-medium text-white shadow-md ${locationColors[index % locationColors.length]} max-w-[100px] text-center opacity-90`}>
+                      {location.name}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+          
+          {/* Painel de informações */}
+          <div className="w-full lg:w-1/3 space-y-4 max-h-[600px] overflow-y-auto">
+            {locations.map((location, index) => {
+              const isVisible = visibleLocations.has(location.id);
+              return (
+                <div 
+                  key={location.id}
+                  className={`bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden transition-all duration-700 ease-out ${
+                    isVisible 
+                      ? 'opacity-100 scale-100 translate-x-0' 
+                      : 'opacity-0 scale-95 translate-x-8'
+                  }`}
+                  style={{
+                    transitionDelay: isVisible ? `${index * 200}ms` : '0ms'
+                  }}
+                >
+                  <div className="relative">
+                    <img src={location.info.photo} alt={location.name} className="w-full h-24 object-cover" />
+                    
+                    {/* Logo do estabelecimento/grupo */}
+                    <div className="absolute top-2 left-2 w-8 h-8 bg-white rounded-lg shadow-md flex items-center justify-center">
+                      <Camera size={14} className="text-gray-600" />
+                    </div>
+                    
+                    <div className={`absolute top-2 right-2 p-1 rounded-full ${location.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} text-white`}>
+                      {location.type === 'establishment' ? <Dumbbell size={12} /> : <Users size={12} />}
+                    </div>
+                  </div>
+                  
+                  <div className="p-3">
+                    <h3 className="font-bold text-gray-900 mb-1 text-sm">{location.name}</h3>
+                    <p className="text-xs text-gray-500 mb-2">{location.info.city}</p>
+                    <p className="text-xs text-gray-600 mb-3">{location.info.description}</p>
+                    
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-gray-800 text-xs">Modalidades:</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {location.info.sports.map((sport, sportIndex) => (
+                          <span key={sportIndex} className={`px-2 py-1 text-xs rounded-full text-white ${location.type === 'establishment' ? 'bg-orange-400' : 'bg-blue-400'}`}>
+                            {sport}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-      
-      {/* Tooltip menor */}
-      {hoveredLocation && (
-        <div className="fixed z-50 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden w-60 pointer-events-none transform -translate-x-1/2 -translate-y-full" style={{
-          left: tooltipPosition.x,
-          top: tooltipPosition.y
-        }}>
-          <div className="relative">
-            <img src={hoveredLocation.info.photo} alt={hoveredLocation.name} className="w-full h-20 object-cover" />
-            <div className={`absolute top-2 right-2 p-1 rounded-full ${hoveredLocation.type === 'establishment' ? 'bg-orange-500' : 'bg-blue-500'} text-white`}>
-              {hoveredLocation.type === 'establishment' ? <Dumbbell size={10} /> : <Users size={10} />}
-            </div>
-          </div>
-          
-          <div className="p-2">
-            <h3 className="font-bold text-gray-900 mb-1 text-xs">{hoveredLocation.name}</h3>
-            <p className="text-xs text-gray-500 mb-1">{hoveredLocation.info.city}</p>
-            
-            <div className="space-y-1">
-              <h4 className="font-semibold text-gray-800 text-xs">Modalidades:</h4>
-              <div className="flex flex-wrap gap-1">
-                {hoveredLocation.info.sports.slice(0, 2).map((sport, index) => (
-                  <span key={index} className={`px-1 py-0.5 text-xs rounded-full text-white ${hoveredLocation.type === 'establishment' ? 'bg-orange-400' : 'bg-blue-400'}`}>
-                    {sport}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full">
-            <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-white"></div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };

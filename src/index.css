@@ -59,7 +59,7 @@
   }
 
   .animate-slide {
-    animation: slide 30s linear infinite;
+    animation: slide 15s linear infinite; /* Aumentada velocidade de 30s para 15s */
   }
 
   .animate-shake {
