@@ -13,6 +13,8 @@ import EstablishmentCard, { Establishment } from '../components/hub/Establishmen
 import GroupCard, { Group } from '../components/hub/GroupCard';
 
 const Hub = () => {
+  console.log('Hub component is loading...');
+  
   const { user } = useAuth();
   const [selectedRegion, setSelectedRegion] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,15 +48,17 @@ const Hub = () => {
 
   // Buscar dados reais do banco
   useEffect(() => {
+    console.log('Hub useEffect triggered');
     fetchData();
   }, []);
 
   const fetchData = async () => {
+    console.log('Fetching data...');
     setLoading(true);
     
     try {
       // Buscar estabelecimentos
-      const { data: establishmentsData } = await supabase
+      const { data: establishmentsData, error: establishmentsError } = await supabase
         .from('establishments')
         .select(`
           id,
@@ -64,6 +68,12 @@ const Hub = () => {
           state,
           establishment_sports(sport_name)
         `);
+
+      if (establishmentsError) {
+        console.error('Error fetching establishments:', establishmentsError);
+      } else {
+        console.log('Establishments data:', establishmentsData);
+      }
 
       if (establishmentsData) {
         const formattedEstablishments: Establishment[] = establishmentsData.map(est => ({
@@ -79,7 +89,7 @@ const Hub = () => {
       }
 
       // Buscar grupos esportivos
-      const { data: groupsData } = await supabase
+      const { data: groupsData, error: groupsError } = await supabase
         .from('sports_groups')
         .select(`
           id,
@@ -88,6 +98,12 @@ const Hub = () => {
           description,
           group_sports(sport_name)
         `);
+
+      if (groupsError) {
+        console.error('Error fetching groups:', groupsError);
+      } else {
+        console.log('Groups data:', groupsData);
+      }
 
       if (groupsData) {
         const formattedGroups: Group[] = groupsData.map(group => ({
@@ -107,6 +123,7 @@ const Hub = () => {
       console.error('Erro ao buscar dados:', error);
     } finally {
       setLoading(false);
+      console.log('Data fetching completed');
     }
   };
 
@@ -123,6 +140,8 @@ const Hub = () => {
       return regionMatch && sportMatch && searchTermMatch && typeMatch;
     });
   }, [selectedRegion, selectedSport, searchTerm, searchType, allData]);
+
+  console.log('Hub component rendering...');
 
   return (
     <div className="min-h-screen bg-gray-50">
