@@ -107,7 +107,7 @@ const Hub = () => {
         ? item.city.includes(selectedRegion.split(' - ')[0]) || `${item.city} - ${item.state}` === selectedRegion
         : item.cities.some(city => city.includes(selectedRegion.split(' - ')[0]));
       const sportMatch = !selectedSport || item.sports.includes(selectedSport);
-      const searchTermMatch = !searchTerm || item.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      const searchTermMatch = !searchTerm || 
         ('establishment_name' in item ? item.establishment_name.toLowerCase().includes(searchTerm.toLowerCase()) :
          'group_name' in item ? item.group_name.toLowerCase().includes(searchTerm.toLowerCase()) : false);
       const typeMatch = searchType === 'all' || 
