@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { ValidationErrors, formatDateForDisplay } from '../../utils/formValidation';
+import TermsModal from '../TermsModal';
 
 interface FinalStepProps {
   registrationType: 'supporter' | 'establishment' | 'group';
@@ -15,6 +16,8 @@ interface FinalStepProps {
 }
 
 const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: FinalStepProps) => {
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+
   // Marcar checkboxes por padrão quando o componente é carregado
   React.useEffect(() => {
     if (formData.acceptTerms === undefined || formData.acceptTerms === null) {
@@ -243,7 +246,15 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
             className={formData.acceptTerms ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
           />
           <Label htmlFor="terms" className="text-sm">
-            Concordo com os <a href="/termos-privacidade" target="_blank" className="text-orange-500 underline cursor-pointer">termos de uso e política de privacidade</a> *
+            Concordo com os{' '}
+            <button
+              type="button"
+              onClick={() => setIsTermsModalOpen(true)}
+              className="text-orange-500 underline cursor-pointer hover:text-orange-600"
+            >
+              termos de uso e política de privacidade
+            </button>{' '}
+            *
           </Label>
         </div>
         {errors.acceptTerms && (
@@ -262,6 +273,11 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
           </Label>
         </div>
       </div>
+
+      <TermsModal 
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+      />
     </div>
   );
 };

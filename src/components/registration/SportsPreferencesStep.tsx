@@ -25,14 +25,34 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
   );
 
   const handleSportToggle = (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => {
+    // Se está selecionando um esporte praticado, remover dos interessados
+    if (field === 'practicedSports' && !formData.practicedSports.includes(sport)) {
+      if (formData.interestedSports.includes(sport)) {
+        onSportToggle('interestedSports', sport);
+      }
+    }
+    
     // Se está desmarcando de favoritos, remover também dos outros campos
     if (field === 'favoriteStateSports' && formData.favoriteStateSports.includes(sport)) {
-      onSportToggle('practicedSports', sport);
-      onSportToggle('interestedSports', sport);
+      if (formData.practicedSports.includes(sport)) {
+        onSportToggle('practicedSports', sport);
+      }
+      if (formData.interestedSports.includes(sport)) {
+        onSportToggle('interestedSports', sport);
+      }
     }
     
     onSportToggle(field, sport);
   };
+
+  // Esportes disponíveis para cada seção
+  const availablePracticedSports = filteredSports.filter(sport => 
+    !formData.favoriteStateSports.includes(sport)
+  );
+  
+  const availableInterestedSports = filteredSports.filter(sport => 
+    !formData.favoriteStateSports.includes(sport) && !formData.practicedSports.includes(sport)
+  );
 
   return (
     <div className="space-y-6">
@@ -87,14 +107,12 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
           Selecionados: {formData.practicedSports.length}/20
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3 max-h-40 overflow-y-auto border rounded-lg p-3">
-          {filteredSports
-            .filter(sport => !formData.favoriteStateSports.includes(sport))
-            .map((sport) => (
+          {availablePracticedSports.map((sport) => (
             <div key={sport} className="flex items-center space-x-2">
               <Checkbox
                 id={`practiced-${sport}`}
                 checked={formData.practicedSports.includes(sport)}
-                onCheckedChange={() => onSportToggle('practicedSports', sport)}
+                onCheckedChange={() => handleSportToggle('practicedSports', sport)}
                 disabled={formData.practicedSports.length >= 20 && !formData.practicedSports.includes(sport)}
                 className={formData.practicedSports.includes(sport) ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
               />
@@ -122,14 +140,12 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
           Selecionados: {formData.interestedSports.length}/20
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3 max-h-40 overflow-y-auto border rounded-lg p-3">
-          {filteredSports
-            .filter(sport => !formData.favoriteStateSports.includes(sport))
-            .map((sport) => (
+          {availableInterestedSports.map((sport) => (
             <div key={sport} className="flex items-center space-x-2">
               <Checkbox
                 id={`interested-${sport}`}
                 checked={formData.interestedSports.includes(sport)}
-                onCheckedChange={() => onSportToggle('interestedSports', sport)}
+                onCheckedChange={() => handleSportToggle('interestedSports', sport)}
                 disabled={formData.interestedSports.length >= 20 && !formData.interestedSports.includes(sport)}
                 className={formData.interestedSports.includes(sport) ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
               />
@@ -144,9 +160,9 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
             </div>
           ))}
         </div>
-        {formData.favoriteStateSports.length > 0 && (
+        {(formData.favoriteStateSports.length > 0 || formData.practicedSports.length > 0) && (
           <p className="text-xs text-gray-500 mt-2">
-            * Os esportes que você mais gosta já estão incluídos automaticamente
+            * Esportes já selecionados em outras categorias são removidos automaticamente
           </p>
         )}
       </div>

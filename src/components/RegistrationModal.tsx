@@ -276,12 +276,12 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl w-[95%] sm:w-full max-h-[90vh] overflow-y-auto bg-white rounded-xl mx-auto border-0 shadow-2xl fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center mb-8">
+          <DialogTitle className="text-xl md:text-2xl font-bold text-center mb-4 md:mb-8">
             Cadastro de {registrationType === 'supporter' ? 'Praticante' : 
                         registrationType === 'establishment' ? 'Estabelecimento' : 
                         'Grupo Esportivo'}
           </DialogTitle>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-6">
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-4 md:mt-6">
             <div 
               className="bg-gradient-to-r from-red-600 to-orange-500 h-2 rounded-full transition-all duration-700 ease-out transform-gpu"
               style={{ width: `${(currentStep / 4) * 100}%` }}
@@ -308,20 +308,20 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
           </Alert>
         )}
 
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold mb-6 text-orange-500">
+        <div className="mt-4 md:mt-6">
+          <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-orange-500">
             {getStepTitle(currentStep, registrationType)}
           </h3>
 
           {renderStepContent()}
 
           {/* Botões de navegação */}
-          <div className="flex justify-between mt-8">
+          <div className="flex flex-col sm:flex-row justify-between gap-4 mt-6 md:mt-8">
             <Button
               variant="outline"
               onClick={prevStep}
               disabled={currentStep === 1 || loading}
-              className="flex items-center space-x-2"
+              className="flex items-center justify-center space-x-2 order-2 sm:order-1"
             >
               <ArrowLeft size={16} />
               <span>Voltar</span>
@@ -331,7 +331,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
               <Button
                 onClick={nextStep}
                 disabled={loading}
-                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 flex items-center space-x-2"
+                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 flex items-center justify-center space-x-2 order-1 sm:order-2"
               >
                 <span>Próximo</span>
                 <ArrowRight size={16} />
@@ -340,7 +340,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 flex items-center space-x-2"
+                className="bg-gradient-to-r from-green-500 to-green-400 hover:from-green-600 hover:to-green-500 flex items-center justify-center space-x-2 order-1 sm:order-2"
               >
                 <Check size={16} />
                 <span>{loading ? 'Finalizando...' : 'Finalizar Cadastro'}</span>
