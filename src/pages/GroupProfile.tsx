@@ -5,8 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { MapPin, Phone, Mail, Users, Star, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, Car
-Content } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Header from '@/components/Header';
 import SecondaryHeader from '@/components/SecondaryHeader';
@@ -120,7 +119,7 @@ const GroupProfile = () => {
       const { data } = await supabase
         .from('user_favorites')
         .select('id')
-        .eq('value_id', user.id)
+        .eq('user_id', user.id)
         .eq('group_id', id)
         .maybeSingle();
 

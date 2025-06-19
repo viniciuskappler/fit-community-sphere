@@ -39,9 +39,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [apiKey, setApiKey] = useState('');
-  const [showApiInput, setShowApiInput] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [showApiInput, setShowApiInput] = useState(false);
+
+  // Use the provided API key
+  const API_KEY = 'AIzaSyAptrPGUytCq3D9a1p6WoltJlbKdqbYzyc';
 
   const initializeMap = () => {
     if (!mapRef.current || !window.google) return;
@@ -147,10 +149,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     });
   };
 
-  const loadGoogleMapsScript = (key: string) => {
+  const loadGoogleMapsScript = () => {
     setIsLoading(true);
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&libraries=places`;
     script.async = true;
     script.defer = true;
     script.onload = () => {
@@ -160,26 +162,15 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     };
     script.onerror = () => {
       setIsLoading(false);
-      alert('Erro ao carregar Google Maps. Verifique sua chave de API.');
+      console.error('Erro ao carregar Google Maps. Verifique a chave de API.');
     };
     document.head.appendChild(script);
   };
 
-  const handleApiKeySubmit = () => {
-    if (apiKey.length > 20) {
-      loadGoogleMapsScript(apiKey);
-      localStorage.setItem('googleMapsApiKey', apiKey);
-    } else {
-      alert('Por favor, insira uma chave de API válida');
-    }
-  };
-
   useEffect(() => {
-    const savedApiKey = localStorage.getItem('googleMapsApiKey');
-    if (savedApiKey && !window.google) {
-      setApiKey(savedApiKey);
-      loadGoogleMapsScript(savedApiKey);
-    } else if (window.google) {
+    if (!window.google) {
+      loadGoogleMapsScript();
+    } else {
       setShowApiInput(false);
       initializeMap();
     }
@@ -191,36 +182,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     }
   }, [establishments, groups, map]);
 
-  if (showApiInput) {
+  if (isLoading) {
     return (
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6" style={{ height }}>
         <div className="flex flex-col items-center justify-center h-full space-y-4">
-          <MapPin size={48} className="text-gray-400" />
-          <h3 className="text-xl font-semibold text-gray-800">Configure o Google Maps</h3>
-          <p className="text-gray-600 text-center max-w-md">
-            Para usar o mapa interativo, você precisa configurar sua chave de API do Google Maps.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
-            <Input
-              type="text"
-              placeholder="Cole sua chave de API do Google Maps"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              className="flex-1"
-            />
-            <Button 
-              onClick={handleApiKeySubmit} 
-              disabled={isLoading || apiKey.length < 20}
-              className="bg-orange-500 hover:bg-orange-600"
-            >
-              {isLoading ? 'Carregando...' : 'Configurar'}
-            </Button>
-          </div>
-          <p className="text-xs text-gray-500 text-center">
-            Obtenha sua chave gratuita em: 
-            <a href="https://console.cloud.google.com/google/maps-apis" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline ml-1">
-              Google Cloud Console
-            </a>
+          <MapPin size={48} className="text-gray-400 animate-pulse" />
+          <h3 className="text-xl font-semibold text-gray-800">Carregando mapa...</h3>
+          <p className="text-gray-600 text-center">
+            Aguarde enquanto carregamos o Google Maps.
           </p>
         </div>
       </div>
