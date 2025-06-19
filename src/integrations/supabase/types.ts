@@ -484,7 +484,9 @@ export type Database = {
     }
     Functions: {
       generate_referral_code: {
-        Args: { user_id_param: number; type_param: string }
+        Args:
+          | Record<PropertyKey, never>
+          | { user_id_param: string; type_param: string }
         Returns: string
       }
     }
