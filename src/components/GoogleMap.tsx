@@ -46,7 +46,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const initializeMap = () => {
     if (!mapRef.current || !window.google) return;
 
-    const mapInstance = new google.maps.Map(mapRef.current, {
+    const mapInstance = new window.google.maps.Map(mapRef.current, {
       center,
       zoom,
       styles: [
@@ -63,7 +63,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     // Add establishment markers
     establishments.forEach((establishment) => {
       if (establishment.latitude && establishment.longitude) {
-        const marker = new google.maps.Marker({
+        const marker = new window.google.maps.Marker({
           position: { lat: establishment.latitude, lng: establishment.longitude },
           map: mapInstance,
           title: establishment.establishment_name,
@@ -74,11 +74,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                 <text x="16" y="20" text-anchor="middle" fill="white" font-size="16" font-weight="bold">🏋️</text>
               </svg>
             `),
-            scaledSize: new google.maps.Size(32, 32)
+            scaledSize: new window.google.maps.Size(32, 32)
           }
         });
 
-        const infoWindow = new google.maps.InfoWindow({
+        const infoWindow = new window.google.maps.InfoWindow({
           content: `
             <div class="p-3 max-w-xs">
               <h3 class="font-bold text-lg mb-2">${establishment.establishment_name}</h3>
@@ -106,7 +106,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     // Add group markers
     groups.forEach((group) => {
       if (group.latitude && group.longitude) {
-        const marker = new google.maps.Marker({
+        const marker = new window.google.maps.Marker({
           position: { lat: group.latitude, lng: group.longitude },
           map: mapInstance,
           title: group.group_name,
@@ -117,11 +117,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                 <text x="16" y="20" text-anchor="middle" fill="white" font-size="16" font-weight="bold">👥</text>
               </svg>
             `),
-            scaledSize: new google.maps.Size(32, 32)
+            scaledSize: new window.google.maps.Size(32, 32)
           }
         });
 
-        const infoWindow = new google.maps.InfoWindow({
+        const infoWindow = new window.google.maps.InfoWindow({
           content: `
             <div class="p-3 max-w-xs">
               <h3 class="font-bold text-lg mb-2">${group.group_name}</h3>

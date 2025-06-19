@@ -5,7 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { MapPin, Phone, Mail, Users, Star, Heart, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, Car
+Content } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import Header from '@/components/Header';
 import SecondaryHeader from '@/components/SecondaryHeader';
@@ -14,6 +15,15 @@ import GoogleMap from '@/components/GoogleMap';
 import RatingStars from '@/components/RatingStars';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+
+interface ReviewData {
+  id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  user_id: string;
+  user_profiles?: { full_name: string } | null;
+}
 
 interface GroupData {
   id: string;
@@ -29,13 +39,7 @@ interface GroupData {
   created_at: string;
   group_sports: Array<{ sport_name: string }>;
   group_photos: Array<{ photo_url: string; is_main: boolean; caption: string }>;
-  reviews: Array<{
-    id: string;
-    rating: number;
-    comment: string;
-    created_at: string;
-    user_profiles: { full_name: string };
-  }>;
+  reviews: ReviewData[];
 }
 
 const GroupProfile = () => {
@@ -64,13 +68,39 @@ const GroupProfile = () => {
           *,
           group_sports(sport_name),
           group_photos(photo_url, is_main, caption),
-          reviews(id, rating, comment, created_at, user_profiles(full_name))
+          reviews(id, rating, comment, created_at, user_id)
         `)
         .eq('id', id)
         .single();
 
       if (error) throw error;
-      setGroup(data);
+
+      // Get user profiles for reviews separately
+      if (data.reviews && data.reviews.length > 0) {
+        const userIds = data.reviews.map((r: any) => r.user_id);
+        const { data: profiles } = await supabase
+          .from('user_profiles')
+          .select('id, full_name')
+          .in('id', userIds);
+
+        // Map profiles to reviews
+        const reviewsWithProfiles: ReviewData[] = data.reviews.map((review: any) => {
+          const profile = profiles?.find(p => p.id === review.user_id);
+          return {
+            ...review,
+            user_profiles: profile ? { full_name: profile.full_name } : null
+          };
+        });
+
+        const groupWithReviews: GroupData = {
+          ...data,
+          reviews: reviewsWithProfiles
+        };
+
+        setGroup(groupWithReviews);
+      } else {
+        setGroup({ ...data, reviews: [] });
+      }
     } catch (error) {
       console.error('Error fetching group:', error);
       toast({
@@ -90,7 +120,7 @@ const GroupProfile = () => {
       const { data } = await supabase
         .from('user_favorites')
         .select('id')
-        .eq('user_id', user.id)
+        .eq('value_id', user.id)
         .eq('group_id', id)
         .maybeSingle();
 

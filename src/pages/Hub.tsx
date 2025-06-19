@@ -17,6 +17,27 @@ import TabContentEstablishments from '../components/hub/TabContentEstablishments
 import TabContentGroups from '../components/hub/TabContentGroups';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+// Define the types locally to avoid import issues
+interface EstablishmentWithDetails {
+  id: string;
+  establishment_name: string;
+  city: string;
+  state: string;
+  sports: string[];
+  photos: Array<{ photo_url: string; is_main: boolean }>;
+  latitude?: number;
+  longitude?: number;
+}
+
+interface SportsGroupWithDetails {
+  id: string;
+  group_name: string;
+  cities: string[];
+  sports: string[];
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
 const Hub = () => {
   console.log('🚀 Hub component is starting to load...');
   
@@ -174,7 +195,7 @@ const Hub = () => {
                       selectedRegion={selectedRegion}
                       resultCount={regionFilteredResults.length}
                       establishments={selectedRegion ? regionFilteredResults.filter(item => 'establishment_name' in item) as EstablishmentWithDetails[] : filteredEstablishments}
-                      groups={selectedRegion ? regionFilteredResults.filter(item => 'group_name' in item) : filteredGroups}
+                      groups={selectedRegion ? regionFilteredResults.filter(item => 'group_name' in item) as SportsGroupWithDetails[] : filteredGroups}
                     />
                   </div>
                 </div>

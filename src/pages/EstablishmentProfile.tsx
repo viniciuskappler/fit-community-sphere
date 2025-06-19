@@ -15,6 +15,15 @@ import ReviewModal from '@/components/ReviewModal';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
+interface ReviewData {
+  id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  user_id: string;
+  user_profiles?: { full_name: string } | null;
+}
+
 interface EstablishmentData {
   id: string;
   establishment_name: string;
@@ -31,13 +40,7 @@ interface EstablishmentData {
   created_at: string;
   establishment_sports: Array<{ sport_name: string }>;
   establishment_photos: Array<{ photo_url: string; is_main: boolean; caption: string }>;
-  reviews: Array<{
-    id: string;
-    rating: number;
-    comment: string;
-    created_at: string;
-    user_profiles: { full_name: string } | null;
-  }>;
+  reviews: ReviewData[];
 }
 
 const EstablishmentProfile = () => {
@@ -83,7 +86,7 @@ const EstablishmentProfile = () => {
           .in('id', userIds);
 
         // Map profiles to reviews
-        const reviewsWithProfiles = data.reviews.map((review: any) => {
+        const reviewsWithProfiles: ReviewData[] = data.reviews.map((review: any) => {
           const profile = profiles?.find(p => p.id === review.user_id);
           return {
             ...review,
@@ -91,10 +94,15 @@ const EstablishmentProfile = () => {
           };
         });
 
-        data.reviews = reviewsWithProfiles;
-      }
+        const establishmentWithReviews: EstablishmentData = {
+          ...data,
+          reviews: reviewsWithProfiles
+        };
 
-      setEstablishment(data);
+        setEstablishment(establishmentWithReviews);
+      } else {
+        setEstablishment({ ...data, reviews: [] });
+      }
     } catch (error) {
       console.error('Error fetching establishment:', error);
       toast({
