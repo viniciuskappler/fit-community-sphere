@@ -2,8 +2,8 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGeolocation } from '@/hooks/useGeolocation';
-import { useEstablishments } from '@/hooks/useEstablishments';
-import { useSportsGroups } from '@/hooks/useSportsGroups';
+import { useEstablishments, EstablishmentWithDetails } from '@/hooks/useEstablishments';
+import { useSportsGroups, SportsGroupWithDetails } from '@/hooks/useSportsGroups';
 import Header from '../components/Header';
 import SecondaryHeader from '../components/SecondaryHeader';
 import Footer from '../components/Footer';
@@ -16,27 +16,6 @@ import CallToAction from '../components/hub/CallToAction';
 import TabContentEstablishments from '../components/hub/TabContentEstablishments';
 import TabContentGroups from '../components/hub/TabContentGroups';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-// Define the types locally to avoid import issues
-interface EstablishmentWithDetails {
-  id: string;
-  establishment_name: string;
-  city: string;
-  state: string;
-  sports: string[];
-  photos: Array<{ photo_url: string; is_main: boolean }>;
-  latitude?: number;
-  longitude?: number;
-}
-
-interface SportsGroupWithDetails {
-  id: string;
-  group_name: string;
-  cities: string[];
-  sports: string[];
-  latitude?: number | null;
-  longitude?: number | null;
-}
 
 const Hub = () => {
   console.log('🚀 Hub component is starting to load...');
@@ -195,7 +174,21 @@ const Hub = () => {
                       selectedRegion={selectedRegion}
                       resultCount={regionFilteredResults.length}
                       establishments={selectedRegion ? regionFilteredResults.filter(item => 'establishment_name' in item) as EstablishmentWithDetails[] : filteredEstablishments}
-                      groups={selectedRegion ? regionFilteredResults.filter(item => 'group_name' in item) as SportsGroupWithDetails[] : filteredGroups}
+                      groups={selectedRegion ? regionFilteredResults.filter(item => 'group_name' in item && item.latitude !== null && item.longitude !== null).map(item => ({
+                        id: item.id,
+                        group_name: (item as SportsGroupWithDetails).group_name,
+                        latitude: item.latitude!,
+                        longitude: item.longitude!,
+                        cities: (item as SportsGroupWithDetails).cities,
+                        sports: item.sports,
+                      })) : filteredGroups.filter(g => g.latitude !== null && g.longitude !== null).map(g => ({
+                        id: g.id,
+                        group_name: g.group_name,
+                        latitude: g.latitude!,
+                        longitude: g.longitude!,
+                        cities: g.cities,
+                        sports: g.sports,
+                      }))}
                     />
                   </div>
                 </div>

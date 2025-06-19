@@ -38,7 +38,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   onMarkerClick
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [map, setMap] = useState<globalThis.google.maps.Map | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showApiInput, setShowApiInput] = useState(false);
 
