@@ -1,12 +1,11 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { ArrowLeft, ArrowRight, Check, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
-import { useAuth } from '@/contexts/AuthContext';
-import { useUserData } from '@/hooks/useUserData';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+import { useRegistration } from '@/hooks/useRegistration';
 import PersonalDataStep from './registration/PersonalDataStep';
 import SportsPreferencesStep from './registration/SportsPreferencesStep';
 import PasswordStep from './registration/PasswordStep';
@@ -33,15 +32,13 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   const [currentStep, setCurrentStep] = useState(1);
   const [registrationType, setRegistrationType] = useState(initialType);
   const [errors, setErrors] = useState<ValidationErrors>({});
-  const [loading, setLoading] = useState(false);
   const [showEstablishmentWarning, setShowEstablishmentWarning] = useState(false);
   const [showGroupWarning, setShowGroupWarning] = useState(false);
-  const { signUp } = useAuth();
-  const { saveUserProfile, saveUserSports } = useUserData();
+  const { registerUser, loading } = useRegistration();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>({
-    // Dados Pessoais
+    // Personal Data
     fullName: '',
     cpf: '',
     phone: '',
@@ -49,16 +46,16 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     city: '',
     birthDate: '',
     
-    // Preferências Esportivas
+    // Sports Preferences
     favoriteStateSports: [],
     practicedSports: [],
     interestedSports: [],
     
-    // Senha
+    // Password
     password: '',
     confirmPassword: '',
     
-    // Dados do Estabelecimento/Grupo
+    // Business/Group Data
     businessName: '',
     cnpj: '',
     description: '',
@@ -66,14 +63,14 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     state: '',
     cep: '',
     
-    // Termos
+    // Terms
     acceptTerms: true,
     acceptNewsletter: true
   });
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    // Limpar erro do campo quando o usuário começar a digitar
+    // Clear field error when user starts typing
     if (errors[field as keyof ValidationErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
@@ -84,9 +81,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
       const currentSports = prev[field];
       const isSelected = currentSports.includes(sport);
       
-      // Verificar limites
+      // Check limits
       if (!isSelected && currentSports.length >= 20) {
-        return prev; // Não adiciona se já tem 20
+        return prev; // Don't add if already has 20
       }
       
       return {
@@ -140,8 +137,6 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   };
 
   const handleSubmit = async () => {
-    console.log('🚀 Starting registration submission...');
-    
     const stepErrors = validateStep4(formData, registrationType);
     
     if (Object.keys(stepErrors).length > 0) {
@@ -149,125 +144,38 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
       return;
     }
     
-    setLoading(true);
     setErrors({});
     
-    try {
-      // 1. Criar conta do usuário com a senha fornecida
-      console.log('👤 Creating user account...');
-      const { data: signUpData, error: signUpError } = await signUp(formData.email, formData.password, {
-        fullName: formData.fullName
-      });
+    const result = await registerUser(
+      {
+        fullName: formData.fullName,
+        cpf: formData.cpf,
+        phone: formData.phone,
+        email: formData.email,
+        city: formData.city,
+        birthDate: formData.birthDate,
+        favoriteStateSports: formData.favoriteStateSports,
+        practicedSports: formData.practicedSports,
+        interestedSports: formData.interestedSports,
+        password: formData.password
+      },
+      registrationType,
+      referralCode
+    );
+
+    if (result.success) {
+      onClose();
       
-      if (signUpError) {
-        console.error('❌ Signup failed:', signUpError);
-        setErrors({ general: signUpError.message || 'Erro ao criar conta. Tente novamente.' });
-        setLoading(false);
-        return;
+      // Redirect based on registration type
+      if (registrationType === 'supporter') {
+        navigate('/cadastro-realizado');
+      } else if (registrationType === 'establishment') {
+        navigate('/cadastro-finalizado-estabelecimento');
+      } else if (registrationType === 'group') {
+        navigate('/cadastro-finalizado-grupo');
       }
-
-      const newUserId = signUpData?.user?.id;
-      console.log('✅ User account created successfully');
-
-      // 2. Track referral conversion if referralCode is present
-      if (referralCode && newUserId) {
-        console.log('📊 Tracking referral conversion:', referralCode);
-        try {
-          // Primeiro, encontrar o código de referral
-          const { data: codeData, error: codeError } = await supabase
-            .from('referral_codes')
-            .select('id')
-            .eq('code', referralCode)
-            .single();
-
-          if (codeError) {
-            console.log('❌ Referral code not found:', referralCode);
-          } else if (codeData) {
-            // Comissão será 10% dos planos futuros - por enquanto 0
-            const commissionAmount = 0;
-
-            // Criar a conversão
-            const { error: conversionError } = await supabase
-              .from('referral_conversions')
-              .insert({
-                referral_code_id: codeData.id,
-                referred_user_id: newUserId,
-                conversion_type: registrationType,
-                commission_amount: commissionAmount,
-                commission_status: 'pending'
-              });
-
-            if (conversionError) {
-              console.error('❌ Error tracking conversion:', conversionError);
-            } else {
-              console.log('✅ Referral conversion tracked successfully');
-            }
-          }
-        } catch (conversionError) {
-          console.error('❌ Error in referral tracking:', conversionError);
-        }
-      }
-
-      // 3. Aguardar um pouco para garantir que o usuário foi criado
-      setTimeout(async () => {
-        try {
-          console.log('💾 Saving user profile...');
-          
-          // 4. Salvar dados do perfil
-          const { error: profileError } = await saveUserProfile({
-            full_name: formData.fullName,
-            cpf: formData.cpf,
-            phone: formData.phone,
-            city: formData.city,
-            birth_date: formData.birthDate
-          });
-
-          if (profileError) {
-            console.error('❌ Error saving profile:', profileError);
-          } else {
-            console.log('✅ Profile saved successfully');
-          }
-
-          // 5. Salvar esportes
-          const allSports = [
-            ...formData.favoriteStateSports.map(sport => ({ sport_name: sport, sport_type: 'favorite' as const })),
-            ...formData.practicedSports.map(sport => ({ sport_name: sport, sport_type: 'practiced' as const })),
-            ...formData.interestedSports.map(sport => ({ sport_name: sport, sport_type: 'interested' as const }))
-          ];
-
-          if (allSports.length > 0) {
-            console.log('🏃 Saving user sports...');
-            const { error: sportsError } = await saveUserSports(allSports);
-            if (sportsError) {
-              console.error('❌ Error saving sports:', sportsError);
-            } else {
-              console.log('✅ Sports saved successfully');
-            }
-          }
-
-          console.log('🎉 Registration completed successfully!');
-          onClose();
-          
-          // Redirecionar para a página correta baseada no tipo de cadastro
-          if (registrationType === 'supporter') {
-            navigate('/cadastro-realizado');
-          } else if (registrationType === 'establishment') {
-            navigate('/cadastro-finalizado-estabelecimento');
-          } else if (registrationType === 'group') {
-            navigate('/cadastro-finalizado-grupo');
-          }
-        } catch (error) {
-          console.error('💥 Error saving additional data:', error);
-          setErrors({ general: 'Conta criada, mas houve erro ao salvar dados adicionais.' });
-        } finally {
-          setLoading(false);
-        }
-      }, 1000);
-      
-    } catch (error) {
-      console.error('💥 Unexpected registration error:', error);
-      setErrors({ general: 'Erro inesperado. Tente novamente.' });
-      setLoading(false);
+    } else {
+      setErrors({ general: result.error || 'Erro inesperado durante o cadastro.' });
     }
   };
 
@@ -329,7 +237,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
           </div>
         </DialogHeader>
 
-        {/* Mensagem de aviso para Estabelecimento e Grupo Esportivo */}
+        {/* Warning message for Establishment and Sports Group */}
         {(registrationType === 'establishment' || registrationType === 'group') && (
           <Alert className="bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-300 mt-4">
             <AlertTriangle className="h-4 w-4 text-orange-600" />
@@ -355,7 +263,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
 
           {renderStepContent()}
 
-          {/* Botões de navegação */}
+          {/* Navigation buttons */}
           <div className="flex flex-col sm:flex-row justify-between gap-4 mt-6 md:mt-8">
             <Button
               variant="outline"

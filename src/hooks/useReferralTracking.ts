@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,6 +25,12 @@ interface ReferralConversion {
   };
 }
 
+interface GenerateCodeResult {
+  success: boolean;
+  code?: string;
+  error?: string;
+}
+
 export const useReferralTracking = () => {
   const { user } = useAuth();
   const [referralCodes, setReferralCodes] = useState<ReferralCode[]>([]);
@@ -42,7 +49,7 @@ export const useReferralTracking = () => {
     setLoading(true);
     
     try {
-      // Buscar códigos de referral do usuário
+      // Fetch user's referral codes
       const { data: codesData } = await supabase
         .from('referral_codes')
         .select('*')
@@ -53,7 +60,7 @@ export const useReferralTracking = () => {
         setReferralCodes(codesData as ReferralCode[]);
       }
 
-      // Buscar conversões dos referrals do usuário
+      // Fetch conversions from user's referrals
       const { data: conversionsData } = await supabase
         .from('referral_conversions')
         .select(`
@@ -73,11 +80,13 @@ export const useReferralTracking = () => {
     }
   };
 
-  const generateReferralCode = async (type: 'establishment' | 'group' | 'supporter') => {
-    if (!user) return { error: 'Usuário não autenticado' };
+  const generateReferralCode = async (type: 'establishment' | 'group' | 'supporter'): Promise<GenerateCodeResult> => {
+    if (!user) {
+      return { success: false, error: 'Usuário não autenticado' };
+    }
 
     try {
-      // Instead of using the RPC function, create the code directly
+      // Create the code directly instead of using RPC
       const codePrefix = type === 'establishment' ? 'EST' : type === 'group' ? 'GRP' : 'SUP';
       const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
       const finalCode = `${codePrefix}${randomSuffix}`;
@@ -94,55 +103,16 @@ export const useReferralTracking = () => {
 
       if (error) {
         console.error('Erro ao gerar código:', error);
-        return { error: error.message };
+        return { success: false, error: error.message };
       }
 
-      // Atualizar a lista de códigos
+      // Update the codes list
       await fetchReferralData();
       
-      return { data: finalCode, error: null };
+      return { success: true, code: finalCode };
     } catch (error) {
       console.error('Erro ao gerar código de referral:', error);
-      return { error: 'Erro inesperado ao gerar código' };
-    }
-  };
-
-  const trackConversion = async (referralCode: string, userId: string, conversionType: string) => {
-    try {
-      // Primeiro, encontrar o código de referral
-      const { data: codeData } = await supabase
-        .from('referral_codes')
-        .select('id')
-        .eq('code', referralCode)
-        .single();
-
-      if (!codeData) {
-        return { error: 'Código de referral não encontrado' };
-      }
-
-      // Não definir valor de comissão por enquanto - será baseado em 10% dos planos futuros
-      const commissionAmount = 0; // Será calculado quando os planos forem definidos
-
-      // Criar a conversão
-      const { error } = await supabase
-        .from('referral_conversions')
-        .insert({
-          referral_code_id: codeData.id,
-          referred_user_id: userId,
-          conversion_type: conversionType,
-          commission_amount: commissionAmount,
-          commission_status: 'pending'
-        });
-
-      if (error) {
-        console.error('Erro ao registrar conversão:', error);
-        return { error: error.message };
-      }
-
-      return { error: null };
-    } catch (error) {
-      console.error('Erro ao rastrear conversão:', error);
-      return { error: 'Erro inesperado ao rastrear conversão' };
+      return { success: false, error: 'Erro inesperado ao gerar código' };
     }
   };
 
@@ -173,7 +143,6 @@ export const useReferralTracking = () => {
     conversions,
     loading,
     generateReferralCode,
-    trackConversion,
     getTotalCommissions,
     getPaidCommissions,
     getPendingCommissions,
