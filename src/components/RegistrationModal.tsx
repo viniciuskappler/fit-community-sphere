@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -181,7 +182,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             .single();
 
           if (codeData) {
-            // Não definir valor de comissão ainda - será baseado em 10% dos planos futuros
+            // Comissão será 10% dos planos futuros - por enquanto 0
             const commissionAmount = 0;
 
             // Criar a conversão
