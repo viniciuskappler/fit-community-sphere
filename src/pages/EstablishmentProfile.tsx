@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -37,7 +36,7 @@ interface EstablishmentData {
     rating: number;
     comment: string;
     created_at: string;
-    user_profiles: { full_name: string };
+    user_profiles: { full_name: string } | null;
   }>;
 }
 
@@ -68,12 +67,33 @@ const EstablishmentProfile = () => {
           *,
           establishment_sports(sport_name),
           establishment_photos(photo_url, is_main, caption),
-          reviews(id, rating, comment, created_at, user_profiles(full_name))
+          reviews(id, rating, comment, created_at, user_id)
         `)
         .eq('id', id)
         .single();
 
       if (error) throw error;
+
+      // Get user profiles for reviews separately
+      if (data.reviews && data.reviews.length > 0) {
+        const userIds = data.reviews.map((r: any) => r.user_id);
+        const { data: profiles } = await supabase
+          .from('user_profiles')
+          .select('id, full_name')
+          .in('id', userIds);
+
+        // Map profiles to reviews
+        const reviewsWithProfiles = data.reviews.map((review: any) => {
+          const profile = profiles?.find(p => p.id === review.user_id);
+          return {
+            ...review,
+            user_profiles: profile ? { full_name: profile.full_name } : null
+          };
+        });
+
+        data.reviews = reviewsWithProfiles;
+      }
+
       setEstablishment(data);
     } catch (error) {
       console.error('Error fetching establishment:', error);
@@ -347,7 +367,9 @@ const EstablishmentProfile = () => {
                         <div key={review.id} className="border-b border-gray-200 pb-4 last:border-b-0">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">{review.user_profiles.full_name}</span>
+                              <span className="font-medium">
+                                {review.user_profiles?.full_name || 'Usuário'}
+                              </span>
                               <RatingStars rating={review.rating} size="sm" />
                             </div>
                             <span className="text-sm text-gray-500">
