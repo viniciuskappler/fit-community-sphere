@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -78,10 +77,20 @@ export const useReferralTracking = () => {
     if (!user) return { error: 'Usuário não autenticado' };
 
     try {
-      const { data, error } = await supabase.rpc('generate_referral_code', {
-        user_id_param: user.id,
-        type_param: type
-      });
+      // Instead of using the RPC function, create the code directly
+      const codePrefix = type === 'establishment' ? 'EST' : type === 'group' ? 'GRP' : 'SUP';
+      const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const finalCode = `${codePrefix}${randomSuffix}`;
+
+      const { data, error } = await supabase
+        .from('referral_codes')
+        .insert({
+          user_id: user.id,
+          code: finalCode,
+          type: type
+        })
+        .select()
+        .single();
 
       if (error) {
         console.error('Erro ao gerar código:', error);
@@ -91,7 +100,7 @@ export const useReferralTracking = () => {
       // Atualizar a lista de códigos
       await fetchReferralData();
       
-      return { data, error: null };
+      return { data: finalCode, error: null };
     } catch (error) {
       console.error('Erro ao gerar código de referral:', error);
       return { error: 'Erro inesperado ao gerar código' };

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -175,13 +174,15 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
         console.log('📊 Tracking referral conversion:', referralCode);
         try {
           // Primeiro, encontrar o código de referral
-          const { data: codeData } = await supabase
+          const { data: codeData, error: codeError } = await supabase
             .from('referral_codes')
             .select('id')
             .eq('code', referralCode)
             .single();
 
-          if (codeData) {
+          if (codeError) {
+            console.log('❌ Referral code not found:', referralCode);
+          } else if (codeData) {
             // Comissão será 10% dos planos futuros - por enquanto 0
             const commissionAmount = 0;
 
@@ -201,8 +202,6 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             } else {
               console.log('✅ Referral conversion tracked successfully');
             }
-          } else {
-            console.log('❌ Referral code not found:', referralCode);
           }
         } catch (conversionError) {
           console.error('❌ Error in referral tracking:', conversionError);
