@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Users, Heart, Calendar, Trophy, CheckCircle, ArrowRight, Star, Target } from 'lucide-react';
@@ -149,7 +148,6 @@ const LandingGrupo = () => {
         </div>
       </section>
 
-      {/* Group Types Section */}
       <section 
         ref={(el) => sectionsRef.current[1] = el}
         className="py-20 bg-white opacity-0 transform translate-y-10"
@@ -186,7 +184,6 @@ const LandingGrupo = () => {
         </div>
       </section>
 
-      {/* Benefits Section */}
       <section 
         ref={(el) => sectionsRef.current[2] = el}
         className="py-20 bg-gray-50 opacity-0 transform translate-y-10"
@@ -220,7 +217,6 @@ const LandingGrupo = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section 
         ref={(el) => sectionsRef.current[3] = el}
         className="py-20 bg-white opacity-0 transform translate-y-10"
@@ -259,7 +255,6 @@ const LandingGrupo = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section 
         ref={(el) => sectionsRef.current[4] = el}
         className="py-20 bg-gradient-to-br from-orange-50 to-white opacity-0 transform translate-y-10"
@@ -300,7 +295,6 @@ const LandingGrupo = () => {
         </div>
       </section>
 
-      {/* CTA Final */}
       <section 
         ref={(el) => sectionsRef.current[5] = el}
         className="py-20 bg-gradient-to-r from-orange-600 to-orange-400 text-white opacity-0 transform translate-y-10"

@@ -1,12 +1,13 @@
 
 import React, { useState } from 'react';
-import { Copy, DollarSign, Users, TrendingUp, Calendar, CheckCircle, Clock, X } from 'lucide-react';
+import { Copy, DollarSign, Users, TrendingUp, Calendar, CheckCircle, Clock, X, Info } from 'lucide-react';
 import Header from '../components/Header';
 import SecondaryHeader from '../components/SecondaryHeader';
 import Footer from '../components/Footer';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { Alert, AlertDescription } from '../components/ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 import { useReferralTracking } from '@/hooks/useReferralTracking';
 import { useToast } from '@/hooks/use-toast';
@@ -134,6 +135,14 @@ const MeusReferrals = () => {
             </p>
           </div>
 
+          {/* Informação sobre comissões */}
+          <Alert className="mb-8 bg-blue-50 border-blue-200">
+            <Info className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800">
+              <strong>Como funciona:</strong> Você ganhará 10% de comissão sobre os planos pagos pelos usuários que se cadastrarem através dos seus links de indicação. Os valores das comissões serão calculados quando os planos forem lançados.
+            </AlertDescription>
+          </Alert>
+
           {/* Cards de Resumo */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
@@ -147,6 +156,7 @@ const MeusReferrals = () => {
                 <p className="text-2xl font-bold text-green-800">
                   {formatCurrency(getTotalCommissions())}
                 </p>
+                <p className="text-xs text-green-600 mt-1">Aguardando lançamento dos planos</p>
               </CardContent>
             </Card>
 
@@ -198,7 +208,7 @@ const MeusReferrals = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp size={20} />
-                Seus Códigos de Referral
+                Seus Links de Indicação
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -208,21 +218,21 @@ const MeusReferrals = () => {
                   disabled={generatingCode === 'establishment'}
                   className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500"
                 >
-                  {generatingCode === 'establishment' ? 'Gerando...' : 'Gerar Código Estabelecimento'}
+                  {generatingCode === 'establishment' ? 'Gerando...' : 'Gerar Link Estabelecimento'}
                 </Button>
                 <Button
                   onClick={() => handleGenerateCode('group')}
                   disabled={generatingCode === 'group'}
                   className="bg-gradient-to-r from-green-600 to-green-400 hover:from-green-700 hover:to-green-500"
                 >
-                  {generatingCode === 'group' ? 'Gerando...' : 'Gerar Código Grupo'}
+                  {generatingCode === 'group' ? 'Gerando...' : 'Gerar Link Grupo'}
                 </Button>
                 <Button
                   onClick={() => handleGenerateCode('supporter')}
                   disabled={generatingCode === 'supporter'}
                   className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500"
                 >
-                  {generatingCode === 'supporter' ? 'Gerando...' : 'Gerar Código Praticante'}
+                  {generatingCode === 'supporter' ? 'Gerando...' : 'Gerar Link Praticante'}
                 </Button>
               </div>
 
@@ -250,7 +260,7 @@ const MeusReferrals = () => {
                 
                 {referralCodes.length === 0 && (
                   <p className="text-gray-500 text-center py-8">
-                    Você ainda não gerou nenhum código de referral. Clique nos botões acima para começar!
+                    Você ainda não gerou nenhum link de indicação. Clique nos botões acima para começar!
                   </p>
                 )}
               </div>
@@ -262,7 +272,7 @@ const MeusReferrals = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar size={20} />
-                Histórico de Conversões
+                Histórico de Indicações
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -283,11 +293,11 @@ const MeusReferrals = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-lg">
-                        {formatCurrency(conversion.commission_amount)}
+                      <p className="font-bold text-lg text-gray-400">
+                        10% de comissão
                       </p>
                       <p className="text-sm text-gray-600">
-                        {getStatusText(conversion.commission_status)}
+                        Aguardando planos
                       </p>
                     </div>
                   </div>
@@ -295,7 +305,7 @@ const MeusReferrals = () => {
                 
                 {conversions.length === 0 && (
                   <p className="text-gray-500 text-center py-8">
-                    Ainda não há conversões registradas. Compartilhe seus códigos para começar a ganhar comissões!
+                    Ainda não há indicações registradas. Compartilhe seus links para começar a ganhar comissões!
                   </p>
                 )}
               </div>

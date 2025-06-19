@@ -6,6 +6,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserData } from '@/hooks/useUserData';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import PersonalDataStep from './registration/PersonalDataStep';
 import SportsPreferencesStep from './registration/SportsPreferencesStep';
 import PasswordStep from './registration/PasswordStep';
@@ -165,7 +166,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
         return;
       }
 
-      const newUserId = signUpData.user?.id;
+      const newUserId = signUpData?.user?.id;
       console.log('✅ User account created successfully');
 
       // 2. Track referral conversion if referralCode is present
@@ -180,19 +181,8 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             .single();
 
           if (codeData) {
-            // Definir valor da comissão baseado no tipo
-            let commissionAmount = 0;
-            switch (registrationType) {
-              case 'establishment':
-                commissionAmount = 50.00;
-                break;
-              case 'group':
-                commissionAmount = 30.00;
-                break;
-              case 'supporter':
-                commissionAmount = 10.00;
-                break;
-            }
+            // Não definir valor de comissão ainda - será baseado em 10% dos planos futuros
+            const commissionAmount = 0;
 
             // Criar a conversão
             const { error: conversionError } = await supabase

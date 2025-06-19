@@ -51,7 +51,7 @@ export const useReferralTracking = () => {
         .order('created_at', { ascending: false });
 
       if (codesData) {
-        setReferralCodes(codesData);
+        setReferralCodes(codesData as ReferralCode[]);
       }
 
       // Buscar conversões dos referrals do usuário
@@ -111,19 +111,8 @@ export const useReferralTracking = () => {
         return { error: 'Código de referral não encontrado' };
       }
 
-      // Definir valor da comissão baseado no tipo
-      let commissionAmount = 0;
-      switch (conversionType) {
-        case 'establishment':
-          commissionAmount = 50.00;
-          break;
-        case 'group':
-          commissionAmount = 30.00;
-          break;
-        case 'supporter':
-          commissionAmount = 10.00;
-          break;
-      }
+      // Não definir valor de comissão por enquanto - será baseado em 10% dos planos futuros
+      const commissionAmount = 0; // Será calculado quando os planos forem definidos
 
       // Criar a conversão
       const { error } = await supabase
