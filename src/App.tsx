@@ -17,6 +17,9 @@ import CadastroRealizado from "./pages/CadastroRealizado";
 import CadastroFinalizadoEstabelecimento from "./pages/CadastroFinalizadoEstabelecimento";
 import CadastroFinalizadoGrupo from "./pages/CadastroFinalizadoGrupo";
 import TermosPrivacidade from "./pages/TermosPrivacidade";
+import LandingEstabelecimento from "./pages/LandingEstabelecimento";
+import LandingGrupo from "./pages/LandingGrupo";
+import MeusReferrals from "./pages/MeusReferrals";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +44,9 @@ const App = () => (
             <Route path="/cadastro-finalizado-estabelecimento" element={<CadastroFinalizadoEstabelecimento />} />
             <Route path="/cadastro-finalizado-grupo" element={<CadastroFinalizadoGrupo />} />
             <Route path="/termos-privacidade" element={<TermosPrivacidade />} />
+            <Route path="/landing/estabelecimento/:referralCode?" element={<LandingEstabelecimento />} />
+            <Route path="/landing/grupo/:referralCode?" element={<LandingGrupo />} />
+            <Route path="/meus-referrals" element={<MeusReferrals />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

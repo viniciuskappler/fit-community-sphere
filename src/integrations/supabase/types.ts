@@ -218,6 +218,74 @@ export type Database = {
           },
         ]
       }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          is_active: boolean | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referral_conversions: {
+        Row: {
+          commission_amount: number | null
+          commission_status: string | null
+          conversion_type: string
+          created_at: string
+          id: string
+          paid_at: string | null
+          referral_code_id: string
+          referred_user_id: string
+        }
+        Insert: {
+          commission_amount?: number | null
+          commission_status?: string | null
+          conversion_type: string
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          referral_code_id: string
+          referred_user_id: string
+        }
+        Update: {
+          commission_amount?: number | null
+          commission_status?: string | null
+          conversion_type?: string
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          referral_code_id?: string
+          referred_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_conversions_referral_code_id_fkey"
+            columns: ["referral_code_id"]
+            isOneToOne: false
+            referencedRelation: "referral_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -415,7 +483,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_referral_code: {
+        Args: { user_id_param: string; type_param: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

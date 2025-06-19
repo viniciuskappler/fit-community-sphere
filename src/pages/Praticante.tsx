@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { User, Heart, Users, Calendar, MapPin, Phone, Mail, Edit2, Camera } from 'lucide-react';
+import { User, Heart, Users, Calendar, MapPin, Phone, Mail, Edit2, Camera, Share2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import SecondaryHeader from '../components/SecondaryHeader';
 import Footer from '../components/Footer';
@@ -100,13 +101,23 @@ const Praticante = () => {
                     </div>
                   </div>
                   
-                  <Button
-                    onClick={() => setIsEditing(!isEditing)}
-                    className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 flex items-center gap-2"
-                  >
-                    <Edit2 size={16} />
-                    <span className="text-sm">Editar Perfil</span>
-                  </Button>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link to="/meus-referrals">
+                      <Button
+                        className="bg-gradient-to-r from-green-600 to-green-400 hover:from-green-700 hover:to-green-500 flex items-center gap-2"
+                      >
+                        <Share2 size={16} />
+                        <span className="text-sm">Meus Referrals</span>
+                      </Button>
+                    </Link>
+                    <Button
+                      onClick={() => setIsEditing(!isEditing)}
+                      className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 flex items-center gap-2"
+                    >
+                      <Edit2 size={16} />
+                      <span className="text-sm">Editar Perfil</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

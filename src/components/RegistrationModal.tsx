@@ -141,12 +141,6 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   const handleSubmit = async () => {
     console.log('🚀 Starting registration submission...');
     
-    // Track referral code if present
-    if (referralCode) {
-      console.log('📊 Tracking referral conversion:', referralCode);
-      // Aqui seria implementado o tracking da conversão
-    }
-    
     const stepErrors = validateStep4(formData, registrationType);
     
     if (Object.keys(stepErrors).length > 0) {
@@ -160,7 +154,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     try {
       // 1. Criar conta do usuário com a senha fornecida
       console.log('👤 Creating user account...');
-      const { error: signUpError } = await signUp(formData.email, formData.password, {
+      const { data: signUpData, error: signUpError } = await signUp(formData.email, formData.password, {
         fullName: formData.fullName
       });
       
@@ -171,14 +165,65 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
         return;
       }
 
+      const newUserId = signUpData.user?.id;
       console.log('✅ User account created successfully');
 
-      // 2. Aguardar um pouco para garantir que o usuário foi criado
+      // 2. Track referral conversion if referralCode is present
+      if (referralCode && newUserId) {
+        console.log('📊 Tracking referral conversion:', referralCode);
+        try {
+          // Primeiro, encontrar o código de referral
+          const { data: codeData } = await supabase
+            .from('referral_codes')
+            .select('id')
+            .eq('code', referralCode)
+            .single();
+
+          if (codeData) {
+            // Definir valor da comissão baseado no tipo
+            let commissionAmount = 0;
+            switch (registrationType) {
+              case 'establishment':
+                commissionAmount = 50.00;
+                break;
+              case 'group':
+                commissionAmount = 30.00;
+                break;
+              case 'supporter':
+                commissionAmount = 10.00;
+                break;
+            }
+
+            // Criar a conversão
+            const { error: conversionError } = await supabase
+              .from('referral_conversions')
+              .insert({
+                referral_code_id: codeData.id,
+                referred_user_id: newUserId,
+                conversion_type: registrationType,
+                commission_amount: commissionAmount,
+                commission_status: 'pending'
+              });
+
+            if (conversionError) {
+              console.error('❌ Error tracking conversion:', conversionError);
+            } else {
+              console.log('✅ Referral conversion tracked successfully');
+            }
+          } else {
+            console.log('❌ Referral code not found:', referralCode);
+          }
+        } catch (conversionError) {
+          console.error('❌ Error in referral tracking:', conversionError);
+        }
+      }
+
+      // 3. Aguardar um pouco para garantir que o usuário foi criado
       setTimeout(async () => {
         try {
           console.log('💾 Saving user profile...');
           
-          // 3. Salvar dados do perfil
+          // 4. Salvar dados do perfil
           const { error: profileError } = await saveUserProfile({
             full_name: formData.fullName,
             cpf: formData.cpf,
@@ -193,7 +238,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             console.log('✅ Profile saved successfully');
           }
 
-          // 4. Salvar esportes
+          // 5. Salvar esportes
           const allSports = [
             ...formData.favoriteStateSports.map(sport => ({ sport_name: sport, sport_type: 'favorite' as const })),
             ...formData.practicedSports.map(sport => ({ sport_name: sport, sport_type: 'practiced' as const })),
