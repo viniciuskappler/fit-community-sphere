@@ -44,9 +44,9 @@ const SecondaryHeader = ({ isVisible }: SecondaryHeaderProps) => {
                 <ChevronDown size={12} />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg z-50">
               {languages.map((lang) => (
-                <DropdownMenuItem key={lang.code} onSelect={() => setSelectedLanguage(lang)}>
+                <DropdownMenuItem key={lang.code} onSelect={() => setSelectedLanguage(lang)} className="hover:bg-gray-50">
                   <img src={`https://flagcdn.com/w20/${lang.flag}.png`} alt={lang.name} className="w-4 h-auto mr-2" />
                   <span className="text-xs">{lang.name}</span>
                 </DropdownMenuItem>

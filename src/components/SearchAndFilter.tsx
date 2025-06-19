@@ -47,8 +47,7 @@ const SearchAndFilter = ({ onSearch, onLocationSearch, isLocating }: SearchAndFi
         <Button
           onClick={onLocationSearch}
           disabled={isLocating}
-          variant="outline"
-          className="h-12 px-4 border-orange-300 text-orange-600 hover:bg-orange-50 flex items-center justify-center gap-2 whitespace-nowrap"
+          className="h-12 px-4 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white border-0 flex items-center justify-center gap-2 whitespace-nowrap"
         >
           <MapPin size={16} />
           <span className="text-xs md:text-sm">

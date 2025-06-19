@@ -115,24 +115,36 @@ const Hub = () => {
           <div className="mb-6">
             <Tabs defaultValue="map-view" className="w-full">
               <div className="mb-6">
-                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto bg-white border border-gray-200 rounded-xl p-1">
+                <TabsList className="grid w-full grid-cols-3 h-auto bg-white border border-gray-200 rounded-xl p-1 gap-1">
                   <TabsTrigger 
                     value="map-view" 
-                    className="text-xs md:text-sm font-medium py-3 px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white"
+                    className="text-xs md:text-sm font-medium py-2 md:py-3 px-1 md:px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white transition-all duration-300"
                   >
-                    🗺️ Vista do Mapa
+                    <span className="flex flex-col items-center gap-1">
+                      <span>🗺️</span>
+                      <span className="hidden sm:inline">Vista do Mapa</span>
+                      <span className="sm:hidden">Mapa</span>
+                    </span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="establishments" 
-                    className="text-xs md:text-sm font-medium py-3 px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white"
+                    className="text-xs md:text-sm font-medium py-2 md:py-3 px-1 md:px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white transition-all duration-300"
                   >
-                    🏢 Estabelecimentos ({filteredEstablishments.length})
+                    <span className="flex flex-col items-center gap-1">
+                      <span>🏢</span>
+                      <span className="hidden sm:inline">Estabelecimentos ({filteredEstablishments.length})</span>
+                      <span className="sm:hidden">Locais ({filteredEstablishments.length})</span>
+                    </span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="groups" 
-                    className="text-xs md:text-sm font-medium py-3 px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white"
+                    className="text-xs md:text-sm font-medium py-2 md:py-3 px-1 md:px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white transition-all duration-300"
                   >
-                    👥 Grupos ({filteredGroups.length})
+                    <span className="flex flex-col items-center gap-1">
+                      <span>👥</span>
+                      <span className="hidden sm:inline">Grupos ({filteredGroups.length})</span>
+                      <span className="sm:hidden">Grupos ({filteredGroups.length})</span>
+                    </span>
                   </TabsTrigger>
                 </TabsList>
               </div>

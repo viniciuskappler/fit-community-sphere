@@ -10,12 +10,12 @@ const Footer = () => {
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <div className="bg-gradient-to-br from-orange-500 to-red-600 p-2 rounded-xl">
+              <div className="bg-gradient-to-br from-orange-600 to-orange-400 p-2 rounded-xl">
                 <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
-                  <div className="w-3 h-3 bg-gradient-to-br from-orange-500 to-red-600 rounded-full"></div>
+                  <div className="w-3 h-3 bg-gradient-to-br from-orange-600 to-orange-400 rounded-full"></div>
                 </div>
               </div>
-              <span className="text-xl font-bold text-zinc-950">Núcleo do Esporte</span>
+              <span className="text-xl font-bold text-zinc-950 bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">Núcleo do Esporte</span>
             </div>
             <p className="mb-6 max-w-md text-zinc-800">
               Conectando atletas a estabelecimentos e grupos esportivos. 
@@ -36,7 +36,7 @@ const Footer = () => {
 
           {/* Plataforma */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-zinc-800">Plataforma</h3>
+            <h3 className="text-lg font-semibold mb-4 text-zinc-800 bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">Plataforma</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/hub" className="text-gray-400 hover:text-orange-500 transition-colors">
@@ -63,7 +63,7 @@ const Footer = () => {
 
           {/* Usuários */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-zinc-800">Usuários</h3>
+            <h3 className="text-lg font-semibold mb-4 text-zinc-800 bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">Usuários</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/praticante" className="text-gray-400 hover:text-orange-500 transition-colors">
@@ -90,7 +90,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-orange-600">
+          <p className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent font-medium">
             © 2024 Núcleo do Esporte. Todos os direitos reservados.
           </p>
         </div>

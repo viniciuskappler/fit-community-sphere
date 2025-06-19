@@ -44,7 +44,7 @@ const EstablishmentsSection = () => {
       <div className="w-full md:w-11/12 lg:w-3/4 mx-auto px-4 md:px-8 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-5xl font-bold text-gray-900 mb-3">
-            Estabelecimentos em <span className="text-orange-500">Destaque</span>
+            Estabelecimentos em <span className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">Destaque</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
             Encontre academias, boxes e centros esportivos próximos à você com as melhores avaliações
@@ -55,8 +55,13 @@ const EstablishmentsSection = () => {
           {establishments.map(establishment => (
             <div key={establishment.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer">
               <div className="relative h-48 overflow-hidden">
-                <img src={establishment.image} alt={establishment.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                <div className="absolute top-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                <img 
+                  src={establishment.image} 
+                  alt={establishment.name} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  loading="lazy"
+                />
+                <div className="absolute top-3 left-3 bg-gradient-to-r from-orange-600 to-orange-400 text-white px-2 py-1 rounded-full text-xs font-semibold">
                   {establishment.type}
                 </div>
                 <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full flex items-center">
@@ -75,7 +80,7 @@ const EstablishmentsSection = () => {
 
                 <div className="space-y-1 mb-3">
                   <div className="flex items-center text-gray-600">
-                    <MapPin size={14} className="mr-2" />
+                    <MapPin size={14} className="mr-2"  />
                     <span className="text-xs">{establishment.address}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
@@ -100,7 +105,7 @@ const EstablishmentsSection = () => {
 
                 <div className="flex space-x-2">
                   <AuthGuard className="flex-1">
-                    <button className="w-full bg-gradient-to-r from-red-600 to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1">
+                    <button className="w-full bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1">
                       <span>Agendar</span>
                       <ArrowRight size={14} />
                     </button>
@@ -116,7 +121,7 @@ const EstablishmentsSection = () => {
 
         <div className="text-center mt-10">
           <AuthGuard className="inline-block">
-            <button className="bg-gradient-to-r from-red-600 to-orange-500 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 px-[32px] py-[12px] flex items-center space-x-2">
+            <button className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 px-[32px] py-[12px] flex items-center space-x-2">
               <span>Ver mais estabelecimentos</span>
               <ArrowRight size={16} />
             </button>
