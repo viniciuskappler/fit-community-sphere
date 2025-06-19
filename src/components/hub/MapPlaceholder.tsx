@@ -1,6 +1,6 @@
 
 import React from 'react';
-import GoogleMap from '@/components/GoogleMap';
+import MapLibre from '@/components/MapLibre';
 import { EstablishmentWithDetails } from '@/hooks/useEstablishments';
 
 interface MapPlaceholderProps {
@@ -12,8 +12,8 @@ interface MapPlaceholderProps {
     group_name: string;
     cities: string[];
     sports: string[];
-    latitude: number | null;
-    longitude: number | null;
+    latitude: number;
+    longitude: number;
   }>;
 }
 
@@ -43,8 +43,8 @@ const MapPlaceholder: React.FC<MapPlaceholderProps> = ({
     .map(g => ({
       id: g.id,
       group_name: g.group_name,
-      latitude: g.latitude!,
-      longitude: g.longitude!,
+      latitude: g.latitude,
+      longitude: g.longitude,
       cities: g.cities,
       sports: g.sports,
     }));
@@ -83,7 +83,7 @@ const MapPlaceholder: React.FC<MapPlaceholderProps> = ({
         )}
       </div>
       
-      <GoogleMap
+      <MapLibre
         establishments={mapEstablishments}
         groups={mapGroups}
         center={center}

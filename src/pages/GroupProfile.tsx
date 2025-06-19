@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import Header from '@/components/Header';
 import SecondaryHeader from '@/components/SecondaryHeader';
 import Footer from '@/components/Footer';
-import GoogleMap from '@/components/GoogleMap';
+import MapLibre from '@/components/MapLibre';
 import RatingStars from '@/components/RatingStars';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -309,7 +308,7 @@ const GroupProfile = () => {
               {group.latitude && group.longitude && (
                 <Card>
                   <CardContent className="p-0">
-                    <GoogleMap
+                    <MapLibre
                       groups={[{
                         id: group.id,
                         group_name: group.group_name,

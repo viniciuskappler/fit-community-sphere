@@ -9,11 +9,11 @@ import { Separator } from '@/components/ui/separator';
 import Header from '@/components/Header';
 import SecondaryHeader from '@/components/SecondaryHeader';
 import Footer from '@/components/Footer';
-import GoogleMap from '@/components/GoogleMap';
 import RatingStars from '@/components/RatingStars';
 import ReviewModal from '@/components/ReviewModal';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import MapLibre from '@/components/MapLibre';
 
 interface ReviewData {
   id: string;
@@ -336,7 +336,7 @@ const EstablishmentProfile = () => {
               {establishment.latitude && establishment.longitude && (
                 <Card>
                   <CardContent className="p-0">
-                    <GoogleMap
+                    <MapLibre
                       establishments={[{
                         id: establishment.id,
                         establishment_name: establishment.establishment_name,
