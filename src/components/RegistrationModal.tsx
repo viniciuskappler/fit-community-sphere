@@ -25,9 +25,10 @@ interface RegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialType?: 'supporter' | 'establishment' | 'group';
+  referralCode?: string;
 }
 
-const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: RegistrationModalProps) => {
+const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referralCode }: RegistrationModalProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [registrationType, setRegistrationType] = useState(initialType);
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -139,6 +140,12 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter' }: Regis
 
   const handleSubmit = async () => {
     console.log('🚀 Starting registration submission...');
+    
+    // Track referral code if present
+    if (referralCode) {
+      console.log('📊 Tracking referral conversion:', referralCode);
+      // Aqui seria implementado o tracking da conversão
+    }
     
     const stepErrors = validateStep4(formData, registrationType);
     
