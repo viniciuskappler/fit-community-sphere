@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, userData: any) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, userData: any) => Promise<{ data: any; error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
@@ -78,6 +78,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // Tratamento específico para diferentes tipos de erro
         if (error.message.includes('email_provider_disabled') || error.message.includes('Email signups are disabled')) {
           return { 
+            data: null,
             error: { 
               message: 'Cadastro criado com sucesso! Verifique seu e-mail para confirmar a conta.' 
             } 
@@ -86,21 +87,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         
         if (error.message.includes('already')) {
           return { 
+            data: null,
             error: { 
               message: 'Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.' 
             } 
           };
         }
         
-        return { error };
+        return { data: null, error };
       }
 
       console.log('✅ Signup successful:', data);
-      return { error: null };
+      return { data, error: null };
       
     } catch (err) {
       console.error('💥 Unexpected signup error:', err);
       return { 
+        data: null,
         error: { 
           message: 'Erro inesperado durante o cadastro. Tente novamente.' 
         } 
