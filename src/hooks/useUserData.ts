@@ -26,6 +26,9 @@ export const useUserData = () => {
   useEffect(() => {
     if (user) {
       fetchUserData();
+    } else {
+      setProfile(null);
+      setSports([]);
     }
   }, [user]);
 
@@ -35,26 +38,34 @@ export const useUserData = () => {
     setLoading(true);
     
     try {
+      console.log('Fetching user data for:', user.id);
+      
       // Buscar perfil do usuário
-      const { data: profileData } = await supabase
+      const { data: profileData, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('id', user.id)
         .single();
 
-      if (profileData) {
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+      } else {
+        console.log('Profile fetched:', profileData);
         setProfile(profileData);
       }
 
       // Buscar esportes do usuário
-      const { data: sportsData } = await supabase
+      const { data: sportsData, error: sportsError } = await supabase
         .from('user_sports')
         .select('sport_name, sport_type')
         .eq('user_id', user.id);
 
-      if (sportsData) {
+      if (sportsError) {
+        console.error('Error fetching sports:', sportsError);
+      } else {
+        console.log('Sports fetched:', sportsData);
         // Garantir que os tipos estão corretos
-        const typedSports: UserSport[] = sportsData.map(sport => ({
+        const typedSports: UserSport[] = (sportsData || []).map(sport => ({
           sport_name: sport.sport_name,
           sport_type: sport.sport_type as 'favorite' | 'practiced' | 'interested'
         }));
@@ -70,6 +81,8 @@ export const useUserData = () => {
   const saveUserProfile = async (profileData: Partial<UserProfile>) => {
     if (!user) return { error: 'Usuário não autenticado' };
 
+    console.log('Saving profile data:', profileData);
+
     // Garantir que full_name sempre tenha um valor
     const dataToSave = {
       id: user.id,
@@ -81,7 +94,10 @@ export const useUserData = () => {
       .from('user_profiles')
       .upsert(dataToSave);
 
-    if (!error) {
+    if (error) {
+      console.error('Error saving profile:', error);
+    } else {
+      console.log('Profile saved successfully');
       await fetchUserData();
     }
 
@@ -91,11 +107,17 @@ export const useUserData = () => {
   const saveUserSports = async (userSports: UserSport[]) => {
     if (!user) return { error: 'Usuário não autenticado' };
 
+    console.log('Saving sports data:', userSports);
+
     // Primeiro, remover todos os esportes existentes
-    await supabase
+    const { error: deleteError } = await supabase
       .from('user_sports')
       .delete()
       .eq('user_id', user.id);
+
+    if (deleteError) {
+      console.error('Error deleting existing sports:', deleteError);
+    }
 
     // Depois, inserir os novos esportes
     if (userSports.length > 0) {
@@ -109,13 +131,17 @@ export const useUserData = () => {
         .from('user_sports')
         .insert(sportsToInsert);
 
-      if (!error) {
+      if (error) {
+        console.error('Error saving sports:', error);
+      } else {
+        console.log('Sports saved successfully');
         await fetchUserData();
       }
 
       return { error };
     }
 
+    await fetchUserData();
     return { error: null };
   };
 

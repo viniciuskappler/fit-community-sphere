@@ -9,6 +9,8 @@ import { ArrowLeft, Check, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface EstablishmentRegistrationModalProps {
   isOpen: boolean;
@@ -59,7 +61,8 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
     }
 
     // Validação básica
-    if (!formData.establishmentName || !formData.corporateName || !formData.email || !formData.phone || !formData.slug) {
+    if (!formData.establishmentName || !formData.corporateName || !formData.email || 
+        !formData.phone || !formData.address || !formData.city || !formData.state || !formData.cep) {
       setError('Por favor, preencha todos os campos obrigatórios');
       return;
     }
@@ -67,16 +70,53 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
     setLoading(true);
     
     try {
-      // Aqui você implementaria a lógica de salvamento no Supabase
-      console.log('Salvando estabelecimento:', formData);
+      console.log('Salvando estabelecimento no Supabase:', {
+        user_id: user.id,
+        establishment_name: formData.establishmentName,
+        corporate_name: formData.corporateName,
+        cnpj: formData.cnpj || null,
+        description: formData.description || null,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        cep: formData.cep,
+        phone: formData.phone,
+        email: formData.email,
+        slug: formData.slug || null
+      });
+
+      const { data, error: supabaseError } = await supabase
+        .from('establishments')
+        .insert({
+          user_id: user.id,
+          establishment_name: formData.establishmentName,
+          corporate_name: formData.corporateName,
+          cnpj: formData.cnpj || null,
+          description: formData.description || null,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          cep: formData.cep,
+          phone: formData.phone,
+          email: formData.email
+        })
+        .select()
+        .single();
+
+      if (supabaseError) {
+        console.error('Erro do Supabase:', supabaseError);
+        throw supabaseError;
+      }
+
+      console.log('Estabelecimento salvo com sucesso:', data);
       
-      // Simular delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      toast.success('Estabelecimento cadastrado com sucesso!');
       onClose();
       navigate('/cadastro-finalizado-estabelecimento');
-    } catch (err) {
-      setError('Erro ao cadastrar estabelecimento. Tente novamente.');
+    } catch (err: any) {
+      console.error('Erro ao cadastrar estabelecimento:', err);
+      setError(err.message || 'Erro ao cadastrar estabelecimento. Tente novamente.');
+      toast.error('Erro ao cadastrar estabelecimento');
     } finally {
       setLoading(false);
     }
@@ -113,24 +153,6 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
               />
             </div>
             <div>
-              <Label htmlFor="slug" className="text-sm font-medium text-gray-700">URL do Estabelecimento *</Label>
-              <div className="mt-1 flex">
-                <span className="inline-flex items-center px-3 text-xs text-gray-500 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md">
-                  /estabelecimento/
-                </span>
-                <Input
-                  id="slug"
-                  value={formData.slug}
-                  onChange={(e) => handleInputChange('slug', e.target.value)}
-                  className="rounded-l-none text-sm"
-                  placeholder="academia-fitness-pro"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
               <Label htmlFor="corporateName" className="text-sm font-medium text-gray-700">Razão Social *</Label>
               <Input
                 id="corporateName"
@@ -140,6 +162,9 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
                 placeholder="Ex: Fitness Pro Ltda"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="cnpj" className="text-sm font-medium text-gray-700">CNPJ</Label>
               <Input
@@ -150,9 +175,6 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
                 placeholder="00.000.000/0000-00"
               />
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Telefone *</Label>
               <Input
@@ -163,17 +185,18 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
                 placeholder="(11) 99999-9999"
               />
             </div>
-            <div>
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">E-mail *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className="mt-1 text-sm"
-                placeholder="contato@estabelecimento.com"
-              />
-            </div>
+          </div>
+
+          <div>
+            <Label htmlFor="email" className="text-sm font-medium text-gray-700">E-mail *</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              className="mt-1 text-sm"
+              placeholder="contato@estabelecimento.com"
+            />
           </div>
 
           <div>
@@ -188,7 +211,7 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
           </div>
 
           <div>
-            <Label htmlFor="address" className="text-sm font-medium text-gray-700">Endereço Completo</Label>
+            <Label htmlFor="address" className="text-sm font-medium text-gray-700">Endereço Completo *</Label>
             <Input
               id="address"
               value={formData.address}
@@ -200,7 +223,7 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="city" className="text-sm font-medium text-gray-700">Cidade</Label>
+              <Label htmlFor="city" className="text-sm font-medium text-gray-700">Cidade *</Label>
               <Input
                 id="city"
                 value={formData.city}
@@ -210,7 +233,7 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
               />
             </div>
             <div>
-              <Label htmlFor="state" className="text-sm font-medium text-gray-700">Estado</Label>
+              <Label htmlFor="state" className="text-sm font-medium text-gray-700">Estado *</Label>
               <Input
                 id="state"
                 value={formData.state}
@@ -220,7 +243,7 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
               />
             </div>
             <div>
-              <Label htmlFor="cep" className="text-sm font-medium text-gray-700">CEP</Label>
+              <Label htmlFor="cep" className="text-sm font-medium text-gray-700">CEP *</Label>
               <Input
                 id="cep"
                 value={formData.cep}
