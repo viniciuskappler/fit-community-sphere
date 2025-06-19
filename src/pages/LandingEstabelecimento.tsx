@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, MapPin, Users, TrendingUp, CheckCircle, ArrowRight, Play, Award } from 'lucide-react';

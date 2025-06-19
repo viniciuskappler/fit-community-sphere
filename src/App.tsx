@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Index from '@/pages/Index';
@@ -43,7 +42,9 @@ function App() {
               <Route path="/estabelecimento" element={<Estabelecimento />} />
               <Route path="/grupo-esportivo" element={<GrupoEsportivo />} />
               <Route path="/landing-estabelecimento" element={<LandingEstabelecimento />} />
+              <Route path="/landing-estabelecimento/:referralCode" element={<LandingEstabelecimento />} />
               <Route path="/landing-grupo" element={<LandingGrupo />} />
+              <Route path="/landing-grupo/:referralCode" element={<LandingGrupo />} />
               <Route path="/cadastro-realizado" element={<CadastroRealizado />} />
               <Route path="/cadastro-finalizado-estabelecimento" element={<CadastroFinalizadoEstabelecimento />} />
               <Route path="/cadastro-finalizado-grupo" element={<CadastroFinalizadoGrupo />} />
