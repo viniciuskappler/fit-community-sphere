@@ -1,58 +1,59 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Index from '@/pages/Index';
+import Hub from '@/pages/Hub';
+import Busca from '@/pages/Busca';
+import Esportes from '@/pages/Esportes';
+import SportsModalities from '@/pages/SportsModalities';
+import Praticante from '@/pages/Praticante';
+import Estabelecimento from '@/pages/Estabelecimento';
+import GrupoEsportivo from '@/pages/GrupoEsportivo';
+import LandingEstabelecimento from '@/pages/LandingEstabelecimento';
+import LandingGrupo from '@/pages/LandingGrupo';
+import CadastroRealizado from '@/pages/CadastroRealizado';
+import CadastroFinalizadoEstabelecimento from '@/pages/CadastroFinalizadoEstabelecimento';
+import CadastroFinalizadoGrupo from '@/pages/CadastroFinalizadoGrupo';
+import MeusReferrals from '@/pages/MeusReferrals';
+import TermosPrivacidade from '@/pages/TermosPrivacidade';
+import NotFound from '@/pages/NotFound';
 import { AuthProvider } from '@/contexts/AuthContext';
-import Index from "./pages/Index";
-import Hub from "./pages/Hub";
-import Estabelecimento from "./pages/Estabelecimento";
-import GrupoEsportivo from "./pages/GrupoEsportivo";
-import Praticante from "./pages/Praticante";
-import Esportes from "./pages/Esportes";
-import SportsModalities from "./pages/SportsModalities";
-import Busca from "./pages/Busca";
-import CadastroRealizado from "./pages/CadastroRealizado";
-import CadastroFinalizadoEstabelecimento from "./pages/CadastroFinalizadoEstabelecimento";
-import CadastroFinalizadoGrupo from "./pages/CadastroFinalizadoGrupo";
-import TermosPrivacidade from "./pages/TermosPrivacidade";
-import LandingEstabelecimento from "./pages/LandingEstabelecimento";
-import LandingGrupo from "./pages/LandingGrupo";
-import MeusReferrals from "./pages/MeusReferrals";
-import NotFound from "./pages/NotFound";
+import { Toaster } from 'sonner';
+import { QueryClient } from '@tanstack/react-query';
+import EstablishmentProfile from './pages/EstablishmentProfile';
+import GroupProfile from './pages/GroupProfile';
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/hub" element={<Hub />} />
-            <Route path="/estabelecimento" element={<Estabelecimento />} />
-            <Route path="/grupo-esportivo" element={<GrupoEsportivo />} />
-            <Route path="/praticante" element={<Praticante />} />
-            <Route path="/esportes" element={<Esportes />} />
-            <Route path="/modalidades" element={<SportsModalities />} />
-            <Route path="/busca" element={<Busca />} />
-            <Route path="/cadastro-realizado" element={<CadastroRealizado />} />
-            <Route path="/cadastro-finalizado-estabelecimento" element={<CadastroFinalizadoEstabelecimento />} />
-            <Route path="/cadastro-finalizado-grupo" element={<CadastroFinalizadoGrupo />} />
-            <Route path="/termos-privacidade" element={<TermosPrivacidade />} />
-            <Route path="/landing/estabelecimento/:referralCode?" element={<LandingEstabelecimento />} />
-            <Route path="/landing/grupo/:referralCode?" element={<LandingGrupo />} />
-            <Route path="/meus-referrals" element={<MeusReferrals />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <QueryClient>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-background font-sans antialiased">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/hub" element={<Hub />} />
+              <Route path="/busca" element={<Busca />} />
+              <Route path="/esportes" element={<Esportes />} />
+              <Route path="/modalidades-esportivas" element={<SportsModalities />} />
+              <Route path="/praticante" element={<Praticante />} />
+              <Route path="/estabelecimento/:id" element={<EstablishmentProfile />} />
+              <Route path="/grupo-esportivo/:id" element={<GroupProfile />} />
+              <Route path="/estabelecimento" element={<Estabelecimento />} />
+              <Route path="/grupo-esportivo" element={<GrupoEsportivo />} />
+              <Route path="/landing-estabelecimento" element={<LandingEstabelecimento />} />
+              <Route path="/landing-grupo" element={<LandingGrupo />} />
+              <Route path="/cadastro-realizado" element={<CadastroRealizado />} />
+              <Route path="/cadastro-finalizado-estabelecimento" element={<CadastroFinalizadoEstabelecimento />} />
+              <Route path="/cadastro-finalizado-grupo" element={<CadastroFinalizadoGrupo />} />
+              <Route path="/meus-referrals" element={<MeusReferrals />} />
+              <Route path="/termos-privacidade" element={<TermosPrivacidade />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster />
+          </div>
+        </Router>
+      </AuthProvider>
+    </QueryClient>
+  );
+}
 
 export default App;

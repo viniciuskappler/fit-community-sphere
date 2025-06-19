@@ -173,6 +173,8 @@ const Hub = () => {
                     <MapPlaceholder
                       selectedRegion={selectedRegion}
                       resultCount={regionFilteredResults.length}
+                      establishments={selectedRegion ? regionFilteredResults.filter(item => 'establishment_name' in item) as EstablishmentWithDetails[] : filteredEstablishments}
+                      groups={selectedRegion ? regionFilteredResults.filter(item => 'group_name' in item) : filteredGroups}
                     />
                   </div>
                 </div>
