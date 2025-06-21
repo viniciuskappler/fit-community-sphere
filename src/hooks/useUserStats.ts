@@ -20,37 +20,33 @@ export const useUserStats = () => {
 
   const fetchStats = async () => {
     try {
-      // Buscar contagem de usuários por tipo
-      const { data: supporters, error: supportersError } = await supabase
+      // Buscar contagem total de usuários
+      const { count: totalCount, error: totalError } = await supabase
         .from('user_profiles')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_type', 'supporter');
+        .select('*', { count: 'exact', head: true });
 
-      const { data: establishments, error: establishmentsError } = await supabase
-        .from('user_profiles')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_type', 'establishment');
+      // Buscar contagem de estabelecimentos
+      const { count: establishmentCount, error: establishmentError } = await supabase
+        .from('establishments')
+        .select('*', { count: 'exact', head: true });
 
-      const { data: groups, error: groupsError } = await supabase
-        .from('user_profiles')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_type', 'group');
+      // Buscar contagem de grupos
+      const { count: groupCount, error: groupError } = await supabase
+        .from('sports_groups')
+        .select('*', { count: 'exact', head: true });
 
-      if (supportersError || establishmentsError || groupsError) {
-        console.error('Erro ao buscar estatísticas:', { supportersError, establishmentsError, groupsError });
+      if (totalError || establishmentError || groupError) {
+        console.error('Erro ao buscar estatísticas:', { totalError, establishmentError, groupError });
         return;
       }
 
-      const supporterCount = supporters?.length || 0;
-      const establishmentCount = establishments?.length || 0;
-      const groupCount = groups?.length || 0;
-      const totalCount = supporterCount + establishmentCount + groupCount;
+      const supporters = Math.max(0, (totalCount || 0) - (establishmentCount || 0) - (groupCount || 0));
 
       setStats({
-        total_users: totalCount,
-        supporters: supporterCount,
-        establishments: establishmentCount,
-        groups: groupCount
+        total_users: totalCount || 0,
+        supporters: supporters,
+        establishments: establishmentCount || 0,
+        groups: groupCount || 0
       });
     } catch (error) {
       console.error('Erro inesperado ao buscar estatísticas:', error);
