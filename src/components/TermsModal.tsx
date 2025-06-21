@@ -14,7 +14,7 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[80vh] bg-white">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
+          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
             Termos de Uso e Política de Privacidade
           </DialogTitle>
         </DialogHeader>
@@ -22,7 +22,9 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose }) => {
         <ScrollArea className="h-[60vh] pr-4">
           <div className="space-y-6 text-sm bg-white">
             <section>
-              <h3 className="text-lg font-semibold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent mb-3">Termos de Uso</h3>
+              <h3 className="text-lg font-semibold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent mb-3">
+                Termos de Uso
+              </h3>
               
               <div className="space-y-4">
                 <div>
@@ -60,19 +62,21 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose }) => {
             </section>
 
             <section>
-              <h3 className="text-lg font-semibold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent mb-3">Política de Privacidade</h3>
+              <h3 className="text-lg font-semibold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent mb-3">
+                Política de Privacidade - LGPD
+              </h3>
               
               <div className="space-y-4">
                 <div>
                   <h4 className="font-medium text-gray-800 mb-2">1. Coleta de Dados</h4>
                   <p className="text-gray-600 leading-relaxed">
                     Coletamos informações pessoais fornecidas voluntariamente (nome, e-mail, preferências esportivas) 
-                    e dados de uso da plataforma para melhorar nossos serviços.
+                    e dados de uso da plataforma para melhorar nossos serviços, em conformidade com a LGPD.
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-2">2. Uso dos Dados</h4>
+                  <h4 className="font-medium text-gray-800 mb-2">2. Finalidades do Tratamento</h4>
                   <p className="text-gray-600 leading-relaxed">
                     Utilizamos seus dados para personalizar sua experiência, conectá-lo com estabelecimentos e grupos 
                     relevantes, e enviar comunicações relacionadas ao esporte (quando autorizado).
@@ -80,10 +84,10 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose }) => {
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-2">3. Compartilhamento de Dados</h4>
+                  <h4 className="font-medium text-gray-800 mb-2">3. Seus Direitos</h4>
                   <p className="text-gray-600 leading-relaxed">
-                    Não vendemos suas informações pessoais. Compartilhamos dados apenas quando necessário para 
-                    prestação de serviços ou quando exigido por lei.
+                    Você possui direitos de acesso, correção, eliminação, portabilidade e revogação de consentimento 
+                    sobre seus dados pessoais, conforme a LGPD.
                   </p>
                 </div>
 
@@ -98,17 +102,20 @@ const TermsModal: React.FC<TermsModalProps> = ({ isOpen, onClose }) => {
             </section>
 
             <section>
-              <h3 className="text-lg font-semibold bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent mb-3">Contato</h3>
+              <h3 className="text-lg font-semibold bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent mb-3">
+                Contato
+              </h3>
               <p className="text-gray-600 leading-relaxed">
-                Para dúvidas sobre estes termos ou nossa política de privacidade, entre em contato através do e-mail: 
-                <span className="font-medium"> contato@nucleodoesporte.com.br</span>
+                Para dúvidas sobre estes termos ou exercer seus direitos: 
+                <span className="font-medium"> contato@nucleodoesporte.com.br</span> ou 
+                <span className="font-medium"> dpo@nucleodoesporte.com.br</span> (Encarregado de Dados)
               </p>
             </section>
           </div>
         </ScrollArea>
 
         <div className="flex justify-end mt-4 bg-white">
-          <Button onClick={onClose} className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500">
+          <Button onClick={onClose} className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600">
             Fechar
           </Button>
         </div>

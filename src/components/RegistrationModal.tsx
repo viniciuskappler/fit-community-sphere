@@ -175,7 +175,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
         navigate('/cadastro-finalizado-grupo');
       }
     } else {
-      setErrors({ general: result.error || 'Erro inesperado durante o cadastro.' });
+      // Não mostrar erros em vermelho aqui - apenas log
+      console.error('Erro no cadastro:', result.error);
+      setErrors({ general: 'Ocorreu um erro durante o cadastro. Tente novamente.' });
     }
   };
 
@@ -248,16 +250,16 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
         )}
 
         {errors.general && (
-          <Alert className="bg-red-50 border border-red-200 mt-4">
-            <AlertTriangle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800 font-medium">
+          <Alert className="bg-blue-50 border border-blue-200 mt-4">
+            <AlertTriangle className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800 font-medium">
               {errors.general}
             </AlertDescription>
           </Alert>
         )}
 
         <div className="mt-4 md:mt-6">
-          <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-orange-500">
+          <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
             {getStepTitle(currentStep, registrationType)}
           </h3>
 
@@ -269,7 +271,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
               variant="outline"
               onClick={prevStep}
               disabled={currentStep === 1 || loading}
-              className="flex items-center justify-center space-x-2 order-2 sm:order-1"
+              className="flex items-center justify-center space-x-2 order-2 sm:order-1 border-gray-300 hover:border-orange-400 hover:text-orange-600"
             >
               <ArrowLeft size={16} />
               <span>Voltar</span>
