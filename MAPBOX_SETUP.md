@@ -3,29 +3,36 @@
 
 Este projeto utiliza MapLibre GL JS com tiles do Mapbox para renderização de mapas.
 
-## Configuração do Token
+## Token Configurado
 
-Para que os mapas funcionem corretamente, você precisa configurar um token público do Mapbox:
+O projeto já está configurado com um token público do Mapbox para o usuário `nucleodoesporte`.
 
-### 1. Obter Token do Mapbox
+Token atual: `pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZuaXpseTAwdXoya3BhdTN0YXdhdGoifQ.M2vZc8nLWI8-rDHZ2m42eQ`
 
-1. Acesse [mapbox.com](https://account.mapbox.com/access-tokens/)
-2. Faça login ou crie uma conta
-3. Crie um novo token público com escopo `Styles:Read`
-4. Copie o token (começará com `pk.`)
+## Configuração Alternativa
 
-### 2. Configurar Token
+Para usar um token diferente, você pode:
 
-Você pode configurar o token de duas formas:
-
-#### Opção A: Variável de Ambiente (Recomendado)
+### 1. Variável de Ambiente (Recomendado para produção)
 Crie um arquivo `.env.local` na raiz do projeto:
 ```
-VITE_MAPBOX_TOKEN=pk.eyJ1IjoibXl1c2VybmFtZSIsImEiOiJja...
+VITE_MAPBOX_TOKEN=pk.seu_token_aqui
 ```
 
-#### Opção B: Interface do Usuário
+### 2. Interface do Usuário
 Se não configurar a variável de ambiente, o componente solicitará o token via interface.
+
+## Funcionalidades Implementadas
+
+- ✅ Renderização de mapas responsivos
+- ✅ Marcadores customizados para estabelecimentos (🏋️) e grupos (👥)
+- ✅ Popups informativos com animações
+- ✅ Navegação e zoom
+- ✅ Carregamento dinâmico de dados
+- ✅ Fallback para entrada manual de token
+- ✅ Controles de navegação
+- ✅ Efeitos hover nos marcadores
+- ✅ Abertura de detalhes em nova aba
 
 ## Custos
 
@@ -33,25 +40,8 @@ O Mapbox oferece:
 - **50.000 map loads web gratuitos** por mês
 - **25.000 MAU mobile gratuitos** por mês
 
-Para projetos maiores, considere:
-- MapTiler (alternativa compatível)
-- Tile server próprio (OpenStreetMap + MapLibre)
+## Segurança
 
-## Funcionalidades Implementadas
-
-- ✅ Renderização de mapas responsivos
-- ✅ Marcadores customizados para estabelecimentos (🏋️) e grupos (👥)
-- ✅ Popups informativos
-- ✅ Navegação e zoom
-- ✅ Carregamento dinâmico de dados
-- ✅ Fallback para entrada manual de token
-
-## Migração do Google Maps
-
-Esta implementação substitui completamente o Google Maps, removendo:
-- Dependências `@googlemaps/js-api-loader`
-- Scripts de carregamento do Google Maps
-- Componentes baseados em `google.maps.*`
-- Variáveis de ambiente do Google Maps
-
-A funcionalidade permanece idêntica com melhor performance e menor custo.
+- Use apenas tokens **públicos** (pk.*) no frontend
+- Tokens privados (sk.*) devem ser usados apenas no backend
+- Configure variáveis de ambiente para produção
