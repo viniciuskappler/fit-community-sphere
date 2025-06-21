@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -45,10 +44,10 @@ const MapLibre: React.FC<MapLibreProps> = ({
   const [mapboxToken, setMapboxToken] = useState('');
   const [error, setError] = useState<string>('');
 
-  // Token do MapBox - usando o token fornecido como fallback
+  // Token do MapBox - usando o novo token fornecido
   const getMapboxToken = () => {
     const envToken = import.meta.env.VITE_MAPBOX_TOKEN;
-    const fallbackToken = 'pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZuaXpseTAwdXoya3BhdTN0YXdhdGoifQ.M2vZc8nLWI8-rDHZ2m42eQ';
+    const fallbackToken = 'pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZueW1yNjB3MTIybG9iZng4emdqbmcifQ.tNqa_pTigYKXj42EWtth8Q';
     
     console.log('🗺️ MapBox Token Debug:', {
       envToken: envToken ? 'Presente' : 'Ausente',
