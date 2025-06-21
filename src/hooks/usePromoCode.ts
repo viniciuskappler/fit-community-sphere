@@ -38,7 +38,16 @@ export const usePromoCode = () => {
         };
       }
 
-      return data as PromoCodeResult;
+      // Safe type conversion with validation
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return data as PromoCodeResult;
+      }
+
+      return {
+        success: false,
+        error: 'Resposta inválida do servidor.',
+        error_type: 'invalid_code'
+      };
     } catch (error) {
       console.error('Erro inesperado:', error);
       return {
@@ -62,7 +71,12 @@ export const usePromoCode = () => {
         return null;
       }
 
-      return data as PromoStats;
+      // Safe type conversion with validation
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return data as PromoStats;
+      }
+
+      return null;
     } catch (error) {
       console.error('Erro inesperado:', error);
       return null;

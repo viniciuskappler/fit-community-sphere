@@ -1,4 +1,5 @@
-import { isValidCPF } from '@brazilian-utils/cpf';
+
+import { validateCPF } from './cpfValidation';
 
 export interface FormData {
   fullName: string;
@@ -73,7 +74,7 @@ export const validateStep1 = (data: FormData): ValidationErrors => {
 
   if (!data.cpf.trim()) {
     errors.cpf = 'CPF é obrigatório';
-  } else if (!isValidCPF(data.cpf)) {
+  } else if (!validateCPF(data.cpf)) {
     errors.cpf = 'CPF inválido';
   }
 
