@@ -40,7 +40,7 @@ export const usePromoCode = () => {
 
       // Safe type conversion with validation
       if (data && typeof data === 'object' && !Array.isArray(data)) {
-        return data as PromoCodeResult;
+        return data as unknown as PromoCodeResult;
       }
 
       return {
@@ -73,7 +73,7 @@ export const usePromoCode = () => {
 
       // Safe type conversion with validation
       if (data && typeof data === 'object' && !Array.isArray(data)) {
-        return data as PromoStats;
+        return data as unknown as PromoStats;
       }
 
       return null;
