@@ -16,6 +16,11 @@ interface PersonalDataStepProps {
     city: string;
     state: string;
     birthDate: string;
+    street: string;
+    number: string;
+    neighborhood: string;
+    cep: string;
+    cityIbgeCode?: string;
   };
   onInputChange: (field: string, value: any) => void;
   errors?: ValidationErrors;
@@ -41,6 +46,21 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalData
         formattedPhone = value.replace(/(\d{2})/, '($1) ');
       }
       onInputChange('phone', formattedPhone);
+    }
+  };
+
+  const handleCEPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 8) {
+      const formattedCEP = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+      onInputChange('cep', formattedCEP);
+    }
+  };
+
+  const handleCityChange = (cityName: string, ibgeCode?: string) => {
+    onInputChange('city', cityName);
+    if (ibgeCode) {
+      onInputChange('cityIbgeCode', ibgeCode);
     }
   };
 
@@ -116,10 +136,65 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalData
             stateValue={formData.state}
             cityValue={formData.city}
             onStateChange={(value) => onInputChange('state', value)}
-            onCityChange={(value) => onInputChange('city', value)}
+            onCityChange={handleCityChange}
             stateError={errors.state}
             cityError={errors.city}
           />
+        </div>
+      </div>
+
+      <div>
+        <Label className="text-orange-600 font-medium">Endereço Completo *</Label>
+        <div className="mt-1 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2">
+              <Input
+                placeholder="Rua/Avenida"
+                value={formData.street}
+                onChange={(e) => onInputChange('street', e.target.value)}
+                className={errors.street ? 'border-orange-500' : ''}
+              />
+              {errors.street && (
+                <p className="text-orange-500 text-sm mt-1">{errors.street}</p>
+              )}
+            </div>
+            <div>
+              <Input
+                placeholder="Número"
+                value={formData.number}
+                onChange={(e) => onInputChange('number', e.target.value)}
+                className={errors.number ? 'border-orange-500' : ''}
+              />
+              {errors.number && (
+                <p className="text-orange-500 text-sm mt-1">{errors.number}</p>
+              )}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Input
+                placeholder="Bairro"
+                value={formData.neighborhood}
+                onChange={(e) => onInputChange('neighborhood', e.target.value)}
+                className={errors.neighborhood ? 'border-orange-500' : ''}
+              />
+              {errors.neighborhood && (
+                <p className="text-orange-500 text-sm mt-1">{errors.neighborhood}</p>
+              )}
+            </div>
+            <div>
+              <Input
+                placeholder="CEP"
+                value={formData.cep}
+                onChange={handleCEPChange}
+                maxLength={9}
+                className={errors.cep ? 'border-orange-500' : ''}
+              />
+              {errors.cep && (
+                <p className="text-orange-500 text-sm mt-1">{errors.cep}</p>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

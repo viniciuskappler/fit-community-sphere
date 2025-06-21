@@ -64,7 +64,7 @@ export const useRegistration = () => {
       // 2. Aguardar um pouco para o trigger criar o perfil
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // 3. Atualizar perfil com dados completos
+      // 3. Atualizar perfil com dados completos incluindo endereço
       console.log('💾 Updating user profile...');
       const { error: profileError } = await supabase
         .from('user_profiles')

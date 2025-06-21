@@ -27,6 +27,38 @@ export type Database = {
         }
         Relationships: []
       }
+      cities: {
+        Row: {
+          created_at: string | null
+          ibge_code: string
+          id: number
+          name: string
+          state_code: string
+        }
+        Insert: {
+          created_at?: string | null
+          ibge_code: string
+          id?: number
+          name: string
+          state_code: string
+        }
+        Update: {
+          created_at?: string | null
+          ibge_code?: string
+          id?: number
+          name?: string
+          state_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cities_state_code_fkey"
+            columns: ["state_code"]
+            isOneToOne: false
+            referencedRelation: "states"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       establishment_photos: {
         Row: {
           caption: string | null
@@ -382,6 +414,27 @@ export type Database = {
         }
         Relationships: []
       }
+      states: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
       user_favorites: {
         Row: {
           created_at: string
@@ -424,32 +477,50 @@ export type Database = {
       user_profiles: {
         Row: {
           birth_date: string | null
+          cep: string | null
           city: string | null
+          city_ibge_code: string | null
           cpf: string | null
           created_at: string
           full_name: string
           id: string
+          neighborhood: string | null
+          number: string | null
           phone: string | null
+          state: string | null
+          street: string | null
           updated_at: string
         }
         Insert: {
           birth_date?: string | null
+          cep?: string | null
           city?: string | null
+          city_ibge_code?: string | null
           cpf?: string | null
           created_at?: string
           full_name: string
           id: string
+          neighborhood?: string | null
+          number?: string | null
           phone?: string | null
+          state?: string | null
+          street?: string | null
           updated_at?: string
         }
         Update: {
           birth_date?: string | null
+          cep?: string | null
           city?: string | null
+          city_ibge_code?: string | null
           cpf?: string | null
           created_at?: string
           full_name?: string
           id?: string
+          neighborhood?: string | null
+          number?: string | null
           phone?: string | null
+          state?: string | null
+          street?: string | null
           updated_at?: string
         }
         Relationships: []

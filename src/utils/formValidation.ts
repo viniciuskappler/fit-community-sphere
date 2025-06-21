@@ -10,6 +10,11 @@ export interface FormData {
   city: string;
   state: string;
   birthDate: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+  cep: string;
+  cityIbgeCode?: string;
   
   // Preferências Esportivas
   favoriteStateSports: string[];
@@ -25,7 +30,6 @@ export interface FormData {
   cnpj: string;
   description: string;
   address: string;
-  cep: string;
   
   // Termos
   acceptTerms: boolean;
@@ -40,6 +44,10 @@ export interface ValidationErrors {
   city?: string;
   state?: string;
   birthDate?: string;
+  street?: string;
+  number?: string;
+  neighborhood?: string;
+  cep?: string;
   favoriteStateSports?: string;
   practicedSports?: string;
   interestedSports?: string;
@@ -49,7 +57,6 @@ export interface ValidationErrors {
   cnpj?: string;
   description?: string;
   address?: string;
-  cep?: string;
   acceptTerms?: string;
   general?: string;
 }
@@ -96,6 +103,25 @@ export const validateStep1 = (formData: FormData): ValidationErrors => {
   
   if (!formData.city.trim()) {
     errors.city = 'Cidade é obrigatória';
+  }
+
+  // Validações de endereço
+  if (!formData.street.trim()) {
+    errors.street = 'Rua é obrigatória';
+  }
+  
+  if (!formData.number.trim()) {
+    errors.number = 'Número é obrigatório';
+  }
+  
+  if (!formData.neighborhood.trim()) {
+    errors.neighborhood = 'Bairro é obrigatório';
+  }
+  
+  if (!formData.cep.trim()) {
+    errors.cep = 'CEP é obrigatório';
+  } else if (formData.cep.replace(/\D/g, '').length !== 8) {
+    errors.cep = 'CEP deve ter 8 dígitos';
   }
   
   if (!formData.birthDate) {

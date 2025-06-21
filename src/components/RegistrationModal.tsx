@@ -38,7 +38,13 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     phone: '',
     email: '',
     city: '',
+    state: '',
     birthDate: '',
+    street: '',
+    number: '',
+    neighborhood: '',
+    cep: '',
+    cityIbgeCode: '',
     
     // Sports Preferences
     favoriteStateSports: [],
@@ -54,8 +60,6 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     cnpj: '',
     description: '',
     address: '',
-    state: '',
-    cep: '',
     
     // Terms
     acceptTerms: true,
