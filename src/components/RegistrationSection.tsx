@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { User, Store, Users, ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import RegistrationModal from "./RegistrationModal";
+import StatisticsPanel from "./StatisticsPanel";
 import { useLocation } from "react-router-dom";
 
 const options = [{
@@ -49,20 +50,6 @@ const RegistrationSection = () => {
         className="w-full px-6 md:px-8 lg:px-4 flex flex-col items-center py-[100px] bg-gray-50 reveal-on-scroll"
       >
         <div className="w-full md:w-11/12 lg:w-3/4 mx-auto">
-          {promoCode === 'SQUAD300' && (
-            <div className="mb-8 text-center">
-              <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white p-6 rounded-xl shadow-lg">
-                <h2 className="text-2xl font-bold mb-2">🎉 Chegou o Núcleo do Esporte!</h2>
-                <p className="text-lg mb-3">
-                  Garanta sua vaga no SQUAD 300, pague metade do preço e trave este valor para sempre.
-                </p>
-                <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                  <span className="text-xl font-bold">Escaneie o QR Code e entre para a revolução do esporte!</span>
-                </div>
-              </div>
-            </div>
-          )}
-
           <h1 className="text-2xl md:text-3xl lg:text-3xl font-bold text-center text-gray-900">
             Escolha seu perfil
           </h1>
@@ -89,6 +76,41 @@ const RegistrationSection = () => {
           </div>
         </div>
       </section>
+
+      {/* Always show SQUAD 300 Banner */}
+      <section className="w-full px-6 md:px-8 lg:px-4 flex flex-col items-center py-8 bg-gradient-to-br from-orange-50 to-red-50">
+        <div className="w-full md:w-11/12 lg:w-3/4 mx-auto">
+          <div className="bg-gradient-to-r from-orange-600 to-red-500 text-white p-8 rounded-2xl shadow-2xl border border-orange-400/30">
+            <div className="text-center mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3">🎉 Chegou o Núcleo do Esporte!</h2>
+              <p className="text-xl mb-4">
+                Garanta sua vaga no SQUAD 300, pague metade do preço e trave este valor para sempre.
+              </p>
+              <div className="bg-white bg-opacity-20 rounded-lg p-4">
+                <span className="text-2xl font-bold">Escaneie o QR Code e entre para a revolução do esporte!</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="bg-white bg-opacity-20 rounded-xl p-4">
+                <div className="text-3xl font-bold">50%</div>
+                <div className="text-sm">Desconto Vitalício</div>
+              </div>
+              <div className="bg-white bg-opacity-20 rounded-xl p-4">
+                <div className="text-3xl font-bold">300</div>
+                <div className="text-sm">Vagas Limitadas</div>
+              </div>
+              <div className="bg-white bg-opacity-20 rounded-xl p-4">
+                <div className="text-3xl font-bold">🏆</div>
+                <div className="text-sm">Squad Exclusivo</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Panel */}
+      <StatisticsPanel />
 
       <RegistrationModal 
         isOpen={isModalOpen}
