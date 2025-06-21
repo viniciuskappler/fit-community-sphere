@@ -1,8 +1,9 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, Store, Users, ArrowRight } from "lucide-react";
 import { Button } from "./ui/button";
 import RegistrationModal from "./RegistrationModal";
+import { useLocation } from "react-router-dom";
 
 const options = [{
   icon: <User size={36} color="#ff6600" strokeWidth={2.4} />,
@@ -24,6 +25,17 @@ const options = [{
 const RegistrationSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<'supporter' | 'establishment' | 'group'>('supporter');
+  const [promoCode, setPromoCode] = useState<string>('');
+  const location = useLocation();
+
+  useEffect(() => {
+    // Verificar se há código promocional na URL
+    const urlParams = new URLSearchParams(location.search);
+    const code = urlParams.get('promo') || urlParams.get('codigo');
+    if (code) {
+      setPromoCode(code.toUpperCase());
+    }
+  }, [location]);
 
   const handleSelectOption = (type: 'supporter' | 'establishment' | 'group') => {
     setSelectedType(type);
@@ -37,6 +49,20 @@ const RegistrationSection = () => {
         className="w-full px-6 md:px-8 lg:px-4 flex flex-col items-center py-[100px] bg-gray-50 reveal-on-scroll"
       >
         <div className="w-full md:w-11/12 lg:w-3/4 mx-auto">
+          {promoCode === 'SQUAD300' && (
+            <div className="mb-8 text-center">
+              <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white p-6 rounded-xl shadow-lg">
+                <h2 className="text-2xl font-bold mb-2">🎉 Chegou o Núcleo do Esporte!</h2>
+                <p className="text-lg mb-3">
+                  Garanta sua vaga no SQUAD 300, pague metade do preço e trave este valor para sempre.
+                </p>
+                <div className="bg-white bg-opacity-20 rounded-lg p-3">
+                  <span className="text-xl font-bold">Escaneie o QR Code e entre para a revolução do esporte!</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <h1 className="text-2xl md:text-3xl lg:text-3xl font-bold text-center text-gray-900">
             Escolha seu perfil
           </h1>
@@ -68,6 +94,7 @@ const RegistrationSection = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialType={selectedType}
+        promoCode={promoCode}
       />
     </>
   );

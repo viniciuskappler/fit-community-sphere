@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,6 +14,7 @@ interface RegistrationData {
   practicedSports: string[];
   interestedSports: string[];
   password: string;
+  promoCode?: string;
 }
 
 interface RegistrationResult {
@@ -40,7 +40,7 @@ export const useRegistration = () => {
       console.log('👤 Creating user account...');
       const { data: signUpData, error: signUpError } = await signUp(data.email, data.password, {
         fullName: data.fullName,
-        full_name: data.fullName // Garantir que ambos os formatos sejam enviados
+        full_name: data.fullName
       });
       
       if (signUpError) {
@@ -64,7 +64,7 @@ export const useRegistration = () => {
       // 2. Aguardar um pouco para o trigger criar o perfil
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // 3. Atualizar perfil com dados completos incluindo endereço
+      // 3. Atualizar perfil com dados completos incluindo código promocional
       console.log('💾 Updating user profile...');
       const { error: profileError } = await supabase
         .from('user_profiles')
@@ -73,13 +73,13 @@ export const useRegistration = () => {
           cpf: data.cpf,
           phone: data.phone,
           city: data.city,
-          birth_date: data.birthDate
+          birth_date: data.birthDate,
+          promo_code: data.promoCode || null
         })
         .eq('id', newUserId);
 
       if (profileError) {
         console.error('❌ Error updating profile:', profileError);
-        // Não falhar por causa disso, apenas avisar
         toast.error('Aviso: Alguns dados do perfil podem não ter sido salvos');
       } else {
         console.log('✅ Profile updated successfully');
@@ -124,7 +124,13 @@ export const useRegistration = () => {
       }
 
       console.log('🎉 Registration completed successfully!');
-      toast.success('Cadastro realizado com sucesso!');
+      
+      // Mensagem especial para usuários SQUAD300
+      if (data.promoCode === 'SQUAD300') {
+        toast.success('🎉 Bem-vindo ao SQUAD 300! Desconto vitalício garantido!');
+      } else {
+        toast.success('Cadastro realizado com sucesso!');
+      }
       
       return {
         success: true,
@@ -162,7 +168,7 @@ export const useRegistration = () => {
         return;
       }
 
-      const commissionAmount = 0; // Will be 10% of future plans
+      const commissionAmount = 0;
 
       const { error: conversionError } = await supabase
         .from('referral_conversions')
@@ -179,7 +185,7 @@ export const useRegistration = () => {
       } else {
         console.log('✅ Referral conversion tracked successfully');
       }
-    } catch (error) {
+    }catch (error) {
       console.error('❌ Error in referral tracking:', error);
     }
   };

@@ -250,6 +250,36 @@ export type Database = {
           },
         ]
       }
+      promotional_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string | null
+          current_uses: number
+          discount_percent: number
+          expires_at: string | null
+          max_uses: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string | null
+          current_uses?: number
+          discount_percent?: number
+          expires_at?: string | null
+          max_uses?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string | null
+          current_uses?: number
+          discount_percent?: number
+          expires_at?: string | null
+          max_uses?: number
+        }
+        Relationships: []
+      }
       referral_codes: {
         Row: {
           code: string
@@ -476,6 +506,7 @@ export type Database = {
       }
       user_profiles: {
         Row: {
+          beta_selected_at: string | null
           birth_date: string | null
           cep: string | null
           city: string | null
@@ -484,14 +515,17 @@ export type Database = {
           created_at: string
           full_name: string
           id: string
+          is_beta_tester: boolean | null
           neighborhood: string | null
           number: string | null
           phone: string | null
+          promo_code: string | null
           state: string | null
           street: string | null
           updated_at: string
         }
         Insert: {
+          beta_selected_at?: string | null
           birth_date?: string | null
           cep?: string | null
           city?: string | null
@@ -500,14 +534,17 @@ export type Database = {
           created_at?: string
           full_name: string
           id: string
+          is_beta_tester?: boolean | null
           neighborhood?: string | null
           number?: string | null
           phone?: string | null
+          promo_code?: string | null
           state?: string | null
           street?: string | null
           updated_at?: string
         }
         Update: {
+          beta_selected_at?: string | null
           birth_date?: string | null
           cep?: string | null
           city?: string | null
@@ -516,9 +553,11 @@ export type Database = {
           created_at?: string
           full_name?: string
           id?: string
+          is_beta_tester?: boolean | null
           neighborhood?: string | null
           number?: string | null
           phone?: string | null
+          promo_code?: string | null
           state?: string | null
           street?: string | null
           updated_at?: string
@@ -549,16 +588,48 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      apply_promo_code: {
+        Args: { promo_code_input: string }
+        Returns: Json
+      }
       generate_referral_code: {
         Args:
           | Record<PropertyKey, never>
           | { user_id_param: string; type_param: string }
         Returns: string
+      }
+      get_promo_stats: {
+        Args: { promo_code_input: string }
+        Returns: Json
       }
     }
     Enums: {
