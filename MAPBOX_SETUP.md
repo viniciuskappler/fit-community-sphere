@@ -1,4 +1,5 @@
 
+
 # Configuração do Mapbox
 
 Este projeto utiliza MapLibre GL JS com tiles do Mapbox para renderização de mapas.
@@ -7,7 +8,7 @@ Este projeto utiliza MapLibre GL JS com tiles do Mapbox para renderização de m
 
 O projeto já está configurado com um token público do Mapbox para o usuário `nucleodoesporte`.
 
-Token atual: `pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZueW1yNjB3MTIybG9iZng4emdqbmcifQ.tNqa_pTigYKXj42EWtth8Q`
+Token atual: `pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZwZ2c5eDE1d2YybHB2ajBuNHhxazAifQ.TEFso7cSuwZuiqdTUiyLgw`
 
 ## Configuração Alternativa
 

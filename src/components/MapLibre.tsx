@@ -47,7 +47,7 @@ const MapLibre: React.FC<MapLibreProps> = ({
   // Token do MapBox - usando o novo token fornecido
   const getMapboxToken = () => {
     const envToken = import.meta.env.VITE_MAPBOX_TOKEN;
-    const fallbackToken = 'pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZueW1yNjB3MTIybG9iZng4emdqbmcifQ.tNqa_pTigYKXj42EWtth8Q';
+    const fallbackToken = 'pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZwZ2c5eDE1d2YybHB2ajBuNHhxazAifQ.TEFso7cSuwZuiqdTUiyLgw';
     
     console.log('🗺️ MapBox Token Debug:', {
       envToken: envToken ? 'Presente' : 'Ausente',
