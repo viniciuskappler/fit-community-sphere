@@ -1,4 +1,6 @@
 
+import { validateCPF, validateAge } from './cpfValidation';
+
 export interface FormData {
   // Dados Pessoais
   fullName: string;
@@ -6,6 +8,7 @@ export interface FormData {
   phone: string;
   email: string;
   city: string;
+  state: string;
   birthDate: string;
   
   // Preferências Esportivas
@@ -22,7 +25,6 @@ export interface FormData {
   cnpj: string;
   description: string;
   address: string;
-  state: string;
   cep: string;
   
   // Termos
@@ -36,6 +38,7 @@ export interface ValidationErrors {
   phone?: string;
   email?: string;
   city?: string;
+  state?: string;
   birthDate?: string;
   favoriteStateSports?: string;
   practicedSports?: string;
@@ -46,7 +49,6 @@ export interface ValidationErrors {
   cnpj?: string;
   description?: string;
   address?: string;
-  state?: string;
   cep?: string;
   acceptTerms?: string;
   general?: string;
@@ -66,14 +68,20 @@ export const validateStep1 = (formData: FormData): ValidationErrors => {
   
   if (!formData.fullName.trim()) {
     errors.fullName = 'Nome é obrigatório';
+  } else if (formData.fullName.trim().length < 3) {
+    errors.fullName = 'Nome deve ter pelo menos 3 caracteres';
   }
   
   if (!formData.cpf.trim()) {
     errors.cpf = 'CPF é obrigatório';
+  } else if (!validateCPF(formData.cpf)) {
+    errors.cpf = 'CPF inválido';
   }
   
   if (!formData.phone.trim()) {
     errors.phone = 'Telefone é obrigatório';
+  } else if (formData.phone.replace(/\D/g, '').length < 10) {
+    errors.phone = 'Telefone deve ter pelo menos 10 dígitos';
   }
   
   if (!formData.email.trim()) {
@@ -82,12 +90,21 @@ export const validateStep1 = (formData: FormData): ValidationErrors => {
     errors.email = 'E-mail inválido';
   }
   
+  if (!formData.state.trim()) {
+    errors.state = 'Estado é obrigatório';
+  }
+  
   if (!formData.city.trim()) {
     errors.city = 'Cidade é obrigatória';
   }
   
   if (!formData.birthDate) {
     errors.birthDate = 'Data de nascimento é obrigatória';
+  } else {
+    const ageValidation = validateAge(formData.birthDate);
+    if (!ageValidation.isValid) {
+      errors.birthDate = ageValidation.error;
+    }
   }
   
   return errors;
