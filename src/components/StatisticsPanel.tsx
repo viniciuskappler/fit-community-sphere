@@ -1,32 +1,36 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Users, TrendingUp } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { useUserStats } from '@/hooks/useUserStats';
 
 const StatisticsPanel = () => {
-  const [registeredUsers, setRegisteredUsers] = useState(2847);
-  const [targetUsers] = useState(5000);
+  const { stats, loading } = useUserStats();
+  const targetUsers = 5000;
   
-  useEffect(() => {
-    // Simular aumento gradual dos cadastros
-    const interval = setInterval(() => {
-      setRegisteredUsers(prev => {
-        if (prev < targetUsers) {
-          return prev + Math.floor(Math.random() * 3) + 1;
-        }
-        return prev;
-      });
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [targetUsers]);
-
+  const registeredUsers = stats.total_users;
   const percentage = Math.min((registeredUsers / targetUsers) * 100, 100);
   
   const data = [
     { name: 'Cadastrados', value: registeredUsers, color: '#ea580c' },
     { name: 'Restantes', value: Math.max(targetUsers - registeredUsers, 0), color: '#fed7aa' }
   ];
+
+  if (loading) {
+    return (
+      <div className="relative mx-auto max-w-4xl px-6 mb-16">
+        <div className="relative backdrop-blur-xl bg-gradient-to-br from-orange-500/20 via-red-500/10 to-orange-600/20 rounded-3xl border border-orange-200/30 shadow-2xl overflow-hidden">
+          <div className="relative z-10 p-8 md:p-12">
+            <div className="animate-pulse">
+              <div className="h-8 bg-orange-200 rounded mb-4"></div>
+              <div className="h-16 bg-orange-200 rounded mb-6"></div>
+              <div className="h-4 bg-orange-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative mx-auto max-w-4xl px-6 mb-16">
@@ -74,19 +78,20 @@ const StatisticsPanel = () => {
               </div>
             </div>
 
-            {/* Chart Section */}
+            {/* Chart Section - Gráfico mais fino */}
             <div className="flex justify-center">
-              <div className="relative w-64 h-64">
+              <div className="relative w-56 h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={data}
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
-                      outerRadius={120}
-                      paddingAngle={2}
+                      innerRadius={80}
+                      outerRadius={110}
+                      paddingAngle={1}
                       dataKey="value"
+                      strokeWidth={0}
                     >
                       {data.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
