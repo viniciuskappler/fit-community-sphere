@@ -1,14 +1,16 @@
 
 import React, { useState } from 'react';
-import { Home, User, Building, Users, LogOut } from 'lucide-react';
+import { Home, User, Building, Users, LogOut, Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import RegistrationModal from './RegistrationModal';
 import LoginModal from './LoginModal';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -44,6 +46,17 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
     navigate('/hub');
   };
 
+  const handlePraticanteClick = () => {
+    setIsMobileMenuOpen(false);
+    if (user) {
+      console.log('🎯 Praticante navigation - user logged in, redirecting...');
+      navigate('/praticante');
+    } else {
+      console.log('🎯 Praticante navigation - user not logged in, showing login modal...');
+      setIsLoginModalOpen(true);
+    }
+  };
+
   return (
     <>
       <header className={`pt-3 px-3 md:px-6 fixed left-0 right-0 z-40 transition-all duration-300 ${isSecondaryVisible ? 'top-12' : 'top-0'}`}>
@@ -61,7 +74,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                   <span className="text-sm md:text-base font-bold text-gray-800">Núcleo do Esporte</span>
                 </div>
 
-                {/* Navigation */}
+                {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-6">
                   <Link to="/" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Home size={14} />
@@ -81,8 +94,102 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                   </button>
                 </nav>
 
-                {/* CTA Buttons */}
-                <div className="flex items-center space-x-2 md:space-x-3">
+                {/* Mobile Menu Button */}
+                <div className="md:hidden">
+                  <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                    <SheetTrigger asChild>
+                      <button className="p-2 text-gray-600 hover:text-orange-500">
+                        <Menu size={20} />
+                      </button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-80">
+                      <div className="flex flex-col space-y-6 mt-8">
+                        <Link 
+                          to="/" 
+                          className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <Home size={20} />
+                          <span>Início</span>
+                        </Link>
+                        
+                        <button 
+                          onClick={handlePraticanteClick}
+                          className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                        >
+                          <User size={20} />
+                          <span>Praticante</span>
+                        </button>
+                        
+                        <button 
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            handleHubNavigation;
+                          }}
+                          className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                        >
+                          <Building size={20} />
+                          <span>Buscar Locais</span>
+                        </button>
+                        
+                        <button 
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            handleHubNavigation;
+                          }}
+                          className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                        >
+                          <Users size={20} />
+                          <span>Buscar Grupos</span>
+                        </button>
+
+                        {user ? (
+                          <div className="pt-6 border-t border-gray-200">
+                            <div className="mb-4">
+                              <span className="text-sm text-gray-600">
+                                Olá, {user.user_metadata?.full_name || user.email}
+                              </span>
+                            </div>
+                            <button 
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                handleLogout();
+                              }}
+                              className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                            >
+                              <LogOut size={20} />
+                              <span>Sair</span>
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="pt-6 border-t border-gray-200 space-y-4">
+                            <button 
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                handleCadastrarClick();
+                              }}
+                              className="w-full bg-gradient-to-r from-orange-600 to-orange-400 text-white px-4 py-2 rounded-lg text-center"
+                            >
+                              Cadastrar agora
+                            </button>
+                            <button 
+                              onClick={() => {
+                                setIsMobileMenuOpen(false);
+                                handleLoginClick();
+                              }}
+                              className="w-full bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-4 py-2 rounded-lg text-center"
+                            >
+                              Fazer Login
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+
+                {/* Desktop CTA Buttons */}
+                <div className="hidden md:flex items-center space-x-2 md:space-x-3">
                   {user ? (
                     // Usuário logado - mostrar nome e logout
                     <div className="flex items-center space-x-2 md:space-x-3">
@@ -122,21 +229,17 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
         </div>
       </header>
 
-      {/* Only show modals when user is not authenticated */}
-      {!user && (
-        <>
-          <RegistrationModal 
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            initialType="supporter"
-          />
-          
-          <LoginModal 
-            isOpen={isLoginModalOpen}
-            onClose={() => setIsLoginModalOpen(false)}
-          />
-        </>
-      )}
+      {/* Modals */}
+      <RegistrationModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialType="supporter"
+      />
+      
+      <LoginModal 
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </>
   );
 };
