@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -259,7 +258,7 @@ const SmartRecommendations: React.FC<SmartRecommendationsProps> = ({
                   </div>
                   
                   <div className="flex items-center gap-1 mb-2">
-                    <RatingStars rating={item.rating} size="xs" />
+                    <RatingStars rating={item.rating} size="sm" />
                     <span className="text-xs text-gray-600">
                       ({item.reviewCount})
                     </span>

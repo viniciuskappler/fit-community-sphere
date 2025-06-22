@@ -1,30 +1,31 @@
 
 import { useState, useEffect } from 'react';
 
+interface GeolocationLocation {
+  lat: number;
+  lng: number;
+}
+
 interface GeolocationState {
-  latitude: number | null;
-  longitude: number | null;
-  loading: boolean;
+  location: GeolocationLocation | null;
   error: string | null;
-  accuracy: number | null;
+  isLocating: boolean;
 }
 
 export const useGeolocation = () => {
-  const [location, setLocation] = useState<GeolocationState>({
-    latitude: null,
-    longitude: null,
-    loading: true,
+  const [state, setState] = useState<GeolocationState>({
+    location: null,
     error: null,
-    accuracy: null,
+    isLocating: true,
   });
 
-  const getCurrentPosition = () => {
-    setLocation(prev => ({ ...prev, loading: true, error: null }));
+  const requestPermission = () => {
+    setState(prev => ({ ...prev, isLocating: true, error: null }));
 
     if (!navigator.geolocation) {
-      setLocation(prev => ({
+      setState(prev => ({
         ...prev,
-        loading: false,
+        isLocating: false,
         error: 'Geolocalização não é suportada por este navegador',
       }));
       return;
@@ -44,13 +45,24 @@ export const useGeolocation = () => {
           accuracy: position.coords.accuracy
         });
 
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          loading: false,
+        const location = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+
+        setState({
+          location,
+          isLocating: false,
           error: null,
-          accuracy: position.coords.accuracy,
         });
+
+        // Cache location data
+        const locationData = {
+          ...location,
+          accuracy: position.coords.accuracy,
+          timestamp: Date.now(),
+        };
+        localStorage.setItem('userLocation', JSON.stringify(locationData));
       },
       (error) => {
         console.error('Geolocation error:', error);
@@ -68,9 +80,9 @@ export const useGeolocation = () => {
             break;
         }
 
-        setLocation(prev => ({
+        setState(prev => ({
           ...prev,
-          loading: false,
+          isLocating: false,
           error: errorMessage,
         }));
       },
@@ -86,13 +98,11 @@ export const useGeolocation = () => {
         const parsed = JSON.parse(cachedLocation);
         const isRecent = Date.now() - parsed.timestamp < 300000; // 5 minutes
         
-        if (isRecent && parsed.latitude && parsed.longitude) {
-          setLocation({
-            latitude: parsed.latitude,
-            longitude: parsed.longitude,
-            loading: false,
+        if (isRecent && parsed.lat && parsed.lng) {
+          setState({
+            location: { lat: parsed.lat, lng: parsed.lng },
+            isLocating: false,
             error: null,
-            accuracy: parsed.accuracy || null,
           });
           return;
         }
@@ -101,29 +111,11 @@ export const useGeolocation = () => {
       }
     }
 
-    getCurrentPosition();
+    requestPermission();
   }, []);
 
-  useEffect(() => {
-    // Cache location data when it's successfully obtained
-    if (location.latitude && location.longitude && !location.loading) {
-      const locationData = {
-        latitude: location.latitude,
-        longitude: location.longitude,
-        accuracy: location.accuracy,
-        timestamp: Date.now(),
-      };
-      localStorage.setItem('userLocation', JSON.stringify(locationData));
-    }
-  }, [location.latitude, location.longitude, location.loading, location.accuracy]);
-
-  const refetchLocation = () => {
-    localStorage.removeItem('userLocation');
-    getCurrentPosition();
-  };
-
   return {
-    ...location,
-    refetchLocation,
+    ...state,
+    requestPermission,
   };
 };

@@ -45,22 +45,6 @@ export const useAdvancedSearch = (
     return R * c;
   };
 
-  const isCurrentlyOpen = (hours?: any[]): boolean => {
-    if (!hours || hours.length === 0) return true; // Assume aberto se não há info
-    
-    const now = new Date();
-    const currentDay = now.getDay();
-    const currentTime = now.getHours() * 100 + now.getMinutes();
-    
-    const todayHours = hours.find(h => h.day_of_week === currentDay);
-    if (!todayHours || todayHours.is_closed) return false;
-    
-    const openTime = parseInt(todayHours.open_time.replace(':', ''));
-    const closeTime = parseInt(todayHours.close_time.replace(':', ''));
-    
-    return currentTime >= openTime && currentTime <= closeTime;
-  };
-
   const filteredEstablishments = useMemo(() => {
     return establishments.filter(est => {
       // Filtro de texto
@@ -94,9 +78,6 @@ export const useAdvancedSearch = (
         );
         if (!hasCategory) return false;
       }
-
-      // Filtro de aberto agora
-      // if (filters.openNow && !isCurrentlyOpen(est.hours)) return false;
 
       return true;
     });
