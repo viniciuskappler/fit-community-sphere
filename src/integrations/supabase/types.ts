@@ -434,6 +434,30 @@ export type Database = {
           },
         ]
       }
+      login_attempts: {
+        Row: {
+          attempted_at: string
+          email: string
+          id: string
+          ip_address: unknown | null
+          success: boolean
+        }
+        Insert: {
+          attempted_at?: string
+          email: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+        }
+        Update: {
+          attempted_at?: string
+          email?: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+        }
+        Relationships: []
+      }
       promotional_codes: {
         Row: {
           active: boolean
@@ -748,6 +772,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          last_activity: string
+          session_token: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          last_activity?: string
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          last_activity?: string
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_sports: {
         Row: {
           created_at: string
@@ -805,6 +859,14 @@ export type Database = {
         Args: { promo_code_input: string }
         Returns: Json
       }
+      check_login_attempts: {
+        Args: { user_email: string; user_ip?: unknown }
+        Returns: Json
+      }
+      cleanup_expired_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       generate_referral_code: {
         Args:
           | Record<PropertyKey, never>
@@ -814,6 +876,10 @@ export type Database = {
       get_promo_stats: {
         Args: { promo_code_input: string }
         Returns: Json
+      }
+      log_login_attempt: {
+        Args: { user_email: string; was_successful: boolean; user_ip?: unknown }
+        Returns: undefined
       }
       update_establishment_stats: {
         Args: { est_id: string }

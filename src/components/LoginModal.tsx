@@ -4,9 +4,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useLoginSecurity } from '@/hooks/useLoginSecurity';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -21,6 +22,13 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const { checkLoginAttempts, logLoginAttempt, handleAccountLocked, isCheckingAttempts } = useLoginSecurity();
+
+  // Enhanced email validation
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +37,8 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     
     if (!email) {
       newErrors.email = 'Você esqueceu de preencher esse campo.';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Esse campo foi preenchido incorretamente.';
+    } else if (!validateEmail(email)) {
+      newErrors.email = 'Formato de email inválido.';
     }
     
     if (!password) {
@@ -45,20 +53,47 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setLoading(true);
     setErrors({});
     
-    const { error } = await signIn(email, password);
-    
-    if (error) {
-      if (error.message.includes('Invalid login credentials')) {
-        setErrors({ general: 'Email ou senha incorretos.' });
-      } else {
-        setErrors({ general: 'Erro ao fazer login. Tente novamente.' });
+    try {
+      // Check for account lockout before attempting login
+      const attemptResult = await checkLoginAttempts(email);
+      
+      if (attemptResult.isLocked) {
+        handleAccountLocked(attemptResult.attemptCount);
+        setLoading(false);
+        return;
       }
-    } else {
-      onClose();
-      navigate('/hub');
+
+      const { error } = await signIn(email, password);
+      
+      // Log the login attempt
+      await logLoginAttempt(email, !error);
+      
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          setErrors({ general: 'Email ou senha incorretos.' });
+          
+          // Check if this failed attempt causes account lockout
+          const newAttemptResult = await checkLoginAttempts(email);
+          if (newAttemptResult.attemptCount >= 4) {
+            setErrors({ 
+              general: `Email ou senha incorretos. ${5 - newAttemptResult.attemptCount} tentativa(s) restante(s).` 
+            });
+          }
+        } else {
+          setErrors({ general: 'Erro ao fazer login. Tente novamente.' });
+        }
+      } else {
+        onClose();
+        navigate('/hub');
+      }
+    } catch (error: any) {
+      console.error('Login exception:', error);
+      setErrors({ general: 'Erro inesperado ao fazer login' });
+      // Log failed attempt even for exceptions
+      await logLoginAttempt(email, false);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -72,7 +107,8 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errors.general && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start space-x-2">
+              <AlertTriangle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
               <p className="text-sm text-red-600">{errors.general}</p>
             </div>
           )}
@@ -91,7 +127,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               }}
               className="mt-1"
               placeholder="seu@email.com"
-              disabled={loading}
+              disabled={loading || isCheckingAttempts}
             />
             {errors.email && (
               <p className="text-xs text-orange-500 mt-1">{errors.email}</p>
@@ -113,13 +149,13 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 }}
                 className="mt-1 pr-10"
                 placeholder="Sua senha"
-                disabled={loading}
+                disabled={loading || isCheckingAttempts}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                disabled={loading}
+                disabled={loading || isCheckingAttempts}
               >
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
@@ -137,10 +173,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading || isCheckingAttempts}
             className="w-full bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600"
           >
-            {loading ? 'Entrando...' : 'Entrar'}
+            {loading || isCheckingAttempts ? 'Verificando...' : 'Entrar'}
           </Button>
 
           <div className="text-center text-sm text-gray-600">

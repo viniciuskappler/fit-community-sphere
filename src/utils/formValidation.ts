@@ -1,195 +1,120 @@
 
-import { validateCPF } from './cpfValidation';
-
-export interface FormData {
-  fullName: string;
-  cpf: string;
-  phone: string;
-  email: string;
-  city: string;
-  state: string;
-  birthDate: string;
-  street: string;
-  number: string;
-  neighborhood: string;
-  cep: string;
-  cityIbgeCode: string;
-  favoriteStateSports: string[];
-  practicedSports: string[];
-  interestedSports: string[];
-  password: string;
-  confirmPassword: string;
-  businessName: string;
-  cnpj: string;
-  description: string;
-  address: string;
-  acceptTerms: boolean;
-  acceptNewsletter: boolean;
-  promoCode: string;
-}
+import { validatePassword } from './passwordValidation';
 
 export interface ValidationErrors {
-  fullName?: string;
-  cpf?: string;
-  phone?: string;
-  email?: string;
-  city?: string;
-  state?: string;
-  birthDate?: string;
-  street?: string;
-  number?: string;
-  neighborhood?: string;
-  cep?: string;
-  favoriteStateSports?: string;
-  practicedSports?: string;
-  interestedSports?: string;
-  password?: string;
-  confirmPassword?: string;
-  businessName?: string;
-  cnpj?: string;
-  description?: string;
-  address?: string;
-  acceptTerms?: string;
-  general?: string;
-  promo?: string;
+  [key: string]: string;
 }
 
-export const formatDateForDisplay = (dateString: string): string => {
-  if (!dateString) return '';
-  
-  const date = new Date(dateString);
-  return date.toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
-};
-
-export const validateStep1 = (data: FormData): ValidationErrors => {
+export const validateRegistrationForm = (formData: any, currentStep?: number): ValidationErrors => {
   const errors: ValidationErrors = {};
 
-  if (!data.fullName.trim()) {
-    errors.fullName = 'Nome completo é obrigatório';
-  }
+  // Personal data validation
+  if (currentStep === 1 || !currentStep) {
+    if (!formData.fullName?.trim()) {
+      errors.fullName = 'Nome completo é obrigatório';
+    }
 
-  if (!data.cpf.trim()) {
-    errors.cpf = 'CPF é obrigatório';
-  } else if (!validateCPF(data.cpf)) {
-    errors.cpf = 'CPF inválido';
-  }
-
-  if (!data.phone.trim()) {
-    errors.phone = 'Telefone é obrigatório';
-  }
-
-  if (!data.email.trim()) {
-    errors.email = 'E-mail é obrigatório';
-  } else if (!/\S+@\S+\.\S+/.test(data.email)) {
-    errors.email = 'E-mail inválido';
-  }
-
-  if (!data.state.trim()) {
-    errors.state = 'Estado é obrigatório';
-  }
-
-  if (!data.city.trim()) {
-    errors.city = 'Cidade é obrigatória';
-  }
-
-  if (!data.street.trim()) {
-    errors.street = 'Rua é obrigatória';
-  }
-
-  if (!data.number.trim()) {
-    errors.number = 'Número é obrigatório';
-  }
-
-  if (!data.neighborhood.trim()) {
-    errors.neighborhood = 'Bairro é obrigatório';
-  }
-
-  if (!data.cep.trim()) {
-    errors.cep = 'CEP é obrigatório';
-  }
-
-  if (!data.birthDate) {
-    errors.birthDate = 'Data de nascimento é obrigatória';
-  } else {
-    const birthDate = new Date(data.birthDate);
-    const today = new Date();
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      const adjustedAge = age - 1;
-      if (adjustedAge < 16) {
-        errors.birthDate = 'Você deve ter pelo menos 16 anos para se cadastrar';
+    if (!formData.email?.trim()) {
+      errors.email = 'E-mail é obrigatório';
+    } else {
+      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+      if (!emailRegex.test(formData.email)) {
+        errors.email = 'Formato de email inválido';
       }
-    } else if (age < 16) {
-      errors.birthDate = 'Você deve ter pelo menos 16 anos para se cadastrar';
+    }
+
+    if (!formData.phone?.trim()) {
+      errors.phone = 'Telefone é obrigatório';
+    }
+
+    if (!formData.cpf?.trim()) {
+      errors.cpf = 'CPF é obrigatório';
+    }
+  }
+
+  // Password validation with enhanced security
+  if (currentStep === 2 || !currentStep) {
+    const passwordValidation = validatePassword(formData.password || '');
+    
+    if (!formData.password) {
+      errors.password = 'Senha é obrigatória';
+    } else if (!passwordValidation.isValid) {
+      errors.password = 'Senha não atende aos requisitos de segurança';
+    }
+
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = 'Confirmação de senha é obrigatória';
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Senhas não coincidem';
+    }
+  }
+
+  // Location validation
+  if (currentStep === 3 || !currentStep) {
+    if (!formData.state?.trim()) {
+      errors.state = 'Estado é obrigatório';
+    }
+
+    if (!formData.city?.trim()) {
+      errors.city = 'Cidade é obrigatória';
+    }
+  }
+
+  // Birth date validation
+  if (currentStep === 4 || !currentStep) {
+    if (!formData.birthDate) {
+      errors.birthDate = 'Data de nascimento é obrigatória';
+    } else {
+      const birthDate = new Date(formData.birthDate);
+      const today = new Date();
+      const age = today.getFullYear() - birthDate.getFullYear();
+      
+      if (age < 13) {
+        errors.birthDate = 'Você deve ter pelo menos 13 anos';
+      }
+      
+      if (birthDate > today) {
+        errors.birthDate = 'Data de nascimento não pode ser no futuro';
+      }
     }
   }
 
   return errors;
 };
 
-export const validateStep2 = (data: FormData): ValidationErrors => {
-  const errors: ValidationErrors = {};
-
-  if (data.favoriteStateSports.length === 0) {
-    errors.favoriteStateSports = 'Selecione pelo menos um esporte favorito';
-  }
-
-  if (data.practicedSports.length === 0) {
-    errors.practicedSports = 'Selecione pelo menos um esporte que você pratica';
-  }
-
-  if (data.interestedSports.length === 0) {
-    errors.interestedSports = 'Selecione pelo menos um esporte de interesse';
-  }
-
-  return errors;
-};
-
-export const validateStep3 = (data: FormData): ValidationErrors => {
-  const errors: ValidationErrors = {};
-
-  if (!data.password) {
-    errors.password = 'Senha é obrigatória';
-  } else if (data.password.length < 6) {
-    errors.password = 'Senha deve ter pelo menos 6 caracteres';
-  }
-
-  if (!data.confirmPassword) {
-    errors.confirmPassword = 'Confirmação de senha é obrigatória';
-  } else if (data.password !== data.confirmPassword) {
-    errors.confirmPassword = 'Senhas não coincidem';
-  }
-
-  return errors;
-};
-
-export const validateStep4 = (data: FormData, registrationType: string): ValidationErrors => {
-  const errors: ValidationErrors = {};
-
-  if (!data.acceptTerms) {
-    errors.acceptTerms = 'Você deve aceitar os termos para continuar';
-  }
-
-  return errors;
-};
-
-export const getStepTitle = (step: number, registrationType: string): string => {
-  switch (step) {
-    case 1:
-      return 'Dados Pessoais';
-    case 2:
-      return 'Preferências Esportivas';
-    case 3:
-      return 'Criar Senha';
-    case 4:
-      return 'Finalizar Cadastro';
+export const validateField = (fieldName: string, value: any, formData?: any): string | undefined => {
+  switch (fieldName) {
+    case 'email':
+      if (!value?.trim()) return 'E-mail é obrigatório';
+      const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+      if (!emailRegex.test(value)) return 'Formato de email inválido';
+      break;
+      
+    case 'password':
+      if (!value) return 'Senha é obrigatória';
+      const passwordValidation = validatePassword(value);
+      if (!passwordValidation.isValid) return 'Senha não atende aos requisitos de segurança';
+      break;
+      
+    case 'confirmPassword':
+      if (!value) return 'Confirmação de senha é obrigatória';
+      if (formData?.password && value !== formData.password) return 'Senhas não coincidem';
+      break;
+      
+    case 'fullName':
+      if (!value?.trim()) return 'Nome completo é obrigatório';
+      if (value.trim().length < 2) return 'Nome deve ter pelo menos 2 caracteres';
+      break;
+      
+    case 'phone':
+      if (!value?.trim()) return 'Telefone é obrigatório';
+      const phoneRegex = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
+      if (!phoneRegex.test(value)) return 'Formato de telefone inválido';
+      break;
+      
     default:
-      return '';
+      break;
   }
+  
+  return undefined;
 };
