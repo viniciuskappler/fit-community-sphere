@@ -10,6 +10,7 @@ import NavigationButtons from './registration/NavigationButtons';
 import PromoCodeBanner from './PromoCodeBanner';
 import PromoCodeInput from './PromoCodeInput';
 import WaitlistModal from './WaitlistModal';
+import GoogleAuthButton from './GoogleAuthButton';
 import { 
   FormData, 
   validateStep1, 
@@ -34,7 +35,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [showWaitlist, setShowWaitlist] = useState(false);
   const [promoValidation, setPromoValidation] = useState<any>(null);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { registerUser, loading } = useRegistration();
+  const { signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<FormData>({
@@ -186,6 +189,27 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     }
   };
 
+  const handleGoogleSignup = async () => {
+    setGoogleLoading(true);
+    setErrors({});
+    
+    try {
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        setErrors({ general: 'Erro ao cadastrar com Google. Tente novamente.' });
+      } else {
+        onClose();
+        navigate('/hub');
+      }
+    } catch (error: any) {
+      console.error('Google signup exception:', error);
+      setErrors({ general: 'Erro inesperado ao cadastrar com Google' });
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
@@ -213,6 +237,26 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
               </div>
             </div>
           </div>
+
+          {/* Google Signup Button - Only show on step 1 */}
+          {currentStep === 1 && (
+            <div className="mb-6 space-y-4">
+              <GoogleAuthButton
+                onClick={handleGoogleSignup}
+                loading={googleLoading}
+                text="Cadastrar com Google"
+              />
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-muted-foreground">Ou continue com o cadastro tradicional</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           <RegistrationAlerts registrationType={registrationType} errors={errors} />
 
@@ -245,7 +289,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             <NavigationButtons
               currentStep={currentStep}
               totalSteps={4}
-              loading={loading}
+              loading={loading || googleLoading}
               onPrevious={prevStep}
               onNext={nextStep}
               onSubmit={handleSubmit}
