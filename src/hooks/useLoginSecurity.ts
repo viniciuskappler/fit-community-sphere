@@ -25,7 +25,18 @@ export const useLoginSecurity = () => {
         return { isLocked: false, attemptCount: 0, lastAttempt: null };
       }
 
-      return data as LoginAttemptResult;
+      // Properly type the response from Supabase RPC
+      const result = data as unknown as {
+        is_locked: boolean;
+        attempt_count: number;
+        last_attempt: string | null;
+      };
+
+      return {
+        isLocked: result.is_locked,
+        attemptCount: result.attempt_count,
+        lastAttempt: result.last_attempt
+      };
     } catch (error) {
       console.error('Error checking login attempts:', error);
       return { isLocked: false, attemptCount: 0, lastAttempt: null };

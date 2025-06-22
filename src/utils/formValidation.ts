@@ -5,6 +5,42 @@ export interface ValidationErrors {
   [key: string]: string;
 }
 
+export interface FormData {
+  // Personal Data
+  fullName: string;
+  cpf: string;
+  phone: string;
+  email: string;
+  city: string;
+  state: string;
+  birthDate: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+  cep: string;
+  cityIbgeCode: string;
+  
+  // Sports Preferences
+  favoriteStateSports: string[];
+  practicedSports: string[];
+  interestedSports: string[];
+  
+  // Password
+  password: string;
+  confirmPassword: string;
+  
+  // Business/Group Data
+  businessName: string;
+  cnpj: string;
+  description: string;
+  address: string;
+  
+  // Terms
+  acceptTerms: boolean;
+  acceptNewsletter: boolean;
+  promoCode: string;
+}
+
 export const validateRegistrationForm = (formData: any, currentStep?: number): ValidationErrors => {
   const errors: ValidationErrors = {};
 
@@ -80,6 +116,87 @@ export const validateRegistrationForm = (formData: any, currentStep?: number): V
   }
 
   return errors;
+};
+
+export const validateStep1 = (formData: FormData): ValidationErrors => {
+  return validateRegistrationForm(formData, 1);
+};
+
+export const validateStep2 = (formData: FormData): ValidationErrors => {
+  return validateRegistrationForm(formData, 2);
+};
+
+export const validateStep3 = (formData: FormData): ValidationErrors => {
+  return validateRegistrationForm(formData, 3);
+};
+
+export const validateStep4 = (formData: FormData, registrationType?: string): ValidationErrors => {
+  const errors: ValidationErrors = {};
+  
+  // Base step 4 validation
+  const step4Errors = validateRegistrationForm(formData, 4);
+  Object.assign(errors, step4Errors);
+  
+  // Additional validation for establishments/groups
+  if (registrationType === 'establishment' || registrationType === 'group') {
+    if (!formData.businessName?.trim()) {
+      errors.businessName = `Nome do ${registrationType === 'establishment' ? 'estabelecimento' : 'grupo'} é obrigatório`;
+    }
+    
+    if (!formData.description?.trim()) {
+      errors.description = 'Descrição é obrigatória';
+    }
+    
+    if (!formData.address?.trim()) {
+      errors.address = 'Endereço é obrigatório';
+    }
+    
+    if (!formData.state?.trim()) {
+      errors.state = 'Estado é obrigatório';
+    }
+    
+    if (!formData.cep?.trim()) {
+      errors.cep = 'CEP é obrigatório';
+    }
+  }
+  
+  // Terms validation
+  if (!formData.acceptTerms) {
+    errors.acceptTerms = 'Você deve aceitar os termos de uso';
+  }
+  
+  return errors;
+};
+
+export const getStepTitle = (currentStep: number, registrationType: string): string => {
+  switch (currentStep) {
+    case 1:
+      return 'Dados Pessoais';
+    case 2:
+      return 'Preferências Esportivas';
+    case 3:
+      return 'Criar Senha';
+    case 4:
+      if (registrationType === 'establishment') {
+        return 'Dados do Estabelecimento';
+      } else if (registrationType === 'group') {
+        return 'Dados do Grupo';
+      }
+      return 'Finalizar Cadastro';
+    default:
+      return 'Cadastro';
+  }
+};
+
+export const formatDateForDisplay = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+  } catch (error) {
+    return dateString;
+  }
 };
 
 export const validateField = (fieldName: string, value: any, formData?: any): string | undefined => {
