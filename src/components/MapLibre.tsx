@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Button } from '@/components/ui/button';
-import { MapPin, AlertCircle } from 'lucide-react';
+import { MapPin, AlertCircle, Settings } from 'lucide-react';
 
 interface MapLibreProps {
   establishments?: Array<{
@@ -44,18 +44,24 @@ const MapLibre: React.FC<MapLibreProps> = ({
   const [mapboxToken, setMapboxToken] = useState('');
   const [error, setError] = useState<string>('');
 
-  // Token do MapBox - usando o novo token fornecido
+  // Função para obter o token do MapBox
   const getMapboxToken = () => {
     const envToken = import.meta.env.VITE_MAPBOX_TOKEN;
-    const fallbackToken = 'pk.eyJ1IjoibnVjbGVvZG9lc3BvcnRlIiwiYSI6ImNtYzZwZ2c5eDE1d2YybHB2ajBuNHhxazAifQ.TEFso7cSuwZuiqdTUiyLgw';
+    const storedToken = localStorage.getItem('mapbox_token');
     
     console.log('🗺️ MapBox Token Debug:', {
       envToken: envToken ? 'Presente' : 'Ausente',
-      fallbackToken: fallbackToken ? 'Presente' : 'Ausente',
+      storedToken: storedToken ? 'Presente' : 'Ausente',
       userToken: mapboxToken ? 'Presente' : 'Ausente'
     });
     
-    return envToken || fallbackToken || mapboxToken;
+    return envToken || storedToken || mapboxToken;
+  };
+
+  const saveTokenToStorage = (token: string) => {
+    if (token && token.startsWith('pk.')) {
+      localStorage.setItem('mapbox_token', token);
+    }
   };
 
   const initializeMap = () => {
@@ -66,9 +72,9 @@ const MapLibre: React.FC<MapLibreProps> = ({
 
     const token = getMapboxToken();
     if (!token) {
-      console.error('🗺️ Token do MapBox não encontrado');
+      console.log('🗺️ Token do MapBox não encontrado, solicitando configuração');
       setShowTokenInput(true);
-      setError('Token do MapBox não configurado');
+      setError('');
       return;
     }
 
@@ -83,7 +89,7 @@ const MapLibre: React.FC<MapLibreProps> = ({
     try {
       setIsLoading(true);
       setError('');
-      console.log('🗺️ Inicializando mapa com token:', token.substring(0, 20) + '...');
+      console.log('🗺️ Inicializando mapa com token válido');
       
       const mapInstance = new maplibregl.Map({
         container: mapRef.current,
@@ -105,6 +111,7 @@ const MapLibre: React.FC<MapLibreProps> = ({
         setMap(mapInstance);
         setShowTokenInput(false);
         setError('');
+        saveTokenToStorage(token);
 
         // Add markers for establishments
         establishments.forEach((establishment) => {
@@ -240,7 +247,7 @@ const MapLibre: React.FC<MapLibreProps> = ({
       mapInstance.on('error', (e) => {
         console.error('🗺️ Erro no mapa:', e);
         setIsLoading(false);
-        setError('Erro ao carregar o mapa. Verifique o token do MapBox.');
+        setError('Erro ao carregar o mapa. Verifique se o token do MapBox está correto.');
         setShowTokenInput(true);
       });
 
@@ -265,10 +272,30 @@ const MapLibre: React.FC<MapLibreProps> = ({
     
     setIsLoading(true);
     setError('');
+    saveTokenToStorage(mapboxToken);
     setTimeout(() => {
       initializeMap();
     }, 100);
   };
+
+  const clearStoredToken = () => {
+    localStorage.removeItem('mapbox_token');
+    setMapboxToken('');
+    setShowTokenInput(true);
+    setError('');
+    if (map) {
+      map.remove();
+      setMap(null);
+    }
+  };
+
+  // Carregar token salvo na inicialização
+  useEffect(() => {
+    const storedToken = localStorage.getItem('mapbox_token');
+    if (storedToken) {
+      setMapboxToken(storedToken);
+    }
+  }, []);
 
   useEffect(() => {
     console.log('🗺️ MapLibre useEffect executado');
@@ -286,7 +313,6 @@ const MapLibre: React.FC<MapLibreProps> = ({
   useEffect(() => {
     if (map) {
       console.log('🗺️ Recarregando mapa com novos dados');
-      // Limpar marcadores existentes removendo e recriando o mapa
       map.remove();
       setMap(null);
       setTimeout(() => {
@@ -314,12 +340,12 @@ const MapLibre: React.FC<MapLibreProps> = ({
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6" style={{ height }}>
         <div className="flex flex-col items-center justify-center h-full space-y-4">
           <div className="flex items-center space-x-2">
-            <AlertCircle size={48} className="text-red-500" />
+            <Settings size={48} className="text-blue-500" />
             <MapPin size={48} className="text-gray-400" />
           </div>
           
           <h3 className="text-xl font-semibold text-gray-800">
-            {error ? 'Erro no Mapa' : 'Token do Mapbox necessário'}
+            Configuração do Mapa
           </h3>
           
           {error && (
@@ -329,37 +355,46 @@ const MapLibre: React.FC<MapLibreProps> = ({
           )}
           
           <p className="text-gray-600 text-center mb-4">
-            Para usar o mapa, insira seu token público do Mapbox:
+            Para visualizar o mapa, configure seu token público do Mapbox:
           </p>
           
-          <div className="w-full max-w-md space-y-2">
+          <div className="w-full max-w-md space-y-3">
             <input
               type="text"
               value={mapboxToken}
               onChange={(e) => setMapboxToken(e.target.value)}
               placeholder="pk.eyJ1IjoibXl1c2VybmFtZSIsImEiOiJja..."
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
-            <Button onClick={loadMapWithToken} className="w-full">
-              Carregar Mapa
-            </Button>
+            <div className="flex gap-2">
+              <Button onClick={loadMapWithToken} className="flex-1 bg-orange-500 hover:bg-orange-600">
+                Carregar Mapa
+              </Button>
+              {localStorage.getItem('mapbox_token') && (
+                <Button onClick={clearStoredToken} variant="outline" className="px-4">
+                  Limpar
+                </Button>
+              )}
+            </div>
           </div>
           
-          <div className="text-xs text-gray-500 text-center space-y-1">
+          <div className="text-xs text-gray-500 text-center space-y-2 max-w-md">
             <p>
-              Obtenha seu token público em{' '}
+              Obtenha seu token público gratuito em{' '}
               <a 
                 href="https://account.mapbox.com/access-tokens/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-blue-500 hover:underline"
+                className="text-blue-500 hover:underline font-semibold"
               >
                 mapbox.com
               </a>
             </p>
-            <p className="text-red-600 font-semibold">
-              ⚠️ Use apenas tokens públicos (pk.*) no frontend
-            </p>
+            <div className="bg-yellow-50 border border-yellow-200 rounded p-2">
+              <p className="text-yellow-800 font-semibold text-xs">
+                ⚠️ Use apenas tokens públicos (pk.*) - nunca tokens secretos
+              </p>
+            </div>
           </div>
         </div>
       </div>
