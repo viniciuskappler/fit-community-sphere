@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,11 +10,11 @@ import { Separator } from '@/components/ui/separator';
 import Header from '@/components/Header';
 import SecondaryHeader from '@/components/SecondaryHeader';
 import Footer from '@/components/Footer';
-import RatingStars from '@/components/RatingStars';
-import ReviewModal from '@/components/ReviewModal';
+import MapLibre from '@/components/MapLibre';
+import ReviewSystem from '@/components/ReviewSystem';
+import SmartRecommendations from '@/components/SmartRecommendations';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import MapLibre from '@/components/MapLibre';
 
 interface ReviewData {
   id: string;
@@ -49,7 +50,6 @@ const EstablishmentProfile = () => {
   const { toast } = useToast();
   const [establishment, setEstablishment] = useState<EstablishmentData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showReviewModal, setShowReviewModal] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
@@ -244,7 +244,6 @@ const EstablishmentProfile = () => {
     ? establishment.reviews.reduce((sum, review) => sum + review.rating, 0) / establishment.reviews.length
     : 0;
 
-  const mainPhoto = establishment.establishment_photos.find(p => p.is_main);
   const photos = establishment.establishment_photos.length > 0 
     ? establishment.establishment_photos 
     : [{ photo_url: '/placeholder.svg', is_main: true, caption: '' }];
@@ -289,12 +288,6 @@ const EstablishmentProfile = () => {
                       <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                         {establishment.establishment_name}
                       </h1>
-                      <div className="flex items-center gap-2 mb-2">
-                        <RatingStars rating={averageRating} size="sm" />
-                        <span className="text-sm text-gray-600">
-                          ({establishment.reviews.length} avaliações)
-                        </span>
-                      </div>
                     </div>
                     <div className="flex space-x-2">
                       <Button
@@ -358,45 +351,14 @@ const EstablishmentProfile = () => {
                 </Card>
               )}
 
-              {/* Reviews */}
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-xl font-semibold">Avaliações</h2>
-                    <Button onClick={() => setShowReviewModal(true)} disabled={!user}>
-                      <Star className="w-4 h-4 mr-2" />
-                      Avaliar
-                    </Button>
-                  </div>
-
-                  {establishment.reviews.length > 0 ? (
-                    <div className="space-y-4">
-                      {establishment.reviews.map((review) => (
-                        <div key={review.id} className="border-b border-gray-200 pb-4 last:border-b-0">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">
-                                {review.user_profiles?.full_name || 'Usuário'}
-                              </span>
-                              <RatingStars rating={review.rating} size="sm" />
-                            </div>
-                            <span className="text-sm text-gray-500">
-                              {new Date(review.created_at).toLocaleDateString('pt-BR')}
-                            </span>
-                          </div>
-                          {review.comment && (
-                            <p className="text-gray-700">{review.comment}</p>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-500 text-center py-4">
-                      Seja o primeiro a avaliar este estabelecimento!
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
+              {/* Sistema de Reviews Melhorado */}
+              <ReviewSystem
+                establishmentId={establishment.id}
+                reviews={establishment.reviews}
+                onReviewSubmitted={fetchEstablishment}
+                averageRating={averageRating}
+                totalReviews={establishment.reviews.length}
+              />
             </div>
 
             {/* Sidebar */}
@@ -468,20 +430,20 @@ const EstablishmentProfile = () => {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Recomendações */}
+              <SmartRecommendations
+                userId={user?.id}
+                currentItemId={establishment.id}
+                currentItemType="establishment"
+                userPreferences={establishment.establishment_sports.map(s => s.sport_name)}
+              />
             </div>
           </div>
         </div>
       </main>
 
       <Footer />
-
-      <ReviewModal
-        open={showReviewModal}
-        onOpenChange={setShowReviewModal}
-        establishmentId={establishment.id}
-        establishmentName={establishment.establishment_name}
-        onReviewSubmitted={fetchEstablishment}
-      />
     </div>
   );
 };

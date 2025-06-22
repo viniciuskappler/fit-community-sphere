@@ -1,101 +1,78 @@
 
-import React, { useState, useMemo } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useGeolocation } from '@/hooks/useGeolocation';
-import { useEstablishments, EstablishmentWithDetails } from '@/hooks/useEstablishments';
-import { useSportsGroups, SportsGroupWithDetails } from '@/hooks/useSportsGroups';
-import Header from '../components/Header';
-import SecondaryHeader from '../components/SecondaryHeader';
-import Footer from '../components/Footer';
-import SearchAndFilter from '../components/SearchAndFilter';
-import HubHeader from '../components/hub/HubHeader';
-import FilterPanel from '../components/hub/FilterPanel';
-import ResultsList from '../components/hub/ResultsList';
-import MapPlaceholder from '../components/hub/MapPlaceholder';
-import CallToAction from '../components/hub/CallToAction';
-import TabContentEstablishments from '../components/hub/TabContentEstablishments';
-import TabContentGroups from '../components/hub/TabContentGroups';
+import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Header from '@/components/Header';
+import SecondaryHeader from '@/components/SecondaryHeader';
+import Footer from '@/components/Footer';
+import SearchAndFilter from '@/components/SearchAndFilter';
+import MapLibre from '@/components/MapLibre';
+import AdvancedFilters, { AdvancedFiltersState } from '@/components/hub/AdvancedFilters';
+import ImprovedResultsList from '@/components/hub/ImprovedResultsList';
+import SmartRecommendations from '@/components/SmartRecommendations';
+import { useEstablishments } from '@/hooks/useEstablishments';
+import { useSportsGroups } from '@/hooks/useSportsGroups';
+import { useAdvancedSearch } from '@/hooks/useAdvancedSearch';
+import { useGeolocation } from '@/hooks/useGeolocation';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Hub = () => {
-  console.log('🚀 Hub component is starting to load...');
-  
   const { user } = useAuth();
-  const { latitude, longitude, loading: locationLoading, error: locationError } = useGeolocation();
-  
-  const [selectedRegion, setSelectedRegion] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSport, setSelectedSport] = useState('all');
-  const [searchType, setSearchType] = useState('all');
+  const { location, error: locationError, requestPermission, isLocating } = useGeolocation();
+  const [activeTab, setActiveTab] = useState('all');
+  const [showMap, setShowMap] = useState(false);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
+  // Buscar dados
+  const { data: establishments, isLoading: establishmentsLoading } = useEstablishments(location?.lat, location?.lng);
+  const { data: groups, isLoading: groupsLoading } = useSportsGroups(location?.lat, location?.lng);
+
+  // Sistema de busca avançada
   const {
-    data: establishments = [],
-    isLoading: establishmentsLoading,
-    refetch: refetchEstablishments,
-  } = useEstablishments(latitude, longitude);
-
-  const {
-    data: groups = [],
-    isLoading: groupsLoading,
-    refetch: refetchGroups,
-  } = useSportsGroups(latitude, longitude);
-
-  console.log('👤 User from auth context:', user);
-  console.log('📊 Current state:', {
-    selectedRegion,
-    searchTerm,
-    selectedSport,
-    searchType,
-    establishmentsCount: establishments.length,
-    groupsCount: groups.length,
-    locationLoading
-  });
+    filters,
+    updateFilters,
+    clearFilters,
+    filteredEstablishments,
+    filteredGroups,
+    totalResults
+  } = useAdvancedSearch(establishments, groups, location || undefined);
 
   const handleSearch = (term: string) => {
-    setSearchTerm(term);
+    updateFilters({ searchTerm: term });
   };
 
   const handleLocationSearch = () => {
-    if (latitude && longitude) {
-      refetchEstablishments();
-      refetchGroups();
+    if (!location) {
+      requestPermission();
     }
   };
 
-  const filteredEstablishments = establishments.filter(est =>
-    est.establishment_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    est.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    est.sports.some(sport => sport.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const handleFiltersChange = (newFilters: AdvancedFiltersState) => {
+    updateFilters(newFilters);
+  };
 
-  const filteredGroups = groups.filter(group =>
-    group.group_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    group.cities.some(city => city.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    group.sports.some(sport => sport.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const handleSortChange = (sortBy: string) => {
+    updateFilters({ sortBy: sortBy as any });
+  };
 
-  const allData = [...establishments, ...groups];
-  const regionFilteredResults = useMemo(() => {
-    if (!selectedRegion) {
-      return [];
+  const isLoading = establishmentsLoading || groupsLoading;
+
+  // Preparar dados para o mapa
+  const mapEstablishments = (activeTab === 'all' || activeTab === 'establishments') ? filteredEstablishments : [];
+  const mapGroups = (activeTab === 'all' || activeTab === 'groups') ? filteredGroups : [];
+
+  // Preparar dados filtrados por aba
+  const getFilteredData = () => {
+    switch (activeTab) {
+      case 'establishments':
+        return { establishments: filteredEstablishments, groups: [] };
+      case 'groups':
+        return { establishments: [], groups: filteredGroups };
+      default:
+        return { establishments: filteredEstablishments, groups: filteredGroups };
     }
+  };
 
-    const filtered = allData.filter(item => {
-      const regionMatch = 'city' in item 
-        ? item.city.includes(selectedRegion.split(' - ')[0]) || `${item.city} - ${item.state}` === selectedRegion
-        : item.cities.some(city => city.includes(selectedRegion.split(' - ')[0]));
-      const sportMatch = selectedSport === 'all' || item.sports.includes(selectedSport);
-      const searchTermMatch = !searchTerm || 
-        ('establishment_name' in item ? item.establishment_name.toLowerCase().includes(searchTerm.toLowerCase()) :
-         'group_name' in item ? item.group_name.toLowerCase().includes(searchTerm.toLowerCase()) : false);
-      const typeMatch = searchType === 'all' || 
-        (searchType === 'establishment' && 'establishment_name' in item) ||
-        (searchType === 'group' && 'group_name' in item);
-      return regionMatch && sportMatch && searchTermMatch && typeMatch;
-    });
-    
-    return filtered;
-  }, [selectedRegion, selectedSport, searchTerm, searchType, allData]);
+  const { establishments: displayEstablishments, groups: displayGroups } = getFilteredData();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -104,117 +81,123 @@ const Hub = () => {
       
       <main className="pt-[120px] px-4 md:px-6 pb-12">
         <div className="max-w-7xl mx-auto">
-          <HubHeader user={user} locationError={locationError} />
+          {/* Header da página */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Hub Esportivo
+            </h1>
+            <p className="text-gray-600">
+              Encontre estabelecimentos e grupos esportivos próximos a você
+            </p>
+          </div>
 
+          {/* Barra de busca */}
           <SearchAndFilter
             onSearch={handleSearch}
             onLocationSearch={handleLocationSearch}
-            isLocating={locationLoading}
+            isLocating={isLocating}
           />
 
+          {/* Filtros Avançados */}
           <div className="mb-6">
-            <Tabs defaultValue="map-view" className="w-full">
-              <div className="mb-6">
-                <TabsList className="grid w-full grid-cols-3 h-auto bg-white border border-gray-200 rounded-xl p-1 gap-1">
-                  <TabsTrigger 
-                    value="map-view" 
-                    className="text-xs md:text-sm font-medium py-2 md:py-3 px-1 md:px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white transition-all duration-300"
-                  >
-                    <span className="flex flex-col items-center gap-1">
-                      <span>🗺️</span>
-                      <span className="hidden sm:inline">Vista do Mapa</span>
-                      <span className="sm:hidden">Mapa</span>
-                    </span>
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="establishments" 
-                    className="text-xs md:text-sm font-medium py-2 md:py-3 px-1 md:px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white transition-all duration-300"
-                  >
-                    <span className="flex flex-col items-center gap-1">
-                      <span>🏢</span>
-                      <span className="hidden sm:inline">Estabelecimentos ({filteredEstablishments.length})</span>
-                      <span className="sm:hidden">Locais ({filteredEstablishments.length})</span>
-                    </span>
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="groups" 
-                    className="text-xs md:text-sm font-medium py-2 md:py-3 px-1 md:px-2 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-orange-400 data-[state=active]:text-white transition-all duration-300"
-                  >
-                    <span className="flex flex-col items-center gap-1">
-                      <span>👥</span>
-                      <span className="hidden sm:inline">Grupos ({filteredGroups.length})</span>
-                      <span className="sm:hidden">Grupos ({filteredGroups.length})</span>
-                    </span>
-                  </TabsTrigger>
-                </TabsList>
-              </div>
-
-              <TabsContent value="map-view" className="mt-0">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="lg:col-span-1">
-                    <FilterPanel
-                      selectedRegion={selectedRegion}
-                      setSelectedRegion={setSelectedRegion}
-                      selectedSport={selectedSport}
-                      setSelectedSport={setSelectedSport}
-                      searchType={searchType}
-                      setSearchType={setSearchType}
-                    />
-
-                    <ResultsList
-                      selectedRegion={selectedRegion}
-                      regionFilteredResults={regionFilteredResults}
-                      refetchEstablishments={refetchEstablishments}
-                      refetchGroups={refetchGroups}
-                    />
-                  </div>
-
-                  <div className="lg:col-span-2">
-                    <MapPlaceholder
-                      selectedRegion={selectedRegion}
-                      resultCount={regionFilteredResults.length}
-                      establishments={selectedRegion ? regionFilteredResults.filter(item => 'establishment_name' in item) as EstablishmentWithDetails[] : filteredEstablishments}
-                      groups={selectedRegion ? regionFilteredResults.filter(item => 'group_name' in item && item.latitude !== null && item.longitude !== null).map(item => ({
-                        id: item.id,
-                        group_name: (item as SportsGroupWithDetails).group_name,
-                        latitude: item.latitude!,
-                        longitude: item.longitude!,
-                        cities: (item as SportsGroupWithDetails).cities,
-                        sports: item.sports,
-                      })) : filteredGroups.filter(g => g.latitude !== null && g.longitude !== null).map(g => ({
-                        id: g.id,
-                        group_name: g.group_name,
-                        latitude: g.latitude!,
-                        longitude: g.longitude!,
-                        cities: g.cities,
-                        sports: g.sports,
-                      }))}
-                    />
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="establishments" className="mt-0">
-                <TabContentEstablishments
-                  establishmentsLoading={establishmentsLoading}
-                  filteredEstablishments={filteredEstablishments}
-                  searchTerm={searchTerm}
-                  refetchEstablishments={refetchEstablishments}
-                />
-              </TabsContent>
-
-              <TabsContent value="groups" className="mt-0">
-                <TabContentGroups
-                  groupsLoading={groupsLoading}
-                  filteredGroups={filteredGroups}
-                  searchTerm={searchTerm}
-                  refetchGroups={refetchGroups}
-                />
-              </TabsContent>
-            </Tabs>
+            <AdvancedFilters
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              onClearFilters={clearFilters}
+              isOpen={showAdvancedFilters}
+              onToggle={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            />
           </div>
 
-          <CallToAction />
+          {/* Recomendações Inteligentes */}
+          {!filters.searchTerm && totalResults > 0 && (
+            <div className="mb-8">
+              <SmartRecommendations
+                userId={user?.id}
+                userPreferences={[]}
+              />
+            </div>
+          )}
+
+          {/* Conteúdo Principal */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Lista de resultados */}
+            <div className="lg:col-span-2">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <div className="flex items-center justify-between mb-6">
+                  <TabsList className="grid w-full max-w-md grid-cols-3">
+                    <TabsTrigger value="all">Todos</TabsTrigger>
+                    <TabsTrigger value="establishments">Locais</TabsTrigger>
+                    <TabsTrigger value="groups">Grupos</TabsTrigger>
+                  </TabsList>
+                </div>
+
+                <TabsContent value="all" className="space-y-4">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                    </div>
+                  ) : (
+                    <ImprovedResultsList
+                      establishments={displayEstablishments}
+                      groups={displayGroups}
+                      sortBy={filters.sortBy}
+                      onSortChange={handleSortChange}
+                      userLocation={location || undefined}
+                    />
+                  )}
+                </TabsContent>
+
+                <TabsContent value="establishments" className="space-y-4">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                    </div>
+                  ) : (
+                    <ImprovedResultsList
+                      establishments={displayEstablishments}
+                      groups={[]}
+                      sortBy={filters.sortBy}
+                      onSortChange={handleSortChange}
+                      userLocation={location || undefined}
+                    />
+                  )}
+                </TabsContent>
+
+                <TabsContent value="groups" className="space-y-4">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                    </div>
+                  ) : (
+                    <ImprovedResultsList
+                      establishments={[]}
+                      groups={displayGroups}
+                      sortBy={filters.sortBy}
+                      onSortChange={handleSortChange}
+                      userLocation={location || undefined}
+                    />
+                  )}
+                </TabsContent>
+              </Tabs>
+            </div>
+
+            {/* Mapa */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-4">
+                <MapLibre
+                  establishments={mapEstablishments}
+                  groups={mapGroups}
+                  center={location || { lat: -23.5505, lng: -46.6333 }}
+                  zoom={location ? 12 : 11}
+                  height="600px"
+                  onMarkerClick={(item) => {
+                    console.log('Marker clicked:', item);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 

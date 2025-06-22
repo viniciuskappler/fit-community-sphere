@@ -59,6 +59,111 @@ export type Database = {
           },
         ]
       }
+      establishment_amenities: {
+        Row: {
+          amenity: string
+          available: boolean | null
+          created_at: string
+          description: string | null
+          establishment_id: string
+          id: string
+        }
+        Insert: {
+          amenity: string
+          available?: boolean | null
+          created_at?: string
+          description?: string | null
+          establishment_id: string
+          id?: string
+        }
+        Update: {
+          amenity?: string
+          available?: boolean | null
+          created_at?: string
+          description?: string | null
+          establishment_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_amenities_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_categories: {
+        Row: {
+          category: string
+          created_at: string
+          establishment_id: string
+          id: string
+          subcategory: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          establishment_id: string
+          id?: string
+          subcategory?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          establishment_id?: string
+          id?: string
+          subcategory?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_categories_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_hours: {
+        Row: {
+          close_time: string | null
+          created_at: string
+          day_of_week: number
+          establishment_id: string
+          id: string
+          is_closed: boolean | null
+          open_time: string | null
+        }
+        Insert: {
+          close_time?: string | null
+          created_at?: string
+          day_of_week: number
+          establishment_id: string
+          id?: string
+          is_closed?: boolean | null
+          open_time?: string | null
+        }
+        Update: {
+          close_time?: string | null
+          created_at?: string
+          day_of_week?: number
+          establishment_id?: string
+          id?: string
+          is_closed?: boolean | null
+          open_time?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_hours_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_photos: {
         Row: {
           caption: string | null
@@ -94,6 +199,47 @@ export type Database = {
           },
         ]
       }
+      establishment_pricing: {
+        Row: {
+          created_at: string
+          description: string | null
+          establishment_id: string
+          id: string
+          price_max: number | null
+          price_min: number | null
+          service_type: string
+          unit: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          establishment_id: string
+          id?: string
+          price_max?: number | null
+          price_min?: number | null
+          service_type: string
+          unit: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          establishment_id?: string
+          id?: string
+          price_max?: number | null
+          price_min?: number | null
+          service_type?: string
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_pricing_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       establishment_sports: {
         Row: {
           created_at: string
@@ -119,6 +265,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "establishment_sports_establishment_id_fkey"
+            columns: ["establishment_id"]
+            isOneToOne: false
+            referencedRelation: "establishments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      establishment_stats: {
+        Row: {
+          average_rating: number | null
+          establishment_id: string
+          id: string
+          last_updated: string
+          total_contacts: number | null
+          total_favorites: number | null
+          total_views: number | null
+        }
+        Insert: {
+          average_rating?: number | null
+          establishment_id: string
+          id?: string
+          last_updated?: string
+          total_contacts?: number | null
+          total_favorites?: number | null
+          total_views?: number | null
+        }
+        Update: {
+          average_rating?: number | null
+          establishment_id?: string
+          id?: string
+          last_updated?: string
+          total_contacts?: number | null
+          total_favorites?: number | null
+          total_views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "establishment_stats_establishment_id_fkey"
             columns: ["establishment_id"]
             isOneToOne: false
             referencedRelation: "establishments"
@@ -630,6 +814,10 @@ export type Database = {
       get_promo_stats: {
         Args: { promo_code_input: string }
         Returns: Json
+      }
+      update_establishment_stats: {
+        Args: { est_id: string }
+        Returns: undefined
       }
     }
     Enums: {
