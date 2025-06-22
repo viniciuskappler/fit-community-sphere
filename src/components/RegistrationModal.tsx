@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { useRegistration } from '@/hooks/useRegistration';
 import { usePromoCode } from '@/hooks/usePromoCode';
 import RegistrationProgress from './registration/RegistrationProgress';
