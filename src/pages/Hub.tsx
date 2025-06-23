@@ -1,21 +1,29 @@
 
-import React from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import HubLayout from '@/components/hub/HubLayout';
-import HubContent from '@/components/hub/HubContent';
-import { useHubData } from '@/hooks/useHubData';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DevelopmentModal from '@/components/DevelopmentModal';
+import { useDevelopmentModal } from '@/hooks/useDevelopmentModal';
 
 const Hub = () => {
-  const { user } = useAuth();
-  const hubData = useHubData();
+  const navigate = useNavigate();
+  const { isOpen, showDevelopmentModal, closeDevelopmentModal } = useDevelopmentModal();
+
+  useEffect(() => {
+    // Mostrar modal imediatamente ao acessar a página
+    showDevelopmentModal();
+  }, []);
+
+  const handleModalClose = () => {
+    closeDevelopmentModal();
+    // Redirecionar para a página inicial após fechar o modal
+    navigate('/');
+  };
 
   return (
-    <HubLayout>
-      <HubContent
-        user={user}
-        {...hubData}
-      />
-    </HubLayout>
+    <DevelopmentModal 
+      isOpen={isOpen} 
+      onClose={handleModalClose} 
+    />
   );
 };
 

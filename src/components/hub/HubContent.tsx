@@ -6,6 +6,8 @@ import MapLibre from '@/components/MapLibre';
 import AdvancedFilters, { AdvancedFiltersState } from '@/components/hub/AdvancedFilters';
 import ImprovedResultsList from '@/components/hub/ImprovedResultsList';
 import SmartRecommendations from '@/components/SmartRecommendations';
+import DevelopmentModal from '@/components/DevelopmentModal';
+import { useDevelopmentModal } from '@/hooks/useDevelopmentModal';
 import { EstablishmentWithDetails } from '@/hooks/useEstablishments';
 import { SportsGroupWithDetails } from '@/hooks/useSportsGroups';
 
@@ -40,6 +42,7 @@ const HubContent: React.FC<HubContentProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState('all');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const { isOpen, showDevelopmentModal, closeDevelopmentModal } = useDevelopmentModal();
 
   const handleSearch = (term: string) => {
     updateFilters({ searchTerm: term });
@@ -196,6 +199,11 @@ const HubContent: React.FC<HubContentProps> = ({
           </div>
         </div>
       </div>
+
+      <DevelopmentModal 
+        isOpen={isOpen} 
+        onClose={closeDevelopmentModal} 
+      />
     </>
   );
 };
