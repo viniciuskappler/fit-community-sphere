@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -6,6 +5,7 @@ import { Textarea } from '../ui/textarea';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { ValidationErrors, formatDateForDisplay } from '../../utils/formValidation';
+import { Link } from 'react-router-dom';
 import TermsModal from '../TermsModal';
 
 interface FinalStepProps {
@@ -247,13 +247,13 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
           />
           <Label htmlFor="terms" className="text-sm">
             Concordo com os{' '}
-            <button
-              type="button"
-              onClick={() => setIsTermsModalOpen(true)}
-              className="text-orange-500 underline cursor-pointer hover:text-orange-600"
-            >
-              termos de uso e política de privacidade
-            </button>{' '}
+            <Link to="/termos-uso" target="_blank" className="text-orange-500 underline cursor-pointer hover:text-orange-600">
+              termos de uso
+            </Link>
+            {' '}e{' '}
+            <Link to="/politica-privacidade" target="_blank" className="text-orange-500 underline cursor-pointer hover:text-orange-600">
+              política de privacidade
+            </Link>{' '}
             *
           </Label>
         </div>

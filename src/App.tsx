@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Index from '@/pages/Index';
@@ -15,6 +16,8 @@ import CadastroFinalizadoEstabelecimento from '@/pages/CadastroFinalizadoEstabel
 import CadastroFinalizadoGrupo from '@/pages/CadastroFinalizadoGrupo';
 import MeusReferrals from '@/pages/MeusReferrals';
 import TermosPrivacidade from '@/pages/TermosPrivacidade';
+import TermosUso from '@/pages/TermosUso';
+import PoliticaPrivacidade from '@/pages/PoliticaPrivacidade';
 import NotFound from '@/pages/NotFound';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from 'sonner';
@@ -50,6 +53,8 @@ function App() {
               <Route path="/cadastro-finalizado-grupo" element={<CadastroFinalizadoGrupo />} />
               <Route path="/meus-referrals" element={<MeusReferrals />} />
               <Route path="/termos-privacidade" element={<TermosPrivacidade />} />
+              <Route path="/termos-uso" element={<TermosUso />} />
+              <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
