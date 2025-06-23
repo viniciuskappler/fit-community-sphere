@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 interface LoginAttemptResult {
   isLocked: boolean;
   attemptCount: number;
+  ipAttemptCount: number;
   lastAttempt: string | null;
 }
 
@@ -22,24 +23,26 @@ export const useLoginSecurity = () => {
 
       if (error) {
         console.error('Error checking login attempts:', error);
-        return { isLocked: false, attemptCount: 0, lastAttempt: null };
+        return { isLocked: false, attemptCount: 0, ipAttemptCount: 0, lastAttempt: null };
       }
 
-      // Properly type the response from Supabase RPC
+      // Enhanced response with IP tracking
       const result = data as unknown as {
         is_locked: boolean;
         attempt_count: number;
+        ip_attempt_count: number;
         last_attempt: string | null;
       };
 
       return {
         isLocked: result.is_locked,
         attemptCount: result.attempt_count,
+        ipAttemptCount: result.ip_attempt_count || 0,
         lastAttempt: result.last_attempt
       };
     } catch (error) {
       console.error('Error checking login attempts:', error);
-      return { isLocked: false, attemptCount: 0, lastAttempt: null };
+      return { isLocked: false, attemptCount: 0, ipAttemptCount: 0, lastAttempt: null };
     } finally {
       setIsCheckingAttempts(false);
     }
@@ -60,10 +63,15 @@ export const useLoginSecurity = () => {
     }
   };
 
-  const handleAccountLocked = (attemptCount: number) => {
+  const handleAccountLocked = (attemptCount: number, ipAttemptCount?: number) => {
+    const isIpLocked = ipAttemptCount && ipAttemptCount >= 10;
+    const message = isIpLocked 
+      ? `Dispositivo temporariamente bloqueado (${ipAttemptCount}/10 tentativas). Tente novamente em 15 minutos.`
+      : `Conta temporariamente bloqueada (${attemptCount}/5 tentativas). Tente novamente em 15 minutos.`;
+    
     toast({
-      title: 'Conta temporariamente bloqueada',
-      description: `Muitas tentativas de login falharam (${attemptCount}/5). Tente novamente em 15 minutos.`,
+      title: 'Acesso temporariamente restrito',
+      description: message,
       variant: 'destructive',
     });
   };

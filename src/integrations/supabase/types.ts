@@ -556,6 +556,30 @@ export type Database = {
           },
         ]
       }
+      registration_attempts: {
+        Row: {
+          attempted_at: string
+          email: string
+          id: string
+          ip_address: unknown | null
+          success: boolean
+        }
+        Insert: {
+          attempted_at?: string
+          email: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+        }
+        Update: {
+          attempted_at?: string
+          email?: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -863,8 +887,16 @@ export type Database = {
         Args: { user_email: string; user_ip?: unknown }
         Returns: Json
       }
+      check_registration_rate_limit: {
+        Args: { user_email: string; user_ip?: unknown }
+        Returns: Json
+      }
       cleanup_expired_sessions: {
         Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      cleanup_user_sessions: {
+        Args: { user_id_param: string }
         Returns: undefined
       }
       generate_referral_code: {
@@ -878,6 +910,10 @@ export type Database = {
         Returns: Json
       }
       log_login_attempt: {
+        Args: { user_email: string; was_successful: boolean; user_ip?: unknown }
+        Returns: undefined
+      }
+      log_registration_attempt: {
         Args: { user_email: string; was_successful: boolean; user_ip?: unknown }
         Returns: undefined
       }

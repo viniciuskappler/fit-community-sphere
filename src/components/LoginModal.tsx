@@ -81,7 +81,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       const attemptResult = await checkLoginAttempts(email);
       
       if (attemptResult.isLocked) {
-        handleAccountLocked(attemptResult.attemptCount);
+        handleAccountLocked(attemptResult.attemptCount, attemptResult.ipAttemptCount);
         setLoading(false);
         return;
       }
@@ -97,9 +97,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           
           // Check if this failed attempt causes account lockout
           const newAttemptResult = await checkLoginAttempts(email);
-          if (newAttemptResult.attemptCount >= 4) {
+          const remainingAttempts = 5 - newAttemptResult.attemptCount;
+          if (remainingAttempts > 0 && remainingAttempts <= 2) {
             setErrors({ 
-              general: `Email ou senha incorretos. ${5 - newAttemptResult.attemptCount} tentativa(s) restante(s).` 
+              general: `Email ou senha incorretos. ${remainingAttempts} tentativa(s) restante(s).` 
             });
           }
         } else {

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRegistrationSecurity } from './useRegistrationSecurity';
 import { toast } from 'sonner';
 
 interface RegistrationData {
@@ -26,6 +27,12 @@ interface RegistrationResult {
 
 export const useRegistration = () => {
   const { signUp } = useAuth();
+  const { 
+    checkRegistrationRateLimit, 
+    logRegistrationAttempt, 
+    handleRateLimitExceeded,
+    isCheckingRate 
+  } = useRegistrationSecurity();
   const [loading, setLoading] = useState(false);
 
   const registerUser = async (
@@ -37,7 +44,19 @@ export const useRegistration = () => {
     setLoading(true);
 
     try {
-      // 1. Create user account with enhanced metadata
+      // 1. Check registration rate limiting
+      console.log('🔒 Checking registration rate limits...');
+      const rateLimitResult = await checkRegistrationRateLimit(data.email);
+      
+      if (rateLimitResult.isRateLimited) {
+        handleRateLimitExceeded(rateLimitResult.emailAttempts, rateLimitResult.ipAttempts);
+        return {
+          success: false,
+          error: 'Limite de tentativas de cadastro excedido. Tente novamente mais tarde.'
+        };
+      }
+
+      // 2. Create user account with enhanced metadata
       console.log('👤 Creating user account...');
       const { data: signUpData, error: signUpError } = await signUp(data.email, data.password, {
         fullName: data.fullName,
@@ -45,6 +64,9 @@ export const useRegistration = () => {
         registration_type: registrationType,
         promo_code: data.promoCode
       });
+      
+      // 3. Log registration attempt
+      await logRegistrationAttempt(data.email, !signUpError);
       
       if (signUpError) {
         console.error('❌ Signup failed:', signUpError);
@@ -64,11 +86,11 @@ export const useRegistration = () => {
 
       console.log('✅ User account created successfully with ID:', newUserId);
 
-      // 2. Wait for profile creation by trigger
+      // 4. Wait for profile creation by trigger
       console.log('⏳ Waiting for profile creation...');
       await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // 3. Update profile with complete data
+      // 5. Update profile with complete data
       console.log('💾 Updating user profile with complete data...');
       const { error: profileError } = await supabase
         .from('user_profiles')
@@ -90,7 +112,7 @@ export const useRegistration = () => {
         console.log('✅ Profile updated successfully');
       }
 
-      // 4. Save user sports with error handling
+      // 6. Save user sports with error handling
       const allSports = [
         ...data.favoriteStateSports.map(sport => ({ 
           user_id: newUserId,
@@ -131,7 +153,7 @@ export const useRegistration = () => {
         }
       }
 
-      // 5. Track referral conversion if referralCode is present
+      // 7. Track referral conversion if referralCode is present
       if (referralCode) {
         await trackReferralConversion(referralCode, newUserId, registrationType);
       }
@@ -152,6 +174,8 @@ export const useRegistration = () => {
 
     } catch (error: any) {
       console.error('💥 Unexpected registration error:', error);
+      // Log failed attempt for unexpected errors too
+      await logRegistrationAttempt(data.email, false);
       toast.error('Erro inesperado durante o cadastro');
       
       return {
@@ -203,6 +227,6 @@ export const useRegistration = () => {
 
   return {
     registerUser,
-    loading
+    loading: loading || isCheckingRate
   };
 };

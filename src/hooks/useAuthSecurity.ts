@@ -12,10 +12,10 @@ export const useAuthSecurity = () => {
     
     try {
       // Check if account is locked before attempting login
-      const { isLocked, attemptCount } = await checkLoginAttempts(email);
+      const { isLocked, attemptCount, ipAttemptCount } = await checkLoginAttempts(email);
       
       if (isLocked) {
-        handleAccountLocked(attemptCount);
+        handleAccountLocked(attemptCount, ipAttemptCount);
         return { data: null, error: { message: 'Conta temporariamente bloqueada' } };
       }
 
@@ -61,9 +61,24 @@ export const useAuthSecurity = () => {
     }
   }, []);
 
+  const cleanupUserSessions = useCallback(async (userId: string) => {
+    try {
+      const { error } = await supabase.rpc('cleanup_user_sessions', {
+        user_id_param: userId
+      });
+      
+      if (error) {
+        console.error('Error cleaning up user sessions:', error);
+      }
+    } catch (error) {
+      console.error('Error cleaning up user sessions:', error);
+    }
+  }, []);
+
   return {
     secureSignIn,
     secureSignUp,
+    cleanupUserSessions,
     isProcessing
   };
 };
