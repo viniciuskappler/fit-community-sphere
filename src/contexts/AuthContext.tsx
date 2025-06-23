@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAuthSecurity } from '@/hooks/useAuthSecurity';
 
 interface AuthContextType {
   user: User | null;
@@ -20,49 +21,63 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const { secureSignIn, secureSignUp } = useAuthSecurity();
 
   useEffect(() => {
+    let mounted = true;
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!mounted) return;
+        
         console.log('Auth state changed:', event, session?.user?.id);
+        
+        // Only update state synchronously
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // Handle specific events
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('User signed in successfully:', session.user.id);
+          toast.success('Login realizado com sucesso!');
+        } else if (event === 'SIGNED_OUT') {
+          console.log('User signed out');
+        } else if (event === 'TOKEN_REFRESHED') {
+          console.log('Token refreshed for user:', session?.user?.id);
+        }
       }
     );
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      console.log('Initial session check:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, metadata?: any) => {
     try {
       console.log('Attempting signup with:', { email, metadata });
       
-      const redirectUrl = `${window.location.origin}/hub`;
-      
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: metadata || {}
-        }
-      });
+      const { data, error } = await secureSignUp(email, password, metadata);
 
       if (error) {
         console.error('Signup error:', error);
-        toast.error(error.message || 'Erro ao criar conta');
+        const errorMsg = error.message || 'Erro ao criar conta';
+        toast.error(errorMsg);
       } else {
         console.log('Signup successful:', data);
-        toast.success('Conta criada com sucesso!');
+        toast.success('Conta criada com sucesso! Verifique seu email para confirmar.');
       }
 
       return { data, error };
@@ -75,18 +90,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      console.log('Attempting secure login for:', email);
+      
+      const { data, error } = await secureSignIn(email, password);
 
       if (error) {
         console.error('Login error:', error);
-        toast.error(error.message || 'Erro ao fazer login');
-      } else {
-        console.log('Login successful:', data);
-        toast.success('Login realizado com sucesso!');
+        const errorMsg = error.message || 'Erro ao fazer login';
+        toast.error(errorMsg);
       }
+      // Success message is handled in the auth state change listener
 
       return { data, error };
     } catch (error: any) {
@@ -98,6 +111,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signInWithGoogle = async () => {
     try {
+      console.log('Attempting Google login');
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -120,6 +135,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     try {
+      console.log('Signing out user');
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('Logout error:', error);

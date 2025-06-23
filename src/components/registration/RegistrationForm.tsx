@@ -5,6 +5,7 @@ import RegistrationAlerts from './RegistrationAlerts';
 import RegistrationStepRenderer from './RegistrationStepRenderer';
 import NavigationButtons from './NavigationButtons';
 import PromoCodeInput from '../PromoCodeInput';
+import SquadBanner from './SquadBanner';
 
 interface RegistrationFormProps {
   currentStep: number;
@@ -42,6 +43,9 @@ const RegistrationForm = ({
       <RegistrationAlerts registrationType={registrationType} errors={errors} />
 
       <div className="mt-4 md:mt-6">
+        {/* Show Squad Banner on first step */}
+        <SquadBanner currentStep={currentStep} showOnStep={1} />
+
         <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
           {getStepTitle(currentStep, registrationType)}
         </h3>
@@ -70,7 +74,7 @@ const RegistrationForm = ({
               </div>
               <div className="ml-3">
                 <p className="text-sm font-medium text-green-800">
-                  Código promocional SQUAD300 aplicado com sucesso!
+                  Código promocional {formData.promoCode} aplicado com sucesso!
                 </p>
                 <p className="text-sm text-green-700">
                   Você garantiu 50% de desconto vitalício.

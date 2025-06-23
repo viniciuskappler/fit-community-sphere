@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,11 +37,13 @@ export const useRegistration = () => {
     setLoading(true);
 
     try {
-      // 1. Create user account with metadata
+      // 1. Create user account with enhanced metadata
       console.log('👤 Creating user account...');
       const { data: signUpData, error: signUpError } = await signUp(data.email, data.password, {
         fullName: data.fullName,
-        full_name: data.fullName
+        full_name: data.fullName,
+        registration_type: registrationType,
+        promo_code: data.promoCode
       });
       
       if (signUpError) {
@@ -61,11 +64,12 @@ export const useRegistration = () => {
 
       console.log('✅ User account created successfully with ID:', newUserId);
 
-      // 2. Aguardar um pouco para o trigger criar o perfil
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 2. Wait for profile creation by trigger
+      console.log('⏳ Waiting for profile creation...');
+      await new Promise(resolve => setTimeout(resolve, 3000));
 
-      // 3. Atualizar perfil com dados completos incluindo código promocional
-      console.log('💾 Updating user profile...');
+      // 3. Update profile with complete data
+      console.log('💾 Updating user profile with complete data...');
       const { error: profileError } = await supabase
         .from('user_profiles')
         .update({
@@ -80,32 +84,41 @@ export const useRegistration = () => {
 
       if (profileError) {
         console.error('❌ Error updating profile:', profileError);
+        // Don't fail registration for profile update errors
         toast.error('Aviso: Alguns dados do perfil podem não ter sido salvos');
       } else {
         console.log('✅ Profile updated successfully');
       }
 
-      // 4. Salvar esportes do usuário
+      // 4. Save user sports with error handling
       const allSports = [
         ...data.favoriteStateSports.map(sport => ({ 
           user_id: newUserId,
           sport_name: sport, 
-          sport_type: 'favorite' 
+          sport_type: 'favorite' as const
         })),
         ...data.practicedSports.map(sport => ({ 
           user_id: newUserId,
           sport_name: sport, 
-          sport_type: 'practiced' 
+          sport_type: 'practiced' as const
         })),
         ...data.interestedSports.map(sport => ({ 
           user_id: newUserId,
           sport_name: sport, 
-          sport_type: 'interested' 
+          sport_type: 'interested' as const
         }))
       ];
 
       if (allSports.length > 0) {
         console.log('🏃 Saving user sports...');
+        
+        // First, clear any existing sports for this user
+        await supabase
+          .from('user_sports')
+          .delete()
+          .eq('user_id', newUserId);
+
+        // Then insert new sports
         const { error: sportsError } = await supabase
           .from('user_sports')
           .insert(allSports);
@@ -125,11 +138,11 @@ export const useRegistration = () => {
 
       console.log('🎉 Registration completed successfully!');
       
-      // Mensagem especial para usuários SQUAD300
+      // Success message based on promo code
       if (data.promoCode === 'SQUAD300') {
         toast.success('🎉 Bem-vindo ao SQUAD 300! Desconto vitalício garantido!');
       } else {
-        toast.success('Cadastro realizado com sucesso!');
+        toast.success('Cadastro realizado com sucesso! Verifique seu email para confirmar.');
       }
       
       return {
@@ -168,15 +181,13 @@ export const useRegistration = () => {
         return;
       }
 
-      const commissionAmount = 0;
-
       const { error: conversionError } = await supabase
         .from('referral_conversions')
         .insert({
           referral_code_id: codeData.id,
           referred_user_id: userId,
           conversion_type: conversionType,
-          commission_amount: commissionAmount,
+          commission_amount: 0,
           commission_status: 'pending'
         });
 
@@ -185,7 +196,7 @@ export const useRegistration = () => {
       } else {
         console.log('✅ Referral conversion tracked successfully');
       }
-    }catch (error) {
+    } catch (error) {
       console.error('❌ Error in referral tracking:', error);
     }
   };
