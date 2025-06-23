@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Users, TrendingUp, Target, Zap } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -7,7 +6,7 @@ import { Button } from './ui/button';
 
 const StatisticsPanel = () => {
   const { stats, loading } = useUserStats();
-  const targetUsers = 5000;
+  const targetUsers = 300;
   
   const registeredUsers = stats.total_users;
   const percentage = Math.min((registeredUsers / targetUsers) * 100, 100);

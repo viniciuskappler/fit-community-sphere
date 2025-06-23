@@ -896,7 +896,7 @@ export type Database = {
         Returns: undefined
       }
       cleanup_user_sessions: {
-        Args: { user_id_param: string }
+        Args: Record<PropertyKey, never> | { user_id_param: string }
         Returns: undefined
       }
       generate_referral_code: {
