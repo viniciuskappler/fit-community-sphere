@@ -57,6 +57,15 @@
     }
   }
 
+  @keyframes slide-slower {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-2px); }
@@ -73,6 +82,10 @@
 
   .animate-slide-fast {
     animation: slide-fast 7.5s linear infinite;
+  }
+
+  .animate-slide-slower {
+    animation: slide-slower 10.7s linear infinite;
   }
 
   .animate-shake {

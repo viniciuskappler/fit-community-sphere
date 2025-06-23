@@ -1,73 +1,38 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { sportsList } from '../utils/sportsData';
 
 const SportsSection = () => {
-  const sports = [{
-    name: 'Musculação',
-    icon: '💪',
-    color: 'from-orange-500 to-orange-600'
-  }, {
-    name: 'Corrida',
-    icon: '🏃‍♂️',
-    color: 'from-orange-600 to-orange-400'
-  }, {
-    name: 'Natação',
-    icon: '🏊‍♀️',
-    color: 'from-orange-500 to-orange-700'
-  }, {
-    name: 'Rugby',
-    icon: '🏈',
-    color: 'from-orange-600 to-orange-500'
-  }, {
-    name: 'Ciclismo',
-    icon: '🚴‍♂️',
-    color: 'from-orange-400 to-orange-600'
-  }, {
-    name: 'Canoagem',
-    icon: '🛶',
-    color: 'from-orange-600 to-orange-400'
-  }, {
-    name: 'Trekking',
-    icon: '🥾',
-    color: 'from-orange-500 to-orange-600'
-  }, {
-    name: 'CrossFit',
-    icon: '🏋️‍♀️',
-    color: 'from-orange-600 to-orange-400'
-  }, {
-    name: 'Futebol',
-    icon: '⚽',
-    color: 'from-orange-500 to-orange-700'
-  }, {
-    name: 'Escalada',
-    icon: '🧗‍♂️',
-    color: 'from-orange-600 to-orange-500'
-  }, {
-    name: 'Vôlei',
-    icon: '🏐',
-    color: 'from-orange-400 to-orange-600'
-  }, {
-    name: 'Basquete',
-    icon: '🏀',
-    color: 'from-orange-600 to-orange-400'
-  }, {
-    name: 'Hipismo',
-    icon: '🏇',
-    color: 'from-orange-500 to-orange-600'
-  }, {
-    name: 'Tênis',
-    icon: '🎾',
-    color: 'from-orange-600 to-orange-400'
-  }, {
-    name: 'Boxe',
-    icon: '🥊',
-    color: 'from-orange-500 to-orange-700'
-  }, {
-    name: 'Yoga',
-    icon: '🧘‍♀️',
-    color: 'from-orange-400 to-orange-600'
-  }];
+  // Mapear todos os esportes da lista para o formato usado no componente
+  const sports = sportsList.map((sport, index) => {
+    // Definir ícones para esportes específicos ou usar ícones genéricos
+    const getIcon = (sportName: string) => {
+      const lowerSport = sportName.toLowerCase();
+      if (lowerSport.includes('futebol')) return '⚽';
+      if (lowerSport.includes('basquete')) return '🏀';
+      if (lowerSport.includes('vôlei') || lowerSport.includes('volei')) return '🏐';
+      if (lowerSport.includes('tênis') || lowerSport.includes('tenis')) return '🎾';
+      if (lowerSport.includes('natação')) return '🏊‍♀️';
+      if (lowerSport.includes('corrida') || lowerSport.includes('atletismo')) return '🏃‍♂️';
+      if (lowerSport.includes('ciclismo')) return '🚴‍♂️';
+      if (lowerSport.includes('boxe')) return '🥊';
+      if (lowerSport.includes('yoga')) return '🧘‍♀️';
+      if (lowerSport.includes('escalada')) return '🧗‍♂️';
+      if (lowerSport.includes('musculação') || lowerSport.includes('crossfit')) return '🏋️‍♀️';
+      if (lowerSport.includes('hipismo')) return '🏇';
+      if (lowerSport.includes('canoagem')) return '🛶';
+      if (lowerSport.includes('trekking') || lowerSport.includes('montanhismo')) return '🥾';
+      if (lowerSport.includes('rugby')) return '🏈';
+      return '🏆'; // Ícone genérico para esportes sem ícone específico
+    };
+
+    return {
+      name: sport,
+      icon: getIcon(sport),
+      color: `from-orange-${400 + (index % 3) * 100} to-orange-${500 + (index % 3) * 100}`
+    };
+  });
 
   return (
     <section className="bg-gray-50 py-[101px] reveal-on-scroll">
@@ -83,16 +48,16 @@ const SportsSection = () => {
           </p>
         </div>
 
-        {/* Sports Carousel */}
+        {/* Sports Carousel - Velocidade reduzida em 30% */}
         <div className="relative overflow-hidden">
-          <div className="flex animate-slide-fast space-x-4">
+          <div className="flex animate-slide-slower space-x-4">
             {[...sports, ...sports, ...sports].map((sport, index) => (
               <Link to="/esportes" key={index} className="flex-shrink-0">
                 <div className="w-32 h-20 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-125 hover:z-30 hover:animate-shake cursor-pointer group relative transform-gpu">
                   <div className={`h-full bg-gradient-to-br ${sport.color} rounded-xl p-3 flex flex-col items-center justify-center relative overflow-hidden`}>
                     <div className="absolute top-0 right-0 w-10 h-10 bg-white/10 rounded-full -translate-y-5 translate-x-5"></div>
                     <div className="text-xl mb-1 group-hover:scale-110 transition-transform">{sport.icon}</div>
-                    <h3 className="text-white font-semibold text-sm text-center">{sport.name}</h3>
+                    <h3 className="text-white font-semibold text-xs text-center leading-tight">{sport.name}</h3>
                     <div className="absolute bottom-0 left-0 w-8 h-8 bg-white/10 rounded-full translate-y-4 -translate-x-4"></div>
                   </div>
                 </div>

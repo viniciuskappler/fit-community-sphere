@@ -13,7 +13,7 @@ const EventsSection = () => {
       location: 'Parque Ibirapuera',
       participants: 1250,
       category: 'Corrida',
-      image: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?auto=format&fit=crop&w=400&q=80',
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=400&q=80',
       price: 'R$ 85',
       difficulty: 'Intermediário'
     },
@@ -37,7 +37,7 @@ const EventsSection = () => {
       location: 'Parque Villa Lobos',
       participants: 180,
       category: 'Ciclismo',
-      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?auto=format&fit=crop&w=400&q=80',
+      image: 'https://images.unsplash.com/photo-1544191696-15693072b515?auto=format&fit=crop&w=400&q=80',
       price: 'Gratuito',
       difficulty: 'Iniciante'
     }

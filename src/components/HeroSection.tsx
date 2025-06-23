@@ -68,11 +68,11 @@ const HeroSection = () => {
     }
   ];
 
-  // Auto-slide functionality - 0.2 seconds per image
+  // Auto-slide functionality - 3 seconds per image
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 200);
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -107,25 +107,33 @@ const HeroSection = () => {
 
   const getStyledText = (text: string) => {
     const words = text.split(' ');
-    const keyWords = ['esporte', 'pessoas', 'estabelecimentos', 'grupos', 'ecossistema', 'movimento', 'transforma'];
     return words.map((word, index) => {
       const cleanWord = word.replace(/[.,]/g, '');
-      const isKeyWord = keyWords.includes(cleanWord.toLowerCase()) && cleanWord.length > 5;
-      const isFirstLetter = index === 0;
-      if (isFirstLetter) {
+      
+      // Highlight specific words: "Todo esporte", "Toda pessoa", "espaço", "esporte"
+      if (cleanWord.toLowerCase() === 'todo' && words[index + 1]?.toLowerCase().replace(/[.,]/g, '') === 'esporte') {
         return (
           <span key={index}>
             <span className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
-              {word.charAt(0)}
+              {word} {words[index + 1]}
             </span>
-            <span className="text-white">
-              {word.slice(1)}
-            </span>
-            {index < words.length - 1 && ' '}
+            {index < words.length - 2 && ' '}
           </span>
         );
       }
-      if (isKeyWord) {
+      
+      if (cleanWord.toLowerCase() === 'toda' && words[index + 1]?.toLowerCase().replace(/[.,]/g, '') === 'pessoa') {
+        return (
+          <span key={index}>
+            <span className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
+              {word} {words[index + 1]}
+            </span>
+            {index < words.length - 2 && ' '}
+          </span>
+        );
+      }
+      
+      if (cleanWord.toLowerCase() === 'espaço' || cleanWord.toLowerCase() === 'esporte') {
         return (
           <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
             {word}
@@ -133,6 +141,15 @@ const HeroSection = () => {
           </span>
         );
       }
+      
+      // Skip words that were already processed as part of combinations
+      if (index > 0 && words[index - 1]?.toLowerCase() === 'todo' && cleanWord.toLowerCase() === 'esporte') {
+        return null;
+      }
+      if (index > 0 && words[index - 1]?.toLowerCase() === 'toda' && cleanWord.toLowerCase() === 'pessoa') {
+        return null;
+      }
+      
       return (
         <span key={index} className="text-white">
           {word}
@@ -156,7 +173,7 @@ const HeroSection = () => {
           {heroSlides.map((slide, index) => (
             <div
               key={index}
-              className={`absolute inset-0 h-[calc(100%+120px)] transition-opacity duration-100 ${
+              className={`absolute inset-0 h-[calc(100%+120px)] transition-opacity duration-1000 ${
                 index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
             >
@@ -224,7 +241,7 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Enhanced CTA Button - Removed "Ver como funciona" button */}
+            {/* Enhanced CTA Button */}
             <div className="flex justify-center items-center">
               <button 
                 onClick={handleCadastrarClick} 
