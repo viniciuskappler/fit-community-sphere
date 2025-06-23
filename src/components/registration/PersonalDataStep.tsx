@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { ValidationErrors } from '../../utils/formValidation';
 import DateSelector from './DateSelector';
 import LocationSelector from './LocationSelector';
 import { formatCPF } from '../../utils/cpfValidation';
+import { useCepLookup } from '../../hooks/useCepLookup';
 
 interface PersonalDataStepProps {
   formData: {
@@ -27,6 +28,8 @@ interface PersonalDataStepProps {
 }
 
 const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalDataStepProps) => {
+  const { lookupCep, loading: cepLoading, error: cepError } = useCepLookup();
+
   const handleCPFChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
     if (value.length <= 11) {
@@ -49,11 +52,22 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalData
     }
   };
 
-  const handleCEPChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCEPChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '');
     if (value.length <= 8) {
       const formattedCEP = value.replace(/(\d{5})(\d{3})/, '$1-$2');
       onInputChange('cep', formattedCEP);
+      
+      // Auto-lookup when CEP is complete
+      if (value.length === 8) {
+        const cepData = await lookupCep(value);
+        if (cepData) {
+          onInputChange('street', cepData.street);
+          onInputChange('neighborhood', cepData.district);
+          onInputChange('city', cepData.city);
+          onInputChange('state', cepData.state);
+        }
+      }
     }
   };
 
@@ -130,22 +144,29 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalData
       </div>
 
       <div>
-        <Label className="text-orange-600 font-medium">Estado e Cidade *</Label>
-        <div className="mt-1">
-          <LocationSelector
-            stateValue={formData.state}
-            cityValue={formData.city}
-            onStateChange={(value) => onInputChange('state', value)}
-            onCityChange={handleCityChange}
-            stateError={errors.state}
-            cityError={errors.city}
-          />
-        </div>
-      </div>
-
-      <div>
         <Label className="text-orange-600 font-medium">Endereço Completo *</Label>
         <div className="mt-1 space-y-4">
+          {/* CEP primeiro */}
+          <div>
+            <Input
+              placeholder="CEP"
+              value={formData.cep}
+              onChange={handleCEPChange}
+              maxLength={9}
+              className={`${errors.cep ? 'border-orange-500' : ''} ${cepLoading ? 'bg-gray-100' : ''}`}
+              disabled={cepLoading}
+            />
+            {cepLoading && (
+              <p className="text-blue-600 text-xs mt-1">Buscando endereço...</p>
+            )}
+            {cepError && (
+              <p className="text-red-500 text-xs mt-1">{cepError}</p>
+            )}
+            {errors.cep && (
+              <p className="text-orange-500 text-sm mt-1">{errors.cep}</p>
+            )}
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-2">
               <Input
@@ -170,31 +191,32 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalData
               )}
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Input
-                placeholder="Bairro"
-                value={formData.neighborhood}
-                onChange={(e) => onInputChange('neighborhood', e.target.value)}
-                className={errors.neighborhood ? 'border-orange-500' : ''}
-              />
-              {errors.neighborhood && (
-                <p className="text-orange-500 text-sm mt-1">{errors.neighborhood}</p>
-              )}
-            </div>
-            <div>
-              <Input
-                placeholder="CEP"
-                value={formData.cep}
-                onChange={handleCEPChange}
-                maxLength={9}
-                className={errors.cep ? 'border-orange-500' : ''}
-              />
-              {errors.cep && (
-                <p className="text-orange-500 text-sm mt-1">{errors.cep}</p>
-              )}
-            </div>
+          
+          <div>
+            <Input
+              placeholder="Bairro"
+              value={formData.neighborhood}
+              onChange={(e) => onInputChange('neighborhood', e.target.value)}
+              className={errors.neighborhood ? 'border-orange-500' : ''}
+            />
+            {errors.neighborhood && (
+              <p className="text-orange-500 text-sm mt-1">{errors.neighborhood}</p>
+            )}
           </div>
+        </div>
+      </div>
+
+      <div>
+        <Label className="text-orange-600 font-medium">Estado e Cidade *</Label>
+        <div className="mt-1">
+          <LocationSelector
+            stateValue={formData.state}
+            cityValue={formData.city}
+            onStateChange={(value) => onInputChange('state', value)}
+            onCityChange={handleCityChange}
+            stateError={errors.state}
+            cityError={errors.city}
+          />
         </div>
       </div>
 

@@ -1,7 +1,17 @@
 
 import React from 'react';
 
-const SquadBanner = () => {
+interface SquadBannerProps {
+  showOnStep?: number;
+  currentStep: number;
+}
+
+const SquadBanner = ({ showOnStep = 1, currentStep }: SquadBannerProps) => {
+  // Only show banner on the specified step (default: step 1)
+  if (currentStep !== showOnStep) {
+    return null;
+  }
+
   return (
     <div className="mb-6">
       <div className="bg-gradient-to-r from-orange-600 to-red-500 text-white p-6 rounded-xl shadow-2xl border border-orange-400/30">

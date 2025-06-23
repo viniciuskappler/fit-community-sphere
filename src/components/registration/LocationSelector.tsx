@@ -106,7 +106,7 @@ const LocationSelector = ({
       <div>
         <div className="relative">
           <Input
-            placeholder={loading ? "Carregando cidades..." : "Digite o nome da cidade"}
+            placeholder="Digite o nome da cidade"
             value={cityValue || citySearch}
             onChange={handleCityInputChange}
             onFocus={() => {

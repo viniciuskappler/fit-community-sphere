@@ -1,4 +1,3 @@
-
 import { validatePassword } from './passwordValidation';
 
 export interface ValidationErrors {
@@ -68,8 +67,13 @@ export const validateRegistrationForm = (formData: any, currentStep?: number): V
     }
   }
 
-  // Password validation with enhanced security
+  // Sports preferences validation (step 2)
   if (currentStep === 2 || !currentStep) {
+    // Sports preferences are optional, no validation needed
+  }
+
+  // Password validation (step 3)
+  if (currentStep === 3 || !currentStep) {
     const passwordValidation = validatePassword(formData.password || '');
     
     if (!formData.password) {
@@ -85,8 +89,8 @@ export const validateRegistrationForm = (formData: any, currentStep?: number): V
     }
   }
 
-  // Location validation
-  if (currentStep === 3 || !currentStep) {
+  // Location and final step validation
+  if (currentStep === 4 || !currentStep) {
     if (!formData.state?.trim()) {
       errors.state = 'Estado é obrigatório';
     }
@@ -94,10 +98,7 @@ export const validateRegistrationForm = (formData: any, currentStep?: number): V
     if (!formData.city?.trim()) {
       errors.city = 'Cidade é obrigatória';
     }
-  }
 
-  // Birth date validation
-  if (currentStep === 4 || !currentStep) {
     if (!formData.birthDate) {
       errors.birthDate = 'Data de nascimento é obrigatória';
     } else {

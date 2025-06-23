@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -36,6 +35,14 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   const { registerUser, loading } = useRegistration();
   const { signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    const dialogContent = document.querySelector('[role="dialog"]') as HTMLElement;
+    if (dialogContent) {
+      dialogContent.scrollTop = 0;
+    }
+  };
 
   const [formData, setFormData] = useState<FormData>({
     // Personal Data
@@ -124,17 +131,22 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     
     if (Object.keys(stepErrors).length > 0) {
       setErrors(stepErrors);
+      scrollToTop();
       return;
     }
     
     setErrors({});
-    if (currentStep < 4) setCurrentStep(currentStep + 1);
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
+      scrollToTop();
+    }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
       setErrors({});
+      scrollToTop();
     }
   };
 
@@ -217,7 +229,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             totalSteps={4}
           />
 
-          <SquadBanner />
+          <SquadBanner currentStep={currentStep} showOnStep={1} />
 
           <GoogleSignupSection
             currentStep={currentStep}
@@ -239,6 +251,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             onNextStep={nextStep}
             onSubmit={handleSubmit}
             promoCode={promoCode}
+            promoValidation={promoValidation}
           />
         </DialogContent>
       </Dialog>
