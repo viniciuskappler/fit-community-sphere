@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Star, MapPin, Phone, Clock, ArrowRight } from 'lucide-react';
 import AuthGuard from './AuthGuard';
+
 const EstablishmentsSection = () => {
   const establishments = [{
     id: 1,
@@ -10,7 +12,7 @@ const EstablishmentsSection = () => {
     address: 'Rua Harmonia, 456',
     phone: '(11) 3456-7890',
     hours: '06h às 22h',
-    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=400&q=80',
     price: 'R$ 89/mês',
     amenities: ['Musculação', 'Cardio', 'Funcionais']
   }, {
@@ -21,7 +23,7 @@ const EstablishmentsSection = () => {
     address: 'Av. Faria Lima, 123',
     phone: '(11) 9876-5432',
     hours: '05h às 21h',
-    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=400&q=80',
     price: 'R$ 180/mês',
     amenities: ['CrossFit', 'Weightlifting', 'Ginástica']
   }, {
@@ -32,10 +34,11 @@ const EstablishmentsSection = () => {
     address: 'Rua das Piscinas, 789',
     phone: '(11) 1234-5678',
     hours: '06h às 20h',
-    image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80',
+    image: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=400&q=80',
     price: 'R$ 120/mês',
     amenities: ['Natação', 'Hidro', 'Aqua Fitness']
   }];
+
   return <section className="py-16 bg-gray-50">
       <div className="w-full md:w-11/12 lg:w-3/4 mx-auto px-4 md:px-8 lg:px-8">
         <div className="text-center mb-12">
@@ -48,7 +51,12 @@ const EstablishmentsSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {establishments.map(establishment => <div key={establishment.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 overflow-hidden group cursor-pointer">
               <div className="relative h-48 overflow-hidden">
-                <img src={establishment.image} alt={establishment.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" loading="lazy" />
+                <img 
+                  src={establishment.image} 
+                  alt={establishment.name} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" 
+                  loading="lazy" 
+                />
                 <div className="absolute top-3 left-3 bg-gradient-to-r from-orange-600 to-orange-400 text-white px-2 py-1 rounded-full text-xs font-semibold">
                   {establishment.type}
                 </div>
@@ -115,4 +123,5 @@ const EstablishmentsSection = () => {
       </div>
     </section>;
 };
+
 export default EstablishmentsSection;

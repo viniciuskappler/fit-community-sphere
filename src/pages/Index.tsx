@@ -10,17 +10,21 @@ import Footer from '../components/Footer';
 import RegistrationSection from '../components/RegistrationSection';
 import InteractiveMapSection from '../components/InteractiveMapSection';
 import CookieConsent from '../components/CookieConsent';
+import { preloadHomepageImages } from '../utils/performance';
 
 const Index = () => {
   const [showTopBar, setShowTopBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
+    // Preload critical images on component mount
+    preloadHomepageImages();
+    
     const controlNavbar = () => {
       if (typeof window !== 'undefined') {
-        if (window.scrollY > lastScrollY && window.scrollY > 50) { // scroll down
+        if (window.scrollY > lastScrollY && window.scrollY > 50) {
           setShowTopBar(false);
-        } else { // scroll up
+        } else {
           setShowTopBar(true);
         }
         setLastScrollY(window.scrollY);

@@ -26,6 +26,14 @@ export const preloadCriticalImages = (urls: string[]) => {
   });
 };
 
+export const optimizeImageUrl = (url: string, width: number = 400, quality: number = 80) => {
+  if (url.includes('unsplash.com')) {
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}auto=format&fit=crop&w=${width}&q=${quality}`;
+  }
+  return url;
+};
+
 export const enableServiceWorker = () => {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -38,4 +46,15 @@ export const enableServiceWorker = () => {
         });
     });
   }
+};
+
+// Preload critical images for homepage
+export const preloadHomepageImages = () => {
+  const criticalImages = [
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1920&q=80',
+    'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1920&q=80',
+    'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?auto=format&fit=crop&w=1920&q=80'
+  ];
+  
+  preloadCriticalImages(criticalImages);
 };

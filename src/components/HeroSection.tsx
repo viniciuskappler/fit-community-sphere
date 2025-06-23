@@ -1,58 +1,58 @@
+
 import React, { useState, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Play } from 'lucide-react';
 import RegistrationModal from './RegistrationModal';
 
 const HeroSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const phrases = ["Todo esporte encontra seu espaço. Toda pessoa encontra seu esporte.", "Conectando pessoas, estabelecimentos e grupos em um único ecossistema esportivo.", "O movimento que transforma a maneira como vivemos o esporte."];
-  const sportsBanners = [
+  const phrases = [
+    "Todo esporte encontra seu espaço. Toda pessoa encontra seu esporte.",
+    "Conectando pessoas, estabelecimentos e grupos em um único ecossistema esportivo.",
+    "O movimento que transforma a maneira como vivemos o esporte."
+  ];
+
+  const heroSlides = [
     {
-      name: 'Musculação',
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Tênis',
-      image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Canoagem',
-      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Trekking',
-      image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Ciclismo',
-      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Corrida',
-      image: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Ginástica',
-      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Hipismo',
-      image: 'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Futebol',
-      image: 'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Rugby',
-      image: 'https://images.unsplash.com/photo-1588124107945-5a7a83a427f7?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Crossfit',
-      image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Levantamento de Peso',
-      image: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=1200&h=800&fit=crop'
-    }, {
-      name: 'Natação',
-      image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1200&h=800&fit=crop'
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&h=1080&fit=crop&auto=format',
+      title: 'Revolução no Fitness',
+      subtitle: 'Conecte-se com academias de ponta'
+    },
+    {
+      type: 'image', 
+      url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&h=1080&fit=crop&auto=format',
+      title: 'Treinamento Funcional',
+      subtitle: 'Supere seus limites todos os dias'
+    },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1920&h=1080&fit=crop&auto=format',
+      title: 'Esportes Aquáticos',
+      subtitle: 'Mergulhe em uma nova experiência'
+    },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1920&h=1080&fit=crop&auto=format',
+      title: 'Ciclismo Urbano',
+      subtitle: 'Pedale rumo ao seu melhor desempenho'
     }
   ];
 
+  // Auto-slide functionality
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Typing animation effect
   useEffect(() => {
     const currentPhrase = phrases[currentPhraseIndex];
     if (isTyping && !isDeleting) {
@@ -122,29 +122,62 @@ const HeroSection = () => {
     setIsModalOpen(true);
   };
 
+  const currentSlideData = heroSlides[currentSlide];
+
   return (
     <>
-      <section className="relative h-[70vh] md:h-[80vh] overflow-hidden bg-white">
-        {/* Background Banners */}
+      <section className="relative h-[80vh] md:h-[90vh] overflow-hidden bg-black">
+        {/* Dynamic Background Slides */}
         <div className="absolute inset-0" style={{ top: '-120px' }}>
-          <div className="flex animate-scroll-fast space-x-8 h-[calc(100%+120px)]">
-            {[...sportsBanners, ...sportsBanners].map((sport, index) => (
-              <div key={index} className="flex-shrink-0 w-[900px] h-full relative">
-                <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${sport.image})` }} />
-                <div className="absolute inset-0 bg-black/60" />
-              </div>
-            ))}
-          </div>
+          {heroSlides.map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 h-[calc(100%+120px)] transition-opacity duration-1000 ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <div 
+                className="absolute inset-0 bg-cover bg-center transform scale-105"
+                style={{ backgroundImage: `url(${slide.url})` }}
+              />
+              <div className="absolute inset-0 bg-black/60" />
+            </div>
+          ))}
           
-          {/* Gradient Overlays */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-white" />
-          <div className="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-black/80 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent" />
+          {/* Enhanced Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-white z-10" />
+          <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/90 to-transparent z-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-white to-transparent z-10" />
+        </div>
+
+        {/* Slide Indicators */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentSlide 
+                  ? 'bg-orange-500 scale-110' 
+                  : 'bg-white/50 hover:bg-white/80'
+              }`}
+            />
+          ))}
         </div>
         
-        <div className="relative w-full px-6 md:w-11/12 lg:w-3/4 mx-auto md:px-8 lg:px-8 py-16 md:py-32 z-10 flex items-center justify-center h-full">
+        <div className="relative w-full px-6 md:w-11/12 lg:w-3/4 mx-auto md:px-8 lg:px-8 py-16 md:py-32 z-20 flex items-center justify-center h-full">
           <div className="text-center">
-            {/* Animated Heading */}
+            {/* Dynamic Slide Title */}
+            <div className="mb-4 opacity-90">
+              <h3 className="text-lg md:text-xl text-orange-400 font-semibold mb-1">
+                {currentSlideData.title}
+              </h3>
+              <p className="text-sm md:text-base text-white/80">
+                {currentSlideData.subtitle}
+              </p>
+            </div>
+
+            {/* Animated Main Heading */}
             <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight min-h-[200px] flex items-center justify-center">
               <span className="block">
                 {getStyledText(displayedText)}
@@ -152,25 +185,36 @@ const HeroSection = () => {
               </span>
             </h1>
 
-            {/* Subtitle */}
-            <div className="text-white mb-8 max-w-xl mx-auto leading-relaxed text-base md:text-2xl font-medium text-center">
-              <p className="mb-2">
-                Faça parte do movimento que está 
+            {/* Enhanced Subtitle */}
+            <div className="text-white mb-8 max-w-2xl mx-auto leading-relaxed text-base md:text-2xl font-medium text-center">
+              <p className="mb-4">
+                🚀 Faça parte do movimento que está
                 <br className="md:hidden" />
                 {' '}transformando vidas através da união
                 <br className="md:hidden" />
                 {' '}do Esporte.
               </p>
+              <div className="flex items-center justify-center space-x-4 text-sm md:text-base opacity-90">
+                <span className="bg-orange-500/20 px-3 py-1 rounded-full">🏆 +{Math.floor(Math.random() * 50) + 200} atletas conectados</span>
+                <span className="bg-blue-500/20 px-3 py-1 rounded-full">⚡ Acesso instantâneo</span>
+              </div>
             </div>
 
-            {/* CTA Button */}
-            <button 
-              onClick={handleCadastrarClick} 
-              className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 mx-auto"
-            >
-              <span>Cadastrar agora</span>
-              <ArrowRight size={18} />
-            </button>
+            {/* Enhanced CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <button 
+                onClick={handleCadastrarClick} 
+                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white px-8 py-4 rounded-lg text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 group"
+              >
+                <span>🔥 Cadastrar agora</span>
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+              
+              <button className="bg-white/10 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-all duration-300 flex items-center space-x-2">
+                <Play size={18} />
+                <span>Ver como funciona</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
