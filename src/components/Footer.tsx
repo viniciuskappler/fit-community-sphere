@@ -22,13 +22,13 @@ const Footer = () => {
               Encontre seu esporte ideal e faça parte de uma comunidade ativa.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
+              <a href="https://instagram.com/nucleodoesporte" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-orange-500 transition-colors">
                 Instagram
               </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
+              <a href="https://linkedin.com/company/nucleodoesporte" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-orange-500 transition-colors">
                 LinkedIn
               </a>
-              <a href="#" className="text-gray-400 hover:text-orange-500 transition-colors">
+              <a href="https://youtube.com/@nucleodoesporte" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-orange-500 transition-colors">
                 YouTube
               </a>
             </div>
@@ -44,18 +44,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/busca" className="text-gray-400 hover:text-orange-500 transition-colors">
-                  Buscar
-                </Link>
-              </li>
-              <li>
                 <Link to="/esportes" className="text-gray-400 hover:text-orange-500 transition-colors">
                   Esportes
-                </Link>
-              </li>
-              <li>
-                <Link to="/modalidades" className="text-gray-400 hover:text-orange-500 transition-colors">
-                  Modalidades
                 </Link>
               </li>
             </ul>
@@ -81,8 +71,13 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/termos-privacidade" className="text-gray-400 hover:text-orange-500 transition-colors">
-                  Termos e Privacidade
+                <Link to="/termos-uso" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Termos de Uso
+                </Link>
+              </li>
+              <li>
+                <Link to="/politica-privacidade" className="text-gray-400 hover:text-orange-500 transition-colors">
+                  Política de Privacidade
                 </Link>
               </li>
             </ul>
@@ -91,7 +86,7 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center">
           <p className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent font-medium">
-            © 2024 Núcleo do Esporte. Todos os direitos reservados.
+            © 2025 Núcleo do Esporte. Todos os direitos reservados.
           </p>
         </div>
       </div>
