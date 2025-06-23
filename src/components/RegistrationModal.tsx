@@ -1,25 +1,20 @@
 
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import React, { useState } from 'react';
+import { Dialog, DialogContent } from './ui/dialog';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRegistration } from '@/hooks/useRegistration';
-import { usePromoCode } from '@/hooks/usePromoCode';
-import RegistrationProgress from './registration/RegistrationProgress';
-import RegistrationAlerts from './registration/RegistrationAlerts';
-import RegistrationStepRenderer from './registration/RegistrationStepRenderer';
-import NavigationButtons from './registration/NavigationButtons';
-import PromoCodeBanner from './PromoCodeBanner';
-import PromoCodeInput from './PromoCodeInput';
 import WaitlistModal from './WaitlistModal';
-import GoogleAuthButton from './GoogleAuthButton';
+import RegistrationHeader from './registration/RegistrationHeader';
+import SquadBanner from './registration/SquadBanner';
+import GoogleSignupSection from './registration/GoogleSignupSection';
+import RegistrationForm from './registration/RegistrationForm';
 import { 
   FormData, 
   validateStep1, 
   validateStep2, 
   validateStep3,
-  validateStep4, 
-  getStepTitle,
+  validateStep4,
   ValidationErrors 
 } from '../utils/formValidation';
 
@@ -216,87 +211,35 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-4xl w-[95%] sm:w-full max-h-[90vh] overflow-y-auto bg-white rounded-xl mx-auto border-0 shadow-2xl fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <DialogHeader>
-            <DialogTitle className="text-xl md:text-2xl font-bold text-center mb-4 md:mb-8">
-              Cadastro de {registrationType === 'supporter' ? 'Praticante' : 
-                          registrationType === 'establishment' ? 'Estabelecimento' : 
-                          'Grupo Esportivo'}
-            </DialogTitle>
-            <RegistrationProgress currentStep={currentStep} totalSteps={4} />
-          </DialogHeader>
+          <RegistrationHeader 
+            registrationType={registrationType}
+            currentStep={currentStep}
+            totalSteps={4}
+          />
 
-          {/* Banner SQUAD 300 sempre visível */}
-          <div className="mb-6">
-            <div className="bg-gradient-to-r from-orange-600 to-red-500 text-white p-6 rounded-xl shadow-2xl border border-orange-400/30">
-              <div className="text-center">
-                <h3 className="text-2xl font-bold mb-2">🏆 SQUAD 300 - Desconto Vitalício!</h3>
-                <p className="text-lg mb-3">
-                  Garanta 50% de desconto para sempre nas primeiras 300 vagas.
-                </p>
-                <div className="bg-white bg-opacity-20 rounded-lg p-3">
-                  <span className="text-lg font-bold">Cadastre-se agora e faça parte da revolução!</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <SquadBanner />
 
-          {/* Google Signup Button - Only show on step 1 */}
-          {currentStep === 1 && (
-            <div className="mb-6 space-y-4">
-              <GoogleAuthButton
-                onClick={handleGoogleSignup}
-                loading={googleLoading}
-                text="Cadastrar com Google"
-              />
-              
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-muted-foreground">Ou continue com o cadastro tradicional</span>
-                </div>
-              </div>
-            </div>
-          )}
+          <GoogleSignupSection
+            currentStep={currentStep}
+            onGoogleSignup={handleGoogleSignup}
+            googleLoading={googleLoading}
+            errors={errors}
+          />
 
-          <RegistrationAlerts registrationType={registrationType} errors={errors} />
-
-          <div className="mt-4 md:mt-6">
-            <h3 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
-              {getStepTitle(currentStep, registrationType)}
-            </h3>
-
-            {currentStep === 1 && (
-              <div className="mb-8">
-                <PromoCodeInput
-                  value={formData.promoCode}
-                  onChange={(value) => handleInputChange('promoCode', value)}
-                  onValidation={handlePromoValidation}
-                  error={errors.promo}
-                  defaultCode={promoCode}
-                />
-              </div>
-            )}
-
-            <RegistrationStepRenderer
-              currentStep={currentStep}
-              registrationType={registrationType}
-              formData={formData}
-              onInputChange={handleInputChange}
-              onSportToggle={handleSportToggle}
-              errors={errors}
-            />
-
-            <NavigationButtons
-              currentStep={currentStep}
-              totalSteps={4}
-              loading={loading || googleLoading}
-              onPrevious={prevStep}
-              onNext={nextStep}
-              onSubmit={handleSubmit}
-            />
-          </div>
+          <RegistrationForm
+            currentStep={currentStep}
+            registrationType={registrationType}
+            formData={formData}
+            errors={errors}
+            loading={loading || googleLoading}
+            onInputChange={handleInputChange}
+            onSportToggle={handleSportToggle}
+            onPromoValidation={handlePromoValidation}
+            onPrevStep={prevStep}
+            onNextStep={nextStep}
+            onSubmit={handleSubmit}
+            promoCode={promoCode}
+          />
         </DialogContent>
       </Dialog>
 
