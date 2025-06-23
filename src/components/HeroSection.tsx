@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import RegistrationModal from './RegistrationModal';
 
 const HeroSection = () => {
@@ -20,35 +20,59 @@ const HeroSection = () => {
   const heroSlides = [
     {
       type: 'image',
-      url: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1920&h=1080&fit=crop&auto=format',
-      title: 'Revolução no Fitness',
-      subtitle: 'Conecte-se com academias de ponta'
-    },
-    {
-      type: 'image', 
-      url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1920&h=1080&fit=crop&auto=format',
+      url: '/lovable-uploads/e5644ad9-b874-4157-873e-40502cf056b0.png',
       title: 'Treinamento Funcional',
       subtitle: 'Supere seus limites todos os dias'
     },
     {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1920&h=1080&fit=crop&auto=format',
-      title: 'Esportes Aquáticos',
-      subtitle: 'Mergulhe em uma nova experiência'
+      type: 'image', 
+      url: '/lovable-uploads/72437099-6d2b-44fc-a4be-2de3feb06dbc.png',
+      title: 'CrossFit Intenso',
+      subtitle: 'Força e resistência em cada movimento'
     },
     {
       type: 'image',
-      url: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=1920&h=1080&fit=crop&auto=format',
-      title: 'Ciclismo Urbano',
-      subtitle: 'Pedale rumo ao seu melhor desempenho'
+      url: '/lovable-uploads/f837a4ce-7c6e-461f-ba63-edcf4bf741fc.png',
+      title: 'Tiro com Arco',
+      subtitle: 'Precisão e foco em cada disparo'
+    },
+    {
+      type: 'image',
+      url: '/lovable-uploads/e86c5380-4c2d-4b0b-99e8-8b93aeca8636.png',
+      title: 'Escalada Esportiva',
+      subtitle: 'Desafie suas alturas e conquiste novos patamares'
+    },
+    {
+      type: 'image',
+      url: '/lovable-uploads/67b4cf92-c94a-4f4b-a770-ff1f58239a6d.png',
+      title: 'Trekking & Aventura',
+      subtitle: 'Explore novos horizontes e conecte-se com a natureza'
+    },
+    {
+      type: 'image',
+      url: '/lovable-uploads/44959214-1bcf-4335-9376-cdaa51c8183c.png',
+      title: 'Montanhismo',
+      subtitle: 'Conquiste picos e supere seus próprios limites'
+    },
+    {
+      type: 'image',
+      url: '/lovable-uploads/5736d95e-4f42-43f5-8ef3-6377ff323c0b.png',
+      title: 'Corrida & Running',
+      subtitle: 'Cada passo é uma conquista pessoal'
+    },
+    {
+      type: 'image',
+      url: '/lovable-uploads/ce01b34d-566a-420b-9fb3-29ed4b24590b.png',
+      title: 'Atletismo',
+      subtitle: 'Velocidade, força e determinação'
     }
   ];
 
-  // Auto-slide functionality
+  // Auto-slide functionality - 0.2 seconds per image
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
+    }, 200);
     return () => clearInterval(interval);
   }, []);
 
@@ -91,7 +115,7 @@ const HeroSection = () => {
       if (isFirstLetter) {
         return (
           <span key={index}>
-            <span className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
               {word.charAt(0)}
             </span>
             <span className="text-white">
@@ -103,7 +127,7 @@ const HeroSection = () => {
       }
       if (isKeyWord) {
         return (
-          <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">
+          <span key={index} className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">
             {word}
             {index < words.length - 1 && ' '}
           </span>
@@ -132,7 +156,7 @@ const HeroSection = () => {
           {heroSlides.map((slide, index) => (
             <div
               key={index}
-              className={`absolute inset-0 h-[calc(100%+120px)] transition-opacity duration-1000 ${
+              className={`absolute inset-0 h-[calc(100%+120px)] transition-opacity duration-100 ${
                 index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
             >
@@ -140,7 +164,7 @@ const HeroSection = () => {
                 className="absolute inset-0 bg-cover bg-center transform scale-105"
                 style={{ backgroundImage: `url(${slide.url})` }}
               />
-              <div className="absolute inset-0 bg-black/60" />
+              <div className="absolute inset-0 bg-black/50" />
             </div>
           ))}
           
@@ -181,7 +205,7 @@ const HeroSection = () => {
             <h1 className="text-2xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight min-h-[200px] flex items-center justify-center">
               <span className="block">
                 {getStyledText(displayedText)}
-                <span className="animate-pulse bg-gradient-to-r from-orange-600 to-orange-300 bg-clip-text text-transparent">|</span>
+                <span className="animate-pulse bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">|</span>
               </span>
             </h1>
 
@@ -200,19 +224,14 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Enhanced CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            {/* Enhanced CTA Button - Removed "Ver como funciona" button */}
+            <div className="flex justify-center items-center">
               <button 
                 onClick={handleCadastrarClick} 
-                className="bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-700 hover:to-orange-600 text-white px-8 py-4 rounded-lg text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 group"
+                className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white px-8 py-4 rounded-lg text-lg font-bold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 flex items-center space-x-2 group"
               >
                 <span>🔥 Cadastrar agora</span>
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-              
-              <button className="bg-white/10 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition-all duration-300 flex items-center space-x-2">
-                <Play size={18} />
-                <span>Ver como funciona</span>
               </button>
             </div>
           </div>

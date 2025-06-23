@@ -74,7 +74,7 @@ const EventsSection = () => {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" 
                   loading="lazy"
                 />
-                <div className="absolute top-3 left-3 bg-gradient-to-r from-blue-600 to-blue-400 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                <div className="absolute top-3 left-3 bg-gradient-to-r from-orange-600 to-orange-400 text-white px-2 py-1 rounded-full text-xs font-semibold">
                   {event.category}
                 </div>
                 <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
@@ -107,7 +107,7 @@ const EventsSection = () => {
 
                 <div className="flex space-x-2">
                   <AuthGuard className="flex-1">
-                    <button className="w-full bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1">
+                    <button className="w-full bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white py-2 rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-1">
                       <span>Participar</span>
                       <ArrowRight size={14} />
                     </button>
@@ -123,7 +123,7 @@ const EventsSection = () => {
 
         <div className="text-center mt-10">
           <AuthGuard className="inline-block">
-            <button className="bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 px-[32px] py-[12px] flex items-center space-x-2">
+            <button className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white rounded-lg font-semibold text-sm hover:shadow-lg transition-all duration-300 px-[32px] py-[12px] flex items-center space-x-2">
               <span>Ver mais eventos</span>
               <ArrowRight size={16} />
             </button>

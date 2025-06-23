@@ -4,44 +4,44 @@ import React from 'react';
 const SportsBannerSection = () => {
   const sportsBanners = [
     { 
-      name: 'Musculação', 
-      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=400&fit=crop',
-      alt: 'Pessoa praticando musculação com halteres'
+      name: 'Treinamento Funcional', 
+      image: '/lovable-uploads/e5644ad9-b874-4157-873e-40502cf056b0.png',
+      alt: 'Pessoa praticando treinamento funcional com elásticos'
     },
     { 
-      name: 'Tênis', 
-      image: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&h=400&fit=crop',
-      alt: 'Jogador de tênis em ação na quadra'
+      name: 'CrossFit', 
+      image: '/lovable-uploads/72437099-6d2b-44fc-a4be-2de3feb06dbc.png',
+      alt: 'Atleta praticando CrossFit com cordas'
     },
     { 
-      name: 'Canoagem', 
-      image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&h=400&fit=crop',
-      alt: 'Pessoa praticando canoagem em lago'
+      name: 'Tiro com Arco', 
+      image: '/lovable-uploads/f837a4ce-7c6e-461f-ba63-edcf4bf741fc.png',
+      alt: 'Pessoa praticando tiro com arco'
+    },
+    { 
+      name: 'Escalada', 
+      image: '/lovable-uploads/e86c5380-4c2d-4b0b-99e8-8b93aeca8636.png',
+      alt: 'Pessoas praticando escalada esportiva'
     },
     { 
       name: 'Trekking', 
-      image: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=400&fit=crop',
-      alt: 'Pessoa fazendo trekking em trilha de montanha'
+      image: '/lovable-uploads/67b4cf92-c94a-4f4b-a770-ff1f58239a6d.png',
+      alt: 'Pessoas fazendo trekking em trilha'
     },
     { 
-      name: 'Ciclismo', 
-      image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&h=400&fit=crop',
-      alt: 'Ciclista pedalando em estrada'
+      name: 'Montanhismo', 
+      image: '/lovable-uploads/44959214-1bcf-4335-9376-cdaa51c8183c.png',
+      alt: 'Montanhistas explorando paisagem'
     },
     { 
       name: 'Corrida', 
-      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&h=400&fit=crop',
-      alt: 'Corredor em movimento durante exercício'
+      image: '/lovable-uploads/5736d95e-4f42-43f5-8ef3-6377ff323c0b.png',
+      alt: 'Casal correndo no parque'
     },
     { 
-      name: 'Ginástica', 
-      image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&h=400&fit=crop',
-      alt: 'Ginasta praticando exercícios'
-    },
-    { 
-      name: 'Hipismo', 
-      image: 'https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=800&h=400&fit=crop',
-      alt: 'Cavaleiro praticando hipismo'
+      name: 'Atletismo', 
+      image: '/lovable-uploads/ce01b34d-566a-420b-9fb3-29ed4b24590b.png',
+      alt: 'Atletas praticando corrida em pista'
     },
   ];
 

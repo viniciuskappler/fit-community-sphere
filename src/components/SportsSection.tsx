@@ -6,67 +6,67 @@ const SportsSection = () => {
   const sports = [{
     name: 'Musculação',
     icon: '💪',
-    color: 'from-orange-500 to-red-600'
+    color: 'from-orange-500 to-orange-600'
   }, {
     name: 'Corrida',
     icon: '🏃‍♂️',
-    color: 'from-blue-500 to-indigo-600'
+    color: 'from-orange-600 to-orange-400'
   }, {
     name: 'Natação',
     icon: '🏊‍♀️',
-    color: 'from-cyan-500 to-blue-600'
+    color: 'from-orange-500 to-orange-700'
   }, {
     name: 'Rugby',
     icon: '🏈',
-    color: 'from-green-500 to-emerald-600'
+    color: 'from-orange-600 to-orange-500'
   }, {
     name: 'Ciclismo',
     icon: '🚴‍♂️',
-    color: 'from-yellow-500 to-orange-600'
+    color: 'from-orange-400 to-orange-600'
   }, {
     name: 'Canoagem',
     icon: '🛶',
-    color: 'from-teal-500 to-cyan-600'
+    color: 'from-orange-600 to-orange-400'
   }, {
     name: 'Trekking',
     icon: '🥾',
-    color: 'from-amber-500 to-orange-600'
+    color: 'from-orange-500 to-orange-600'
   }, {
     name: 'CrossFit',
     icon: '🏋️‍♀️',
-    color: 'from-purple-500 to-pink-600'
+    color: 'from-orange-600 to-orange-400'
   }, {
     name: 'Futebol',
     icon: '⚽',
-    color: 'from-green-600 to-lime-600'
+    color: 'from-orange-500 to-orange-700'
   }, {
     name: 'Escalada',
     icon: '🧗‍♂️',
-    color: 'from-stone-500 to-gray-600'
+    color: 'from-orange-600 to-orange-500'
   }, {
     name: 'Vôlei',
     icon: '🏐',
-    color: 'from-pink-500 to-rose-600'
+    color: 'from-orange-400 to-orange-600'
   }, {
     name: 'Basquete',
     icon: '🏀',
-    color: 'from-orange-600 to-red-500'
+    color: 'from-orange-600 to-orange-400'
   }, {
     name: 'Hipismo',
     icon: '🏇',
-    color: 'from-brown-500 to-amber-700'
+    color: 'from-orange-500 to-orange-600'
   }, {
     name: 'Tênis',
     icon: '🎾',
-    color: 'from-lime-500 to-green-600'
+    color: 'from-orange-600 to-orange-400'
   }, {
     name: 'Boxe',
     icon: '🥊',
-    color: 'from-red-500 to-pink-600'
+    color: 'from-orange-500 to-orange-700'
   }, {
     name: 'Yoga',
     icon: '🧘‍♀️',
-    color: 'from-purple-400 to-pink-500'
+    color: 'from-orange-400 to-orange-600'
   }];
 
   return (
@@ -74,7 +74,7 @@ const SportsSection = () => {
       <div className="w-full px-6 md:w-11/12 lg:w-3/4 mx-auto md:px-8 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl lg:text-3xl font-bold text-gray-900 mb-3">
-            Explore Modalidades <span className="text-orange-500">Esportivas</span>
+            Explore Modalidades <span className="bg-gradient-to-r from-orange-600 to-orange-400 bg-clip-text text-transparent">Esportivas</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-xl mx-auto">
             Descubra a modalidade perfeita para você e 
