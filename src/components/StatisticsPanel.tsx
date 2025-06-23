@@ -188,7 +188,7 @@ const StatisticsPanel = () => {
             <h4 className="text-xl font-bold bg-gradient-to-r from-orange-700 to-red-600 bg-clip-text text-transparent mb-2">
               🎯 Seja Parte da História do Esporte!
             </h4>
-            <p className="text-orange-700 text-base mb-3 max-w-xl mx-auto">
+            <p className="text-orange-700 text-base mb-3 text-center whitespace-nowrap overflow-hidden text-ellipsis">
               Cada atleta que se junta ao SQUAD 300 não é apenas um número - é um revolucionário!
             </p>
             <div className="flex flex-wrap justify-center gap-3 text-sm text-orange-600 font-medium">
