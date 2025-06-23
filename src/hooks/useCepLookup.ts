@@ -38,7 +38,7 @@ export const useCepLookup = (): UseCepLookupReturn => {
         cep: result.cep,
         state: result.state,
         city: result.city,
-        district: result.district,
+        district: result.neighborhood, // Fix: use 'neighborhood' from cep-promise instead of 'district'
         street: result.street
       };
     } catch (err: any) {
