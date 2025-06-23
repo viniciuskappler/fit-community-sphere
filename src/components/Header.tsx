@@ -102,7 +102,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                         <Menu size={20} />
                       </button>
                     </SheetTrigger>
-                    <SheetContent side="right" className="w-80">
+                    <SheetContent side="right" className="w-80 bg-white">
                       <div className="flex flex-col space-y-6 mt-8">
                         <Link 
                           to="/" 
