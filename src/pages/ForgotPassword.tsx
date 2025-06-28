@@ -26,6 +26,8 @@ const ForgotPassword = () => {
     e.preventDefault();
     setError('');
     
+    console.log('🔐 Starting password reset for:', email);
+    
     if (!email.trim()) {
       setError('Por favor, insira seu e-mail');
       return;
@@ -44,18 +46,23 @@ const ForgotPassword = () => {
       });
 
       if (error) {
-        console.error('Erro ao enviar e-mail de recuperação:', error);
+        console.error('❌ Password reset error:', error);
+        
+        // Enhanced error handling for password reset
         if (error.message.includes('rate limit')) {
           setError('Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.');
+        } else if (error.message.includes('User not found')) {
+          setError('E-mail não encontrado. Verifique se o e-mail está correto.');
         } else {
           setError('Erro ao enviar e-mail de recuperação. Tente novamente.');
         }
       } else {
+        console.log('✅ Password reset email sent successfully');
         setEmailSent(true);
         toast.success('E-mail de recuperação enviado com sucesso!');
       }
     } catch (error: any) {
-      console.error('Erro inesperado:', error);
+      console.error('💥 Password reset exception:', error);
       setError('Erro inesperado. Tente novamente.');
     } finally {
       setIsLoading(false);

@@ -42,6 +42,18 @@ export const useRegistration = () => {
     referralCode?: string
   ): Promise<RegistrationResult> => {
     console.log('🚀 Starting registration submission...');
+    console.log('📊 Registration data:', {
+      email: data.email,
+      fullName: data.fullName,
+      registrationType,
+      hasPromoCode: !!data.promoCode,
+      sportsCount: {
+        favorite: data.favoriteStateSports.length,
+        practiced: data.practicedSports.length,
+        interested: data.interestedSports.length
+      }
+    });
+    
     setLoading(true);
 
     try {
@@ -50,6 +62,7 @@ export const useRegistration = () => {
       const rateLimitResult = await checkRegistrationRateLimit(data.email);
       
       if (rateLimitResult.isRateLimited) {
+        console.warn('⚠️ Rate limit exceeded');
         handleRateLimitExceeded(rateLimitResult.emailAttempts, rateLimitResult.ipAttempts);
         return {
           success: false,
@@ -76,17 +89,28 @@ export const useRegistration = () => {
       if (signUpError) {
         console.error('❌ Signup failed:', signUpError);
         
-        // Check if it's the email signup disabled error
+        // Enhanced error handling for registration
         if (signUpError.message.includes('Email signups are disabled') || 
             signUpError.message.includes('Signups not allowed') ||
             signUpError.message.includes('Cadastro temporariamente indisponível')) {
           
+          console.warn('⚠️ Email signups disabled, requiring Google auth');
           toast.error('Cadastro por email temporariamente desabilitado. Use o Google para se cadastrar.');
           
           return {
             success: false,
             error: 'O cadastro tradicional está temporariamente indisponível. Por favor, use a opção "Cadastrar com Google" no início do formulário.',
             requiresGoogleAuth: true
+          };
+        } else if (signUpError.message.includes('User already registered')) {
+          return {
+            success: false,
+            error: 'Este e-mail já está cadastrado. Tente fazer login ou use a opção "Esqueci minha senha".'
+          };
+        } else if (signUpError.message.includes('Invalid email')) {
+          return {
+            success: false,
+            error: 'E-mail inválido. Verifique o formato do e-mail.'
           };
         }
         
@@ -98,6 +122,7 @@ export const useRegistration = () => {
 
       const newUserId = signUpData?.user?.id;
       if (!newUserId) {
+        console.error('❌ No user ID returned from signup');
         return {
           success: false,
           error: 'Erro ao obter ID do usuário criado.'

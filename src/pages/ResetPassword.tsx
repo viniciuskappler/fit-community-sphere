@@ -26,25 +26,41 @@ const ResetPassword = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    console.log('🔐 Checking reset password token validity');
+    
     // Verificar se temos os parâmetros necessários na URL
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
     const type = searchParams.get('type');
 
+    console.log('🔍 URL parameters:', { 
+      hasAccessToken: !!accessToken, 
+      hasRefreshToken: !!refreshToken, 
+      type 
+    });
+
     if (!accessToken || !refreshToken || type !== 'recovery') {
+      console.error('❌ Invalid or missing token parameters');
       setIsValidToken(false);
       return;
     }
 
     // Configurar a sessão com os tokens recebidos
     const setSession = async () => {
-      const { error } = await supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken
-      });
+      try {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken
+        });
 
-      if (error) {
-        console.error('Erro ao configurar sessão:', error);
+        if (error) {
+          console.error('❌ Error setting session:', error);
+          setIsValidToken(false);
+        } else {
+          console.log('✅ Session set successfully');
+        }
+      } catch (error) {
+        console.error('💥 Exception setting session:', error);
         setIsValidToken(false);
       }
     };
@@ -57,6 +73,8 @@ const ResetPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    console.log('🔐 Starting password update');
 
     if (!password) {
       setError('Por favor, insira uma nova senha');
@@ -81,9 +99,18 @@ const ResetPassword = () => {
       });
 
       if (error) {
-        console.error('Erro ao atualizar senha:', error);
-        setError('Erro ao atualizar senha. Tente novamente.');
+        console.error('❌ Password update error:', error);
+        
+        // Enhanced error handling for password update
+        if (error.message.includes('session_not_found')) {
+          setError('Sessão expirada. Solicite um novo link de recuperação.');
+        } else if (error.message.includes('weak_password')) {
+          setError('Senha muito fraca. Use uma senha mais forte.');
+        } else {
+          setError('Erro ao atualizar senha. Tente novamente.');
+        }
       } else {
+        console.log('✅ Password updated successfully');
         setPasswordChanged(true);
         toast.success('Senha alterada com sucesso!');
         
@@ -93,7 +120,7 @@ const ResetPassword = () => {
         }, 3000);
       }
     } catch (error: any) {
-      console.error('Erro inesperado:', error);
+      console.error('💥 Password update exception:', error);
       setError('Erro inesperado. Tente novamente.');
     } finally {
       setIsLoading(false);
