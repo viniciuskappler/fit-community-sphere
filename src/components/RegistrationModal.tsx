@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { useNavigate } from 'react-router-dom';
@@ -233,7 +232,16 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
       }
     } else {
       console.error('❌ Registration failed:', result.error);
-      setErrors({ general: result.error || 'Ocorreu um erro durante o cadastro. Tente novamente.' });
+      
+      // Check if it's a Google auth required error
+      if (result.requiresGoogleAuth) {
+        setErrors({ 
+          general: result.error || 'Cadastro por email temporariamente indisponível. Use o Google.',
+          googleRequired: 'Para continuar, use a opção "Cadastrar com Google" no início do formulário.'
+        });
+      } else {
+        setErrors({ general: result.error || 'Ocorreu um erro durante o cadastro. Tente novamente.' });
+      }
       scrollToTop();
     }
   };

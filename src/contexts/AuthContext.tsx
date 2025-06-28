@@ -1,166 +1,167 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { useAuthSecurity } from '@/hooks/useAuthSecurity';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, metadata?: any) => Promise<{ data: any; error: any }>;
-  signIn: (email: string, password: string) => Promise<{ data: any; error: any }>;
-  signInWithGoogle: () => Promise<{ data: any; error: any }>;
+  signUp: (email: string, password: string, metadata?: any) => Promise<{ data?: any; error?: AuthError | null }>;
+  signIn: (email: string, password: string) => Promise<{ data?: any; error?: AuthError | null }>;
+  signInWithGoogle: () => Promise<{ error?: AuthError | null }>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const { secureSignIn, secureSignUp } = useAuthSecurity();
 
   useEffect(() => {
-    let mounted = true;
-
-    // Set up auth state listener FIRST
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (!mounted) return;
-        
-        console.log('Auth state changed:', event, session?.user?.id);
-        
-        // Only update state synchronously
+        console.log('🔐 Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
-
-        // Handle specific events
+        
         if (event === 'SIGNED_IN' && session?.user) {
-          console.log('User signed in successfully:', session.user.id);
+          console.log('✅ User signed in successfully');
           toast.success('Login realizado com sucesso!');
-        } else if (event === 'SIGNED_OUT') {
-          console.log('User signed out');
-        } else if (event === 'TOKEN_REFRESHED') {
-          console.log('Token refreshed for user:', session?.user?.id);
         }
       }
     );
 
-    // THEN check for existing session
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      console.log('Initial session check:', session?.user?.id);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const signUp = async (email: string, password: string, metadata?: any) => {
+    console.log('🚀 Starting signup process for:', email);
     try {
-      console.log('Attempting signup with:', { email, metadata });
+      const redirectUrl = `${window.location.origin}/cadastro-realizado`;
       
-      const { data, error } = await secureSignUp(email, password, metadata);
-
-      if (error) {
-        console.error('Signup error:', error);
-        const errorMsg = error.message || 'Erro ao criar conta';
-        toast.error(errorMsg);
-      } else {
-        console.log('Signup successful:', data);
-        toast.success('Conta criada com sucesso! Verifique seu email para confirmar.');
-      }
-
-      return { data, error };
-    } catch (error: any) {
-      console.error('Signup exception:', error);
-      toast.error('Erro inesperado ao criar conta');
-      return { data: null, error };
-    }
-  };
-
-  const signIn = async (email: string, password: string) => {
-    try {
-      console.log('Attempting secure login for:', email);
-      
-      const { data, error } = await secureSignIn(email, password);
-
-      if (error) {
-        console.error('Login error:', error);
-        const errorMsg = error.message || 'Erro ao fazer login';
-        toast.error(errorMsg);
-      }
-      // Success message is handled in the auth state change listener
-
-      return { data, error };
-    } catch (error: any) {
-      console.error('Login exception:', error);
-      toast.error('Erro inesperado ao fazer login');
-      return { data: null, error };
-    }
-  };
-
-  const signInWithGoogle = async () => {
-    try {
-      console.log('Attempting Google login');
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
         options: {
-          redirectTo: `${window.location.origin}/`
+          emailRedirectTo: redirectUrl,
+          data: metadata || {}
         }
       });
 
       if (error) {
-        console.error('Google login error:', error);
-        toast.error(error.message || 'Erro ao fazer login com Google');
+        console.error('❌ Signup error:', error);
+        
+        // Handle specific error for disabled email signups
+        if (error.message.includes('Email signups are disabled') || error.message.includes('Signups not allowed')) {
+          toast.error('Cadastro por email temporariamente desabilitado. Use o cadastro com Google.');
+          return { error: new Error('Cadastro temporariamente indisponível. Tente com Google.') as AuthError };
+        }
+        
+        toast.error('Erro no cadastro: ' + error.message);
+        return { data, error };
       }
 
-      return { data, error };
+      console.log('✅ Signup successful:', data);
+      return { data, error: null };
     } catch (error: any) {
-      console.error('Google login exception:', error);
-      toast.error('Erro inesperado ao fazer login com Google');
-      return { data: null, error };
+      console.error('💥 Signup exception:', error);
+      toast.error('Erro inesperado no cadastro');
+      return { error: error as AuthError };
+    }
+  };
+
+  const signIn = async (email: string, password: string) => {
+    console.log('🔐 Starting signin process for:', email);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        console.error('❌ Signin error:', error);
+        return { data, error };
+      }
+
+      console.log('✅ Signin successful');
+      return { data, error: null };
+    } catch (error: any) {
+      console.error('💥 Signin exception:', error);
+      return { error: error as AuthError };
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    console.log('🔍 Starting Google signin...');
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        }
+      });
+
+      if (error) {
+        console.error('❌ Google signin error:', error);
+        toast.error('Erro ao fazer login com Google');
+        return { error };
+      }
+
+      console.log('🔄 Google signin initiated');
+      return { error: null };
+    } catch (error: any) {
+      console.error('💥 Google signin exception:', error);
+      toast.error('Erro inesperado no login com Google');
+      return { error: error as AuthError };
     }
   };
 
   const signOut = async () => {
+    console.log('👋 Signing out...');
     try {
-      console.log('Signing out user');
       const { error } = await supabase.auth.signOut();
       if (error) {
-        console.error('Logout error:', error);
+        console.error('❌ Signout error:', error);
         toast.error('Erro ao fazer logout');
       } else {
+        console.log('✅ Signout successful');
         toast.success('Logout realizado com sucesso!');
       }
-    } catch (error: any) {
-      console.error('Logout exception:', error);
-      toast.error('Erro inesperado ao fazer logout');
+    } catch (error) {
+      console.error('💥 Signout exception:', error);
+      toast.error('Erro inesperado no logout');
     }
   };
 
-  const value = {
-    user,
-    session,
-    loading,
-    signUp,
-    signIn,
-    signInWithGoogle,
-    signOut
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      user,
+      session,
+      loading,
+      signUp,
+      signIn,
+      signInWithGoogle,
+      signOut
+    }}>
       {children}
     </AuthContext.Provider>
   );

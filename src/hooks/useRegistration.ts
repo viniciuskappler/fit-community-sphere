@@ -23,6 +23,7 @@ interface RegistrationResult {
   success: boolean;
   error?: string;
   userId?: string;
+  requiresGoogleAuth?: boolean;
 }
 
 export const useRegistration = () => {
@@ -62,7 +63,11 @@ export const useRegistration = () => {
         fullName: data.fullName,
         full_name: data.fullName,
         registration_type: registrationType,
-        promo_code: data.promoCode
+        promo_code: data.promoCode,
+        cpf: data.cpf,
+        phone: data.phone,
+        city: data.city,
+        birth_date: data.birthDate
       });
       
       // 3. Log registration attempt
@@ -70,6 +75,21 @@ export const useRegistration = () => {
       
       if (signUpError) {
         console.error('❌ Signup failed:', signUpError);
+        
+        // Check if it's the email signup disabled error
+        if (signUpError.message.includes('Email signups are disabled') || 
+            signUpError.message.includes('Signups not allowed') ||
+            signUpError.message.includes('Cadastro temporariamente indisponível')) {
+          
+          toast.error('Cadastro por email temporariamente desabilitado. Use o Google para se cadastrar.');
+          
+          return {
+            success: false,
+            error: 'O cadastro tradicional está temporariamente indisponível. Por favor, use a opção "Cadastrar com Google" no início do formulário.',
+            requiresGoogleAuth: true
+          };
+        }
+        
         return {
           success: false,
           error: signUpError.message || 'Erro ao criar conta. Tente novamente.'
