@@ -82,7 +82,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   });
 
   const handleInputChange = (field: string, value: any) => {
-    console.log(`Field ${field} changed to:`, value, typeof value);
+    console.log(`🔄 Field ${field} changed to:`, value, 'Type:', typeof value);
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field as keyof ValidationErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
@@ -154,11 +154,22 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   };
 
   const handleSubmit = async () => {
-    console.log('🎯 Starting form submission...');
-    console.log('💾 Current form data:', formData);
+    console.log('🎯 =========================');
+    console.log('🎯 STARTING FORM SUBMISSION');
+    console.log('🎯 =========================');
+    console.log('💾 Current form data:', JSON.stringify(formData, null, 2));
     console.log('📝 Registration type:', registrationType);
+    console.log('🔍 acceptTerms value:', formData.acceptTerms, 'Type:', typeof formData.acceptTerms);
+    console.log('🔍 acceptNewsletter value:', formData.acceptNewsletter, 'Type:', typeof formData.acceptNewsletter);
+    
+    // Debug: Verificar especificamente os termos
+    console.log('🔍 TERMS DEBUG:');
+    console.log('  - acceptTerms:', formData.acceptTerms);
+    console.log('  - acceptTerms === true:', formData.acceptTerms === true);
+    console.log('  - acceptTerms !== true:', formData.acceptTerms !== true);
     
     const stepErrors = validateStep4(formData, registrationType);
+    console.log('🔍 Step4 validation errors:', stepErrors);
     
     if (formData.promoCode && !promoValidation?.success) {
       stepErrors.promo = 'Código promocional inválido ou esgotado';
@@ -188,6 +199,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
       acceptNewsletter: formData.acceptNewsletter
     });
     
+    console.log('🚀 Calling registerUser function...');
     const result = await registerUser(
       {
         fullName: formData.fullName,
@@ -205,6 +217,8 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
       registrationType,
       referralCode
     );
+
+    console.log('📊 Registration result:', result);
 
     if (result.success) {
       console.log('✅ Registration successful, closing modal and navigating');
@@ -247,6 +261,17 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
       setGoogleLoading(false);
     }
   };
+
+  // Debug: Log sempre que o formData.acceptTerms mudar
+  useEffect(() => {
+    console.log('📋 acceptTerms changed:', formData.acceptTerms, 'Type:', typeof formData.acceptTerms);
+  }, [formData.acceptTerms]);
+
+  // Debug: Log loading e error states
+  useEffect(() => {
+    console.log('⏳ Loading state:', loading || googleLoading);
+    console.log('❌ Current errors:', errors);
+  }, [loading, googleLoading, errors]);
 
   return (
     <>

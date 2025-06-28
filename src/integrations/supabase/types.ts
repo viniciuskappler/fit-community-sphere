@@ -9,24 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      Cadastros: {
-        Row: {
-          column_name: string | null
-          created_at: string
-          id: number
-        }
-        Insert: {
-          column_name?: string | null
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          column_name?: string | null
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
-      }
       cities: {
         Row: {
           created_at: string | null

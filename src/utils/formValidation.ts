@@ -178,11 +178,22 @@ export const validateStep4 = (formData: FormData, registrationType?: string): Va
     }
   }
   
-  // Terms validation - corrigir a validação do acceptTerms
-  console.log('Validating acceptTerms:', formData.acceptTerms, typeof formData.acceptTerms);
-  if (formData.acceptTerms !== true) {
+  // Terms validation - CORRIGIDO
+  console.log('🔍 VALIDATION DEBUG - acceptTerms:', formData.acceptTerms, 'Type:', typeof formData.acceptTerms);
+  console.log('🔍 VALIDATION DEBUG - acceptTerms === true:', formData.acceptTerms === true);
+  console.log('🔍 VALIDATION DEBUG - acceptTerms !== true:', formData.acceptTerms !== true);
+  
+  // Corrigir a validação para aceitar tanto boolean true quanto string "true"
+  const termsAccepted = formData.acceptTerms === true || formData.acceptTerms === "true";
+  
+  if (!termsAccepted) {
+    console.log('❌ VALIDATION - Terms not accepted, adding error');
     errors.acceptTerms = 'Você deve aceitar os termos de uso';
+  } else {
+    console.log('✅ VALIDATION - Terms accepted successfully');
   }
+  
+  console.log('🔍 VALIDATION RESULT - Final errors:', errors);
   
   return errors;
 };
