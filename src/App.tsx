@@ -18,6 +18,8 @@ import MeusReferrals from '@/pages/MeusReferrals';
 import TermosPrivacidade from '@/pages/TermosPrivacidade';
 import TermosUso from '@/pages/TermosUso';
 import PoliticaPrivacidade from '@/pages/PoliticaPrivacidade';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 import NotFound from '@/pages/NotFound';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from 'sonner';
@@ -55,6 +57,8 @@ function App() {
               <Route path="/termos-privacidade" element={<TermosPrivacidade />} />
               <Route path="/termos-uso" element={<TermosUso />} />
               <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
