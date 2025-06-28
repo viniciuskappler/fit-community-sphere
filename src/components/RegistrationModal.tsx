@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent } from './ui/dialog';
 import { useNavigate } from 'react-router-dom';
@@ -151,6 +152,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   };
 
   const handleSubmit = async () => {
+    console.log('🎯 Starting form submission...');
     const stepErrors = validateStep4(formData, registrationType);
     
     if (formData.promoCode && !promoValidation?.success) {
@@ -158,11 +160,23 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     }
     
     if (Object.keys(stepErrors).length > 0) {
+      console.log('❌ Validation errors found:', stepErrors);
       setErrors(stepErrors);
       return;
     }
     
     setErrors({});
+    
+    console.log('📝 Submitting registration data:', {
+      email: formData.email,
+      fullName: formData.fullName,
+      registrationType,
+      sportsCount: {
+        favorite: formData.favoriteStateSports.length,
+        practiced: formData.practicedSports.length,
+        interested: formData.interestedSports.length
+      }
+    });
     
     const result = await registerUser(
       {
@@ -183,6 +197,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     );
 
     if (result.success) {
+      console.log('✅ Registration successful, closing modal and navigating');
       onClose();
       
       if (registrationType === 'supporter') {
@@ -193,12 +208,13 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
         navigate('/cadastro-finalizado-grupo');
       }
     } else {
-      console.error('Erro no cadastro:', result.error);
-      setErrors({ general: 'Ocorreu um erro durante o cadastro. Tente novamente.' });
+      console.error('❌ Registration failed:', result.error);
+      setErrors({ general: result.error || 'Ocorreu um erro durante o cadastro. Tente novamente.' });
     }
   };
 
   const handleGoogleSignup = async () => {
+    console.log('🔍 Starting Google signup...');
     setGoogleLoading(true);
     setErrors({});
     
@@ -206,13 +222,15 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
       const { error } = await signInWithGoogle();
       
       if (error) {
+        console.error('❌ Google signup error:', error);
         setErrors({ general: 'Erro ao cadastrar com Google. Tente novamente.' });
       } else {
+        console.log('✅ Google signup successful, closing modal');
         onClose();
-        navigate('/hub');
+        // No redirect to /hub since it's disabled - stay on current page
       }
     } catch (error: any) {
-      console.error('Google signup exception:', error);
+      console.error('💥 Google signup exception:', error);
       setErrors({ general: 'Erro inesperado ao cadastrar com Google' });
     } finally {
       setGoogleLoading(false);

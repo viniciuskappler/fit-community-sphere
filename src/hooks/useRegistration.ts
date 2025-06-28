@@ -86,9 +86,46 @@ export const useRegistration = () => {
 
       console.log('✅ User account created successfully with ID:', newUserId);
 
-      // 4. Wait for profile creation by trigger
+      // 4. Wait for profile creation by trigger with retry mechanism
       console.log('⏳ Waiting for profile creation...');
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      let profileCreated = false;
+      let retries = 0;
+      const maxRetries = 5;
+
+      while (!profileCreated && retries < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 2000 + (retries * 1000)));
+        
+        const { data: profile, error: profileCheckError } = await supabase
+          .from('user_profiles')
+          .select('id')
+          .eq('id', newUserId)
+          .single();
+
+        if (profile && !profileCheckError) {
+          profileCreated = true;
+          console.log('✅ Profile found, proceeding with update');
+        } else {
+          retries++;
+          console.log(`⏳ Profile not ready yet, retry ${retries}/${maxRetries}`);
+          
+          if (retries === maxRetries) {
+            // Force create profile if trigger failed
+            console.log('🔧 Trigger failed, creating profile manually');
+            const { error: manualProfileError } = await supabase
+              .from('user_profiles')
+              .insert({
+                id: newUserId,
+                full_name: data.fullName
+              });
+
+            if (manualProfileError && !manualProfileError.message.includes('duplicate')) {
+              console.error('❌ Manual profile creation failed:', manualProfileError);
+            } else {
+              profileCreated = true;
+            }
+          }
+        }
+      }
 
       // 5. Update profile with complete data
       console.log('💾 Updating user profile with complete data...');
@@ -106,13 +143,12 @@ export const useRegistration = () => {
 
       if (profileError) {
         console.error('❌ Error updating profile:', profileError);
-        // Don't fail registration for profile update errors
         toast.error('Aviso: Alguns dados do perfil podem não ter sido salvos');
       } else {
         console.log('✅ Profile updated successfully');
       }
 
-      // 6. Save user sports with error handling
+      // 6. Save user sports with enhanced error handling
       const allSports = [
         ...data.favoriteStateSports.map(sport => ({ 
           user_id: newUserId,
@@ -132,24 +168,40 @@ export const useRegistration = () => {
       ];
 
       if (allSports.length > 0) {
-        console.log('🏃 Saving user sports...');
+        console.log('🏃 Saving user sports...', allSports.length, 'sports');
         
         // First, clear any existing sports for this user
-        await supabase
+        const { error: deleteError } = await supabase
           .from('user_sports')
           .delete()
           .eq('user_id', newUserId);
 
-        // Then insert new sports
-        const { error: sportsError } = await supabase
-          .from('user_sports')
-          .insert(allSports);
+        if (deleteError) {
+          console.warn('⚠️ Warning clearing existing sports:', deleteError);
+        }
 
-        if (sportsError) {
-          console.error('❌ Error saving sports:', sportsError);
-          toast.error('Aviso: Esportes podem não ter sido salvos');
-        } else {
-          console.log('✅ Sports saved successfully');
+        // Then insert new sports with retry mechanism
+        let sportsRetries = 0;
+        let sportsSaved = false;
+
+        while (!sportsSaved && sportsRetries < 3) {
+          const { error: sportsError } = await supabase
+            .from('user_sports')
+            .insert(allSports);
+
+          if (sportsError) {
+            sportsRetries++;
+            console.error(`❌ Error saving sports (attempt ${sportsRetries}):`, sportsError);
+            
+            if (sportsRetries < 3) {
+              await new Promise(resolve => setTimeout(resolve, 1000 * sportsRetries));
+            } else {
+              toast.error('Aviso: Esportes podem não ter sido salvos completamente');
+            }
+          } else {
+            sportsSaved = true;
+            console.log('✅ Sports saved successfully');
+          }
         }
       }
 

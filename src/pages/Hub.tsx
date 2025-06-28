@@ -11,7 +11,7 @@ const Hub = () => {
   useEffect(() => {
     // Mostrar modal imediatamente ao acessar a página
     showDevelopmentModal();
-  }, []);
+  }, [showDevelopmentModal]);
 
   const handleModalClose = () => {
     closeDevelopmentModal();

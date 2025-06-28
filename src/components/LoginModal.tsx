@@ -33,6 +33,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   };
 
   const handleGoogleLogin = async () => {
+    console.log('🔍 Starting Google login...');
     setGoogleLoading(true);
     setErrors({});
     
@@ -40,13 +41,15 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       const { error } = await signInWithGoogle();
       
       if (error) {
+        console.error('❌ Google login error:', error);
         setErrors({ general: 'Erro ao fazer login com Google. Tente novamente.' });
       } else {
+        console.log('✅ Google login successful');
         onClose();
-        navigate('/hub');
+        // Don't navigate to /hub since it's disabled
       }
     } catch (error: any) {
-      console.error('Google login exception:', error);
+      console.error('💥 Google login exception:', error);
       setErrors({ general: 'Erro inesperado ao fazer login com Google' });
     } finally {
       setGoogleLoading(false);
@@ -107,11 +110,12 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           setErrors({ general: 'Erro ao fazer login. Tente novamente.' });
         }
       } else {
+        console.log('✅ Login successful');
         onClose();
-        navigate('/hub');
+        // Don't navigate to /hub since it's disabled
       }
     } catch (error: any) {
-      console.error('Login exception:', error);
+      console.error('💥 Login exception:', error);
       setErrors({ general: 'Erro inesperado ao fazer login' });
       // Log failed attempt even for exceptions
       await logLoginAttempt(email, false);
