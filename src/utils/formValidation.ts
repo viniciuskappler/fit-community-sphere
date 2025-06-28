@@ -1,4 +1,3 @@
-
 import { validatePassword } from './passwordValidation';
 
 export interface ValidationErrors {
@@ -178,15 +177,11 @@ export const validateStep4 = (formData: FormData, registrationType?: string): Va
     }
   }
   
-  // Terms validation - CORRIGIDO
+  // Terms validation - FIXED: Only check for boolean true
   console.log('🔍 VALIDATION DEBUG - acceptTerms:', formData.acceptTerms, 'Type:', typeof formData.acceptTerms);
   console.log('🔍 VALIDATION DEBUG - acceptTerms === true:', formData.acceptTerms === true);
-  console.log('🔍 VALIDATION DEBUG - acceptTerms !== true:', formData.acceptTerms !== true);
   
-  // Corrigir a validação para aceitar tanto boolean true quanto string "true"
-  const termsAccepted = formData.acceptTerms === true || formData.acceptTerms === "true";
-  
-  if (!termsAccepted) {
+  if (formData.acceptTerms !== true) {
     console.log('❌ VALIDATION - Terms not accepted, adding error');
     errors.acceptTerms = 'Você deve aceitar os termos de uso';
   } else {
