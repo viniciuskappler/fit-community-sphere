@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -18,15 +19,33 @@ interface FinalStepProps {
 const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: FinalStepProps) => {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
-  // Marcar checkboxes por padrão quando o componente é carregado
+  // Garantir que os checkboxes sejam marcados por padrão e tratados corretamente
   React.useEffect(() => {
+    console.log('FinalStep - Current acceptTerms value:', formData.acceptTerms, typeof formData.acceptTerms);
+    console.log('FinalStep - Current acceptNewsletter value:', formData.acceptNewsletter, typeof formData.acceptNewsletter);
+    
+    // Definir valores padrão se não estiverem definidos
     if (formData.acceptTerms === undefined || formData.acceptTerms === null) {
+      console.log('Setting acceptTerms to true by default');
       onInputChange('acceptTerms', true);
     }
     if (formData.acceptNewsletter === undefined || formData.acceptNewsletter === null) {
+      console.log('Setting acceptNewsletter to true by default');
       onInputChange('acceptNewsletter', true);
     }
-  }, []);
+  }, [formData.acceptTerms, formData.acceptNewsletter, onInputChange]);
+
+  const handleTermsChange = (checked: boolean | 'indeterminate') => {
+    console.log('Terms checkbox changed:', checked);
+    const boolValue = checked === true;
+    onInputChange('acceptTerms', boolValue);
+  };
+
+  const handleNewsletterChange = (checked: boolean | 'indeterminate') => {
+    console.log('Newsletter checkbox changed:', checked);
+    const boolValue = checked === true;
+    onInputChange('acceptNewsletter', boolValue);
+  };
 
   return (
     <div className="space-y-4">
@@ -240,8 +259,8 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
         <div className="flex items-center space-x-2">
           <Checkbox
             id="terms"
-            checked={formData.acceptTerms}
-            onCheckedChange={(checked) => onInputChange('acceptTerms', checked)}
+            checked={formData.acceptTerms === true}
+            onCheckedChange={handleTermsChange}
             required
             className={formData.acceptTerms ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
           />
@@ -264,8 +283,8 @@ const FinalStep = ({ registrationType, formData, onInputChange, errors = {} }: F
         <div className="flex items-center space-x-2">
           <Checkbox
             id="newsletter"
-            checked={formData.acceptNewsletter}
-            onCheckedChange={(checked) => onInputChange('acceptNewsletter', checked)}
+            checked={formData.acceptNewsletter === true}
+            onCheckedChange={handleNewsletterChange}
             className={formData.acceptNewsletter ? 'data-[state=checked]:bg-orange-500 data-[state=checked]:border-orange-500' : ''}
           />
           <Label htmlFor="newsletter" className="text-sm">

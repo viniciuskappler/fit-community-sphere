@@ -1,3 +1,4 @@
+
 import { validatePassword } from './passwordValidation';
 
 export interface ValidationErrors {
@@ -102,16 +103,32 @@ export const validateRegistrationForm = (formData: any, currentStep?: number): V
     if (!formData.birthDate) {
       errors.birthDate = 'Data de nascimento é obrigatória';
     } else {
-      const birthDate = new Date(formData.birthDate);
-      const today = new Date();
-      const age = today.getFullYear() - birthDate.getFullYear();
-      
-      if (age < 13) {
-        errors.birthDate = 'Você deve ter pelo menos 13 anos';
-      }
-      
-      if (birthDate > today) {
-        errors.birthDate = 'Data de nascimento não pode ser no futuro';
+      // Parse date directly from string to avoid timezone issues
+      const dateParts = formData.birthDate.split('-');
+      if (dateParts.length === 3) {
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
+        const day = parseInt(dateParts[2]);
+        const birthDate = new Date(year, month, day);
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDay = today.getDate();
+        
+        let age = currentYear - year;
+        if (currentMonth < month || (currentMonth === month && currentDay < day)) {
+          age--;
+        }
+        
+        if (age < 13) {
+          errors.birthDate = 'Você deve ter pelo menos 13 anos';
+        }
+        
+        if (year > currentYear || (year === currentYear && month > currentMonth) || (year === currentYear && month === currentMonth && day > currentDay)) {
+          errors.birthDate = 'Data de nascimento não pode ser no futuro';
+        }
+      } else {
+        errors.birthDate = 'Data de nascimento inválida';
       }
     }
   }
@@ -161,8 +178,9 @@ export const validateStep4 = (formData: FormData, registrationType?: string): Va
     }
   }
   
-  // Terms validation
-  if (!formData.acceptTerms) {
+  // Terms validation - corrigir a validação do acceptTerms
+  console.log('Validating acceptTerms:', formData.acceptTerms, typeof formData.acceptTerms);
+  if (formData.acceptTerms !== true) {
     errors.acceptTerms = 'Você deve aceitar os termos de uso';
   }
   
@@ -193,9 +211,17 @@ export const formatDateForDisplay = (dateString: string): string => {
   if (!dateString) return '';
   
   try {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('pt-BR');
+    // Parse date string directly to avoid timezone issues
+    const dateParts = dateString.split('-');
+    if (dateParts.length === 3) {
+      const day = dateParts[2].padStart(2, '0');
+      const month = dateParts[1].padStart(2, '0');
+      const year = dateParts[0];
+      return `${day}/${month}/${year}`;
+    }
+    return dateString;
   } catch (error) {
+    console.error('Error formatting date:', error);
     return dateString;
   }
 };

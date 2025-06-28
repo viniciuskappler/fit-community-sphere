@@ -82,6 +82,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
   });
 
   const handleInputChange = (field: string, value: any) => {
+    console.log(`Field ${field} changed to:`, value, typeof value);
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field as keyof ValidationErrors]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
@@ -131,6 +132,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     }
     
     if (Object.keys(stepErrors).length > 0) {
+      console.log('❌ Step validation errors:', stepErrors);
       setErrors(stepErrors);
       scrollToTop();
       return;
@@ -153,6 +155,9 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
 
   const handleSubmit = async () => {
     console.log('🎯 Starting form submission...');
+    console.log('💾 Current form data:', formData);
+    console.log('📝 Registration type:', registrationType);
+    
     const stepErrors = validateStep4(formData, registrationType);
     
     if (formData.promoCode && !promoValidation?.success) {
@@ -160,22 +165,27 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     }
     
     if (Object.keys(stepErrors).length > 0) {
-      console.log('❌ Validation errors found:', stepErrors);
+      console.log('❌ Final validation errors found:', stepErrors);
       setErrors(stepErrors);
+      scrollToTop();
       return;
     }
     
+    console.log('✅ All validations passed, proceeding with registration');
     setErrors({});
     
     console.log('📝 Submitting registration data:', {
       email: formData.email,
       fullName: formData.fullName,
       registrationType,
+      birthDate: formData.birthDate,
       sportsCount: {
         favorite: formData.favoriteStateSports.length,
         practiced: formData.practicedSports.length,
         interested: formData.interestedSports.length
-      }
+      },
+      acceptTerms: formData.acceptTerms,
+      acceptNewsletter: formData.acceptNewsletter
     });
     
     const result = await registerUser(
@@ -210,6 +220,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     } else {
       console.error('❌ Registration failed:', result.error);
       setErrors({ general: result.error || 'Ocorreu um erro durante o cadastro. Tente novamente.' });
+      scrollToTop();
     }
   };
 

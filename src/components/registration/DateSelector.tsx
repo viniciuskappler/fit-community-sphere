@@ -16,11 +16,12 @@ const DateSelector = ({ value, onChange, error }: DateSelectorProps) => {
   // Initialize values from props
   React.useEffect(() => {
     if (value) {
-      const date = new Date(value);
-      if (!isNaN(date.getTime())) {
-        setDay(date.getDate().toString().padStart(2, '0'));
-        setMonth((date.getMonth() + 1).toString().padStart(2, '0'));
-        setYear(date.getFullYear().toString());
+      // Parse the date string directly without creating a Date object to avoid timezone issues
+      const dateParts = value.split('-');
+      if (dateParts.length === 3) {
+        setYear(dateParts[0]);
+        setMonth(dateParts[1]);
+        setDay(dateParts[2]);
       }
     }
   }, [value]);
@@ -66,21 +67,25 @@ const DateSelector = ({ value, onChange, error }: DateSelectorProps) => {
   const updateDate = (newDay: string, newMonth: string, newYear: string) => {
     if (newDay && newMonth && newYear) {
       const dateString = `${newYear}-${newMonth}-${newDay}`;
+      console.log('DateSelector updating date to:', dateString);
       onChange(dateString);
     }
   };
 
   const handleDayChange = (newDay: string) => {
+    console.log('Day changed to:', newDay);
     setDay(newDay);
     updateDate(newDay, month, year);
   };
 
   const handleMonthChange = (newMonth: string) => {
+    console.log('Month changed to:', newMonth);
     setMonth(newMonth);
     updateDate(day, newMonth, year);
   };
 
   const handleYearChange = (newYear: string) => {
+    console.log('Year changed to:', newYear);
     setYear(newYear);
     updateDate(day, month, newYear);
   };
