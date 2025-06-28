@@ -20,8 +20,9 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState('');
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,6 +49,27 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       setError('Erro inesperado no login');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setIsGoogleLoading(true);
+
+    try {
+      const { error } = await signInWithGoogle();
+      
+      if (error) {
+        console.error('❌ Google login error:', error);
+        setError('Erro no login com Google: ' + error.message);
+      } else {
+        onClose();
+      }
+    } catch (error: any) {
+      console.error('💥 Google login exception:', error);
+      setError('Erro inesperado no login com Google');
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -139,7 +161,11 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           </div>
         </div>
 
-        <GoogleAuthButton />
+        <GoogleAuthButton 
+          onClick={handleGoogleSignIn}
+          loading={isGoogleLoading}
+          text="Entrar com Google"
+        />
       </DialogContent>
     </Dialog>
   );
