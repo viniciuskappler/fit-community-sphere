@@ -206,6 +206,8 @@ export const getStepTitle = (currentStep: number, registrationType: string): str
         return 'Dados do Estabelecimento';
       } else if (registrationType === 'group') {
         return 'Dados do Grupo';
+      } else if (registrationType === 'professional') {
+        return 'Dados Profissionais';
       }
       return 'Finalizar Cadastro';
     default:

@@ -20,6 +20,7 @@ import TermosUso from '@/pages/TermosUso';
 import PoliticaPrivacidade from '@/pages/PoliticaPrivacidade';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
+import Assinaturas from '@/pages/Assinaturas';
 import NotFound from '@/pages/NotFound';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { Toaster } from 'sonner';
@@ -59,6 +60,7 @@ function App() {
               <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/assinaturas" element={<Assinaturas />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
