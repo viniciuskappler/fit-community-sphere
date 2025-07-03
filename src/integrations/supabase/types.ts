@@ -286,7 +286,7 @@ export type Database = {
           {
             foreignKeyName: "establishment_stats_establishment_id_fkey"
             columns: ["establishment_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "establishments"
             referencedColumns: ["id"]
           },
@@ -967,13 +967,11 @@ export type Database = {
         Returns: undefined
       }
       cleanup_user_sessions: {
-        Args: Record<PropertyKey, never> | { user_id_param: string }
+        Args: { user_id_param: string }
         Returns: undefined
       }
       generate_referral_code: {
-        Args:
-          | Record<PropertyKey, never>
-          | { user_id_param: string; type_param: string }
+        Args: { user_id_param: string; type_param: string }
         Returns: string
       }
       get_promo_stats: {
