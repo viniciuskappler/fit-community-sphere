@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Input } from '../ui/input';
 import { useCities } from '@/hooks/useCities';
@@ -54,7 +54,13 @@ const LocationSelector = ({
 }: LocationSelectorProps) => {
   const [citySearch, setCitySearch] = useState('');
   const [showCityDropdown, setShowCityDropdown] = useState(false);
-  const { cities, loading, error } = useCities(stateValue);
+  const { cities, loading, error, loadCities } = useCities();
+  
+  useEffect(() => {
+    if (stateValue) {
+      loadCities(stateValue);
+    }
+  }, [stateValue]);
   
   const filteredCities = useMemo(() => {
     if (!citySearch) return cities;
