@@ -926,6 +926,33 @@ export type Database = {
           },
         ]
       }
+      usuarios: {
+        Row: {
+          city: string | null
+          code: string | null
+          created_at: string
+          id: string
+          name: string | null
+          sport: string | null
+        }
+        Insert: {
+          city?: string | null
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          sport?: string | null
+        }
+        Update: {
+          city?: string | null
+          code?: string | null
+          created_at?: string
+          id?: string
+          name?: string | null
+          sport?: string | null
+        }
+        Relationships: []
+      }
       waitlist: {
         Row: {
           created_at: string | null

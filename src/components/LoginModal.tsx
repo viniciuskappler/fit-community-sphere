@@ -7,8 +7,9 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import GoogleAuthButton from './GoogleAuthButton';
+import { supabase } from '@/integrations/supabase/client';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -22,40 +23,129 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState('');
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signUp, signInWithGoogle, user } = useAuth();
+  const navigate = useNavigate();
+
+  const checkUserProfile = async (userId: string) => {
+    try {
+      // Verificar se o perfil existe e está completo
+      const { data: profile, error: profileError } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('Erro ao verificar perfil:', profileError);
+        return false;
+      }
+
+      // Verificar se o usuário já existe na tabela usuarios
+      const { data: existingUser, error: userError } = await supabase
+        .from('usuarios')
+        .select('id')
+        .eq('id', userId)
+        .single();
+
+      if (userError && userError.code !== 'PGRST116') {
+        console.error('Erro ao verificar usuário:', userError);
+      }
+
+      // Se não existe na tabela usuarios, criar registro
+      if (!existingUser) {
+        const { error: insertError } = await supabase
+          .from('usuarios')
+          .insert({
+            id: userId,
+            code: 'SQUAD300',
+            name: profile?.full_name || '',
+            city: profile?.city || '',
+            sport: ''
+          });
+
+        if (insertError) {
+          console.error('Erro ao criar usuário na tabela usuarios:', insertError);
+        } else {
+          console.log('Usuário criado na tabela usuarios com sucesso');
+        }
+      }
+
+      // Verificar se o perfil está completo
+      const isProfileComplete = profile && 
+        profile.city && 
+        profile.city.trim() !== '';
+
+      return isProfileComplete;
+    } catch (error) {
+      console.error('Erro na verificação do perfil:', error);
+      return false;
+    }
+  };
+
+  const handleSuccessfulAuth = async (userId: string) => {
+    try {
+      const isProfileComplete = await checkUserProfile(userId);
+      
+      onClose();
+      setEmail('');
+      setPassword('');
+      
+      if (isProfileComplete) {
+        navigate('/hub');
+      } else {
+        navigate('/praticante'); // Tela de completar perfil
+      }
+    } catch (error) {
+      console.error('Erro ao processar autenticação:', error);
+      navigate('/hub'); // Fallback
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    console.log('🔐 Starting login attempt for:', email);
+    console.log('🔐 Tentando login/cadastro para:', email);
 
     try {
-      const { error } = await signIn(email, password);
+      // Primeiro tenta fazer login
+      const { error: signInError } = await signIn(email, password);
       
-      if (error) {
-        console.error('❌ Login error:', error);
-        
-        // Improved error handling with more specific messages
-        if (error.message.includes('Invalid login credentials')) {
-          setError('E-mail ou senha incorretos. Verifique suas credenciais e tente novamente.');
-        } else if (error.message.includes('Email not confirmed')) {
-          setError('Por favor, confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada.');
-        } else if (error.message.includes('Too many requests')) {
-          setError('Muitas tentativas de login. Aguarde alguns minutos antes de tentar novamente.');
+      if (signInError) {
+        // Se o login falhou, tenta criar conta automaticamente
+        if (signInError.message.includes('Invalid login credentials') || 
+            signInError.message.includes('Email not confirmed')) {
+          
+          console.log('🆕 Login falhou, tentando criar nova conta...');
+          
+          const { data: signUpData, error: signUpError } = await signUp(email, password);
+          
+          if (signUpError) {
+            console.error('❌ Erro no cadastro:', signUpError);
+            setError('Erro ao criar conta: ' + signUpError.message);
+          } else if (signUpData.user) {
+            console.log('✅ Conta criada com sucesso');
+            // Após criar conta, fazer login automaticamente
+            const { error: autoSignInError } = await signIn(email, password);
+            if (!autoSignInError && signUpData.user) {
+              await handleSuccessfulAuth(signUpData.user.id);
+            }
+          }
         } else {
-          setError('Erro no login: ' + error.message);
+          console.error('❌ Erro no login:', signInError);
+          setError('Erro no login: ' + signInError.message);
         }
       } else {
-        console.log('✅ Login successful');
-        onClose();
-        setEmail('');
-        setPassword('');
+        // Login bem-sucedido
+        console.log('✅ Login realizado com sucesso');
+        if (user?.id) {
+          await handleSuccessfulAuth(user.id);
+        }
       }
     } catch (error: any) {
-      console.error('💥 Login exception:', error);
-      setError('Erro inesperado no login. Tente novamente.');
+      console.error('💥 Erro inesperado:', error);
+      setError('Erro inesperado. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
@@ -65,28 +155,21 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
     setError('');
     setIsGoogleLoading(true);
 
-    console.log('🔐 Starting Google login attempt');
+    console.log('🔐 Iniciando login com Google');
 
     try {
       const { error } = await signInWithGoogle();
       
       if (error) {
-        console.error('❌ Google login error:', error);
-        
-        // Improved Google auth error handling
-        if (error.message.includes('popup_closed_by_user')) {
-          setError('Login cancelado. Tente novamente se desejar continuar com o Google.');
-        } else if (error.message.includes('access_denied')) {
-          setError('Acesso negado pelo Google. Verifique suas permissões.');
-        } else {
-          setError('Erro no login com Google: ' + error.message);
-        }
+        console.error('❌ Erro no login com Google:', error);
+        setError('Erro no login com Google: ' + error.message);
       } else {
-        console.log('✅ Google login successful');
+        console.log('✅ Login com Google iniciado');
+        // O redirecionamento será tratado pelo AuthContext
         onClose();
       }
     } catch (error: any) {
-      console.error('💥 Google login exception:', error);
+      console.error('💥 Erro inesperado no login com Google:', error);
       setError('Erro inesperado no login com Google. Tente novamente.');
     } finally {
       setIsGoogleLoading(false);
@@ -105,11 +188,11 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
-            Fazer Login
+            Entrar ou Criar Conta
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-4">
           {error && (
             <Alert className="border-red-200 bg-red-50">
               <AlertCircle className="h-4 w-4 text-red-500" />
@@ -118,74 +201,72 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               </AlertDescription>
             </Alert>
           )}
-          
-          <div className="space-y-2">
-            <Label htmlFor="login-email">E-mail</Label>
-            <Input
-              id="login-email"
-              type="email"
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="login-password">Senha</Label>
-            <div className="relative">
-              <Input
-                id="login-password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Digite sua senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pr-10"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+          {/* Botão do Google */}
+          <GoogleAuthButton 
+            onClick={handleGoogleSignIn}
+            loading={isGoogleLoading}
+            text="Continuar com Google"
+          />
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">ou</span>
             </div>
           </div>
 
-          <div className="text-right">
-            <Link 
-              to="/forgot-password" 
-              className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
-              onClick={handleClose}
+          {/* Formulário de Email/Senha */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="login-email">E-mail</Label>
+              <Input
+                id="login-email"
+                type="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="login-password">Senha</Label>
+              <div className="relative">
+                <Input
+                  id="login-password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Digite sua senha"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={isLoading}
             >
-              Esqueci minha senha
-            </Link>
-          </div>
+              {isLoading ? 'Processando...' : 'Entrar / Criar Conta'}
+            </Button>
+          </form>
 
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={isLoading}
-          >
-            {isLoading ? 'Entrando...' : 'Entrar'}
-          </Button>
-        </form>
-
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">ou</span>
-          </div>
+          <p className="text-xs text-gray-600 text-center">
+            Se você não tem conta, ela será criada automaticamente ao inserir seus dados.
+          </p>
         </div>
-
-        <GoogleAuthButton 
-          onClick={handleGoogleSignIn}
-          loading={isGoogleLoading}
-          text="Entrar with Google"
-        />
       </DialogContent>
     </Dialog>
   );

@@ -21,6 +21,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Função para verificar e criar usuário na tabela usuarios
+  const ensureUserInUsuariosTable = async (userId: string, userEmail?: string) => {
+    try {
+      const { data: existingUser, error: checkError } = await supabase
+        .from('usuarios')
+        .select('id')
+        .eq('id', userId)
+        .single();
+
+      if (checkError && checkError.code !== 'PGRST116') {
+        console.error('Erro ao verificar usuário:', checkError);
+        return;
+      }
+
+      if (!existingUser) {
+        const { error: insertError } = await supabase
+          .from('usuarios')
+          .insert({
+            id: userId,
+            code: 'SQUAD300',
+            name: userEmail?.split('@')[0] || '',
+            city: '',
+            sport: ''
+          });
+
+        if (insertError) {
+          console.error('Erro ao criar usuário na tabela usuarios:', insertError);
+        } else {
+          console.log('✅ Usuário criado na tabela usuarios com sucesso');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao garantir usuário na tabela usuarios:', error);
+    }
+  };
+
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -33,6 +69,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('✅ User signed in successfully');
           toast.success('Login realizado com sucesso!');
+          
+          // Garantir que o usuário existe na tabela usuarios
+          await ensureUserInUsuariosTable(session.user.id, session.user.email);
         }
       }
     );
@@ -50,7 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, metadata?: any) => {
     console.log('🚀 Starting signup process for:', email);
     try {
-      const redirectUrl = `${window.location.origin}/cadastro-realizado`;
+      const redirectUrl = `${window.location.origin}/hub`;
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -63,14 +102,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('❌ Signup error:', error);
-        
-        // Handle specific error for disabled email signups
-        if (error.message.includes('Email signups are disabled') || error.message.includes('Signups not allowed')) {
-          toast.error('Cadastro por email temporariamente desabilitado. Use o cadastro com Google.');
-          return { error: new Error('Cadastro temporariamente indisponível. Tente com Google.') as AuthError };
-        }
-        
-        toast.error('Erro no cadastro: ' + error.message);
         return { data, error };
       }
 
@@ -78,7 +109,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { data, error: null };
     } catch (error: any) {
       console.error('💥 Signup exception:', error);
-      toast.error('Erro inesperado no cadastro');
       return { error: error as AuthError };
     }
   };

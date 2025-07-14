@@ -10,6 +10,7 @@ import Footer from '../components/Footer';
 import RegistrationSection from '../components/RegistrationSection';
 import InteractiveMapSection from '../components/InteractiveMapSection';
 import CookieConsent from '../components/CookieConsent';
+import PromoCodeBanner from '../components/PromoCodeBanner';
 import { preloadHomepageImages } from '../utils/performance';
 
 const Index = () => {
@@ -65,6 +66,7 @@ const Index = () => {
       <Header isSecondaryVisible={showTopBar} />
       <main className="pt-[120px]">
         <HeroSection />
+        <PromoCodeBanner />
         <RegistrationSection />
         <InteractiveMapSection />
         <SportsSection />
