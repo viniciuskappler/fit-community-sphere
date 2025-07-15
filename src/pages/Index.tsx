@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import SecondaryHeader from '../components/SecondaryHeader';
 import HeroSection from '../components/HeroSection';
+import LoggedInHeroSection from '../components/LoggedInHeroSection';
+import SquadCounter from '../components/SquadCounter';
+import EventsKanban from '../components/EventsKanban';
 import SportsSection from '../components/SportsSection';
 import EventsSection from '../components/EventsSection';
 import EstablishmentsSection from '../components/EstablishmentsSection';
@@ -67,12 +70,22 @@ const Index = () => {
       <SecondaryHeader isVisible={showTopBar} />
       <Header isSecondaryVisible={showTopBar} />
       <main className="pt-[120px]">
-        {!user && <HeroSection />}
-        <RegistrationSection />
-        <InteractiveMapSection />
-        <SportsSection />
-        <EventsSection />
-        <EstablishmentsSection />
+        {user ? (
+          <>
+            <LoggedInHeroSection />
+            <SquadCounter />
+            <EventsKanban />
+          </>
+        ) : (
+          <>
+            <HeroSection />
+            <RegistrationSection />
+            <InteractiveMapSection />
+            <SportsSection />
+            <EventsSection />
+            <EstablishmentsSection />
+          </>
+        )}
       </main>
       <Footer />
       <CookieConsent />
