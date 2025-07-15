@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
@@ -12,18 +11,17 @@ import { Button } from '../ui/button';
 
 interface PersonalDataStepProps {
   formData: {
-    fullName: string;
+    nome: string;
     cpf: string;
-    phone: string;
+    telefone: string;
     email: string;
-    city: string;
-    state: string;
-    birthDate: string;
-    street: string;
-    number: string;
-    neighborhood: string;
+    cidade: string;
+    estado: string;
+    data_nascimento: string;
+    rua: string;
+    numero: string;
+    bairro: string;
     cep: string;
-    cityIbgeCode?: string;
   };
   onInputChange: (field: string, value: any) => void;
   errors?: ValidationErrors;
@@ -53,7 +51,7 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
       } else if (value.length >= 2) {
         formattedPhone = value.replace(/(\d{2})/, '($1) ');
       }
-      onInputChange('phone', formattedPhone);
+      onInputChange('telefone', formattedPhone);
     }
   };
 
@@ -110,14 +108,14 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
         <Label htmlFor="nome" className="text-orange-600 font-medium">Nome completo *</Label>
         <Input
           id="nome"
-          value={formData.fullName || ''}
-          onChange={(e) => onInputChange('fullName', e.target.value)}
+          value={formData.nome || ''}
+          onChange={(e) => onInputChange('nome', e.target.value)}
           placeholder="Seu nome completo"
           required
-          className={`mt-1 ${errors.fullName ? 'border-orange-500' : ''}`}
+          className={`mt-1 ${errors.nome ? 'border-orange-500' : ''}`}
         />
-        {errors.fullName && (
-          <p className="text-orange-500 text-sm mt-1">{errors.fullName}</p>
+        {errors.nome && (
+          <p className="text-orange-500 text-sm mt-1">{errors.nome}</p>
         )}
       </div>
 
@@ -138,17 +136,17 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
           )}
         </div>
         <div>
-          <Label htmlFor="phone" className="text-orange-600 font-medium">Telefone *</Label>
+          <Label htmlFor="telefone" className="text-orange-600 font-medium">Telefone *</Label>
           <Input
-            id="phone"
-            value={formData.phone}
+            id="telefone"
+            value={formData.telefone}
             onChange={handlePhoneChange}
             placeholder="(00) 00000-0000"
             required
-            className={`mt-1 ${errors.phone ? 'border-orange-500' : ''}`}
+            className={`mt-1 ${errors.telefone ? 'border-orange-500' : ''}`}
           />
-          {errors.phone && (
-            <p className="text-orange-500 text-sm mt-1">{errors.phone}</p>
+          {errors.telefone && (
+            <p className="text-orange-500 text-sm mt-1">{errors.telefone}</p>
           )}
         </div>
       </div>
@@ -215,23 +213,23 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
             <div className="md:col-span-2">
               <Input
                 placeholder="Rua/Avenida"
-                value={formData.street}
-                onChange={(e) => onInputChange('street', e.target.value)}
-                className={errors.street ? 'border-orange-500' : ''}
+                value={formData.rua}
+                onChange={(e) => onInputChange('rua', e.target.value)}
+                className={errors.rua ? 'border-orange-500' : ''}
               />
-              {errors.street && (
-                <p className="text-orange-500 text-sm mt-1">{errors.street}</p>
+              {errors.rua && (
+                <p className="text-orange-500 text-sm mt-1">{errors.rua}</p>
               )}
             </div>
             <div>
               <Input
                 placeholder="Número"
-                value={formData.number}
-                onChange={(e) => onInputChange('number', e.target.value)}
-                className={errors.number ? 'border-orange-500' : ''}
+                value={formData.numero}
+                onChange={(e) => onInputChange('numero', e.target.value)}
+                className={errors.numero ? 'border-orange-500' : ''}
               />
-              {errors.number && (
-                <p className="text-orange-500 text-sm mt-1">{errors.number}</p>
+              {errors.numero && (
+                <p className="text-orange-500 text-sm mt-1">{errors.numero}</p>
               )}
             </div>
           </div>
@@ -239,12 +237,12 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
           <div>
             <Input
               placeholder="Bairro"
-              value={formData.neighborhood}
-              onChange={(e) => onInputChange('neighborhood', e.target.value)}
-              className={errors.neighborhood ? 'border-orange-500' : ''}
+              value={formData.bairro}
+              onChange={(e) => onInputChange('bairro', e.target.value)}
+              className={errors.bairro ? 'border-orange-500' : ''}
             />
-            {errors.neighborhood && (
-              <p className="text-orange-500 text-sm mt-1">{errors.neighborhood}</p>
+            {errors.bairro && (
+              <p className="text-orange-500 text-sm mt-1">{errors.bairro}</p>
             )}
           </div>
         </div>
@@ -254,12 +252,12 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
         <Label className="text-orange-600 font-medium">Estado e Cidade *</Label>
         <div className="mt-1">
           <LocationSelector
-            stateValue={formData.state}
-            cityValue={formData.city}
-            onStateChange={(value) => onInputChange('state', value)}
+            stateValue={formData.estado}
+            cityValue={formData.cidade}
+            onStateChange={(value) => onInputChange('estado', value)}
             onCityChange={handleCityChange}
-            stateError={errors.state}
-            cityError={errors.city}
+            stateError={errors.estado}
+            cityError={errors.cidade}
           />
         </div>
       </div>
@@ -268,9 +266,9 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
         <Label className="text-orange-600 font-medium">Data de Nascimento *</Label>
         <div className="mt-1">
           <DateSelector
-            value={formData.birthDate}
-            onChange={(value) => onInputChange('birthDate', value)}
-            error={errors.birthDate}
+            value={formData.data_nascimento}
+            onChange={(value) => onInputChange('data_nascimento', value)}
+            error={errors.data_nascimento}
           />
         </div>
       </div>

@@ -12,7 +12,7 @@ interface RegistrationStepRendererProps {
   registrationType: 'supporter' | 'establishment' | 'group';
   formData: FormData;
   onInputChange: (field: string, value: any) => void;
-  onSportToggle: (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => void;
+  onSportToggle: (field: 'esportes_favoritos' | 'esportes_praticados' | 'esportes_interesse', sport: string) => void;
   errors: ValidationErrors;
   onSwitchToLogin?: () => void;
 }
@@ -30,7 +30,19 @@ const RegistrationStepRenderer = ({
     case 1:
       return (
         <PersonalDataStep 
-          formData={formData}
+          formData={{
+            nome: formData.nome || '',
+            cpf: formData.cpf || '',
+            telefone: formData.telefone || '',
+            email: formData.email || '',
+            cidade: formData.cidade || '',
+            estado: formData.estado || '',
+            data_nascimento: formData.data_nascimento || '',
+            rua: formData.rua || '',
+            numero: formData.numero || '',
+            bairro: formData.bairro || '',
+            cep: formData.cep || ''
+          }}
           onInputChange={onInputChange}
           errors={errors}
           onSwitchToLogin={onSwitchToLogin}
@@ -39,7 +51,11 @@ const RegistrationStepRenderer = ({
     case 2:
       return (
         <SportsPreferencesStep 
-          formData={formData}
+          formData={{
+            esportes_favoritos: formData.esportes_favoritos || [],
+            esportes_praticados: formData.esportes_praticados || [],
+            esportes_interesse: formData.esportes_interesse || []
+          }}
           onSportToggle={onSportToggle}
           sportsList={sportsList}
           errors={errors}
@@ -48,7 +64,10 @@ const RegistrationStepRenderer = ({
     case 3:
       return (
         <PasswordStep 
-          formData={formData}
+          formData={{
+            password: formData.senha || '',
+            confirmPassword: formData.confirmPassword || ''
+          }}
           onInputChange={onInputChange}
           errors={errors}
         />
