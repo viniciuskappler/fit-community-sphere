@@ -8,17 +8,17 @@ const SquadCounter = () => {
 
   const fetchSquadCount = async () => {
     try {
-      const { data, error, count: totalCount } = await supabase
-        .from('usuarios')
-        .select('id', { count: 'exact' })
-        .eq('squad_code', 'SQUAD300');
+      const { data, error } = await supabase
+        .from('contagem_squad300')
+        .select('total_usuarios_squad300')
+        .single();
 
       if (error) {
         console.error('Erro ao buscar contagem do SQUAD300:', error);
         return;
       }
 
-      setCount(totalCount || 0);
+      setCount(data?.total_usuarios_squad300 || 0);
       setLoading(false);
     } catch (error) {
       console.error('Erro ao buscar contagem do SQUAD300:', error);

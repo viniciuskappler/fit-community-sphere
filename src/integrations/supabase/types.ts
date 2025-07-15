@@ -391,7 +391,12 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      contagem_squad300: {
+        Row: {
+          total_usuarios_squad300: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       apply_promo_code: {
