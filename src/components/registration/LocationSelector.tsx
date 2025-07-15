@@ -8,7 +8,7 @@ interface LocationSelectorProps {
   stateValue: string;
   cityValue: string;
   onStateChange: (value: string) => void;
-  onCityChange: (value: string, ibgeCode?: string) => void;
+  onCityChange: (value: string) => void;
   stateError?: string;
   cityError?: string;
 }
@@ -77,8 +77,8 @@ const LocationSelector = ({
     setShowCityDropdown(value.length > 0 && filteredCities.length > 0);
   };
 
-  const handleCitySelect = (city: { name: string; ibge_code: string }) => {
-    onCityChange(city.name, city.ibge_code);
+  const handleCitySelect = (city: { name: string; state_code: string }) => {
+    onCityChange(city.name);
     setCitySearch('');
     setShowCityDropdown(false);
   };
@@ -128,7 +128,7 @@ const LocationSelector = ({
             <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-md mt-1 max-h-48 overflow-y-auto shadow-lg">
               {filteredCities.map((city) => (
                 <div
-                  key={city.ibge_code}
+                  key={city.name}
                   className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-gray-900"
                   onClick={() => handleCitySelect(city)}
                 >

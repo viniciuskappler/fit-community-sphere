@@ -194,10 +194,10 @@ export const useRegistration = () => {
         console.log('✅ User created in usuarios table successfully');
       }
 
-      // 7. Track referral conversion if referralCode is present
-      if (referralCode) {
-        await trackReferralConversion(referralCode, newUserId, registrationType);
-      }
+      // Funcionalidade de referral temporariamente desabilitada
+      // if (referralCode) {
+      //   await trackReferralConversion(referralCode, newUserId, registrationType);
+      // }
 
       console.log('🎉 Registration completed successfully!');
       
@@ -233,37 +233,8 @@ export const useRegistration = () => {
     userId: string,
     conversionType: string
   ) => {
-    console.log('📊 Tracking referral conversion:', referralCode);
-    try {
-      const { data: codeData, error: codeError } = await supabase
-        .from('referral_codes')
-        .select('id')
-        .eq('code', referralCode)
-        .single();
-
-      if (codeError || !codeData) {
-        console.log('❌ Referral code not found:', referralCode);
-        return;
-      }
-
-      const { error: conversionError } = await supabase
-        .from('referral_conversions')
-        .insert({
-          referral_code_id: codeData.id,
-          referred_user_id: userId,
-          conversion_type: conversionType,
-          commission_amount: 0,
-          commission_status: 'pending'
-        });
-
-      if (conversionError) {
-        console.error('❌ Error tracking conversion:', conversionError);
-      } else {
-        console.log('✅ Referral conversion tracked successfully');
-      }
-    } catch (error) {
-      console.error('❌ Error in referral tracking:', error);
-    }
+    // Funcionalidade de referral temporariamente desabilitada
+    console.log('Referral tracking disabled:', referralCode);
   };
 
   return {

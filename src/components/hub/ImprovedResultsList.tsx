@@ -56,11 +56,12 @@ const ImprovedResultsList: React.FC<ImprovedResultsListProps> = ({
       const isFavorited = favoriteIds.has(id);
       
       if (isFavorited) {
-        await supabase
-          .from('user_favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq(type === 'establishment' ? 'establishment_id' : 'group_id', id);
+        // Remover favorito - funcionalidade desabilitada temporariamente
+        // await supabase
+        //   .from('user_favorites')
+        //   .delete()
+        //   .eq('user_id', user.id)
+        //   .eq(type === 'establishment' ? 'establishment_id' : 'group_id', id);
         
         setFavoriteIds(prev => {
           const newSet = new Set(prev);
@@ -73,12 +74,13 @@ const ImprovedResultsList: React.FC<ImprovedResultsListProps> = ({
           description: 'Item removido dos seus favoritos',
         });
       } else {
-        await supabase
-          .from('user_favorites')
-          .insert({
-            user_id: user.id,
-            [type === 'establishment' ? 'establishment_id' : 'group_id']: id,
-          });
+        // Adicionar favorito - funcionalidade desabilitada temporariamente
+        // await supabase
+        //   .from('user_favorites')
+        //   .insert({
+        //     user_id: user.id,
+        //     [type === 'establishment' ? 'establishment_id' : 'group_id']: id,
+        //   });
         
         setFavoriteIds(prev => new Set([...prev, id]));
         

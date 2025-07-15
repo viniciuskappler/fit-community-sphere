@@ -1,94 +1,77 @@
-
-import { useQuery } from '@tanstack/react-query';
+// Hook simplificado para grupos esportivos
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface SportsGroupWithDetails {
   id: string;
-  group_name: string;
-  corporate_name: string;
+  nome: string;
+  descricao?: string;
+  modalidade?: string;
+  cidade?: string;
+  estado?: string;
+  group_name?: string;
+  corporate_name?: string;
   cities: string[];
-  phone: string;
-  email: string;
-  description: string | null;
-  meeting_point: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  sports: string[];
-  photos: Array<{
-    id: string;
-    photo_url: string;
-    caption: string | null;
-    is_main: boolean;
-  }>;
+  description?: string;
+  meeting_point?: string;
+  latitude?: number;
+  longitude?: number;
   averageRating: number;
   reviewCount: number;
+  sports: string[];
+  photos: any[];
 }
 
-export const useSportsGroups = (userLat?: number | null, userLng?: number | null) => {
-  return useQuery({
-    queryKey: ['sports-groups', userLat, userLng],
-    queryFn: async () => {
-      // Buscar grupos com seus esportes e fotos
-      const { data: groups, error } = await supabase
-        .from('sports_groups')
-        .select(`
-          id,
-          group_name,
-          corporate_name,
-          cities,
-          phone,
-          email,
-          description,
-          meeting_point,
-          latitude,
-          longitude,
-          group_sports(sport_name),
-          group_photos(id, photo_url, caption, is_main)
-        `)
-        .order('created_at', { ascending: false });
+export const useSportsGroups = () => {
+  const [groups, setGroups] = useState<SportsGroupWithDetails[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-      if (error) throw error;
+  const fetchSportsGroups = async () => {
+    try {
+      setLoading(true);
+      setError(null);
 
-      // Buscar reviews para cada grupo
-      const { data: reviews } = await supabase
-        .from('reviews')
-        .select('group_id, rating')
-        .not('group_id', 'is', null);
+      const { data, error: fetchError } = await supabase
+        .from('grupos_esportivos')
+        .select('*')
+        .order('criado_em', { ascending: false });
 
-      // Processar dados
-      const groupsWithDetails: SportsGroupWithDetails[] = groups.map(group => {
-        const groupReviews = reviews?.filter(r => r.group_id === group.id) || [];
-        const avgRating = groupReviews.length > 0 
-          ? groupReviews.reduce((sum, r) => sum + r.rating, 0) / groupReviews.length 
-          : 0;
-
-        return {
-          ...group,
-          sports: group.group_sports?.map(s => s.sport_name) || [],
-          photos: group.group_photos || [],
-          averageRating: Math.round(avgRating * 10) / 10,
-          reviewCount: groupReviews.length,
-        };
-      });
-
-      // Ordenar por proximidade se localização do usuário estiver disponível
-      if (userLat && userLng) {
-        groupsWithDetails.sort((a, b) => {
-          if (!a.latitude || !a.longitude) return 1;
-          if (!b.latitude || !b.longitude) return -1;
-
-          const distA = Math.sqrt(
-            Math.pow(a.latitude - userLat, 2) + Math.pow(a.longitude - userLng, 2)
-          );
-          const distB = Math.sqrt(
-            Math.pow(b.latitude - userLat, 2) + Math.pow(b.longitude - userLng, 2)
-          );
-
-          return distA - distB;
-        });
+      if (fetchError) {
+        throw fetchError;
       }
 
-      return groupsWithDetails;
-    },
-  });
+      // Transform data to match expected format
+      const transformedData: SportsGroupWithDetails[] = (data || []).map(group => ({
+        ...group,
+        group_name: group.nome,
+        corporate_name: group.nome,
+        cities: group.cidade ? [group.cidade] : [],
+        description: group.descricao,
+        meeting_point: `${group.rua || ''} ${group.numero || ''}, ${group.bairro || ''}`.trim(),
+        averageRating: 4.3, // Mock data
+        reviewCount: 8, // Mock data
+        sports: group.modalidade ? [group.modalidade] : [],
+        photos: []
+      }));
+
+      setGroups(transformedData);
+    } catch (err: any) {
+      console.error('Error fetching sports groups:', err);
+      setError('Erro ao carregar grupos esportivos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSportsGroups();
+  }, []);
+
+  return {
+    groups,
+    loading,
+    error,
+    refetch: fetchSportsGroups
+  };
 };

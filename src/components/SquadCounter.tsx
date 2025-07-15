@@ -11,7 +11,7 @@ const SquadCounter = () => {
       const { data, error, count: totalCount } = await supabase
         .from('usuarios')
         .select('id', { count: 'exact' })
-        .eq('code', 'SQUAD300');
+        .eq('squad_code', 'SQUAD300');
 
       if (error) {
         console.error('Erro ao buscar contagem do SQUAD300:', error);

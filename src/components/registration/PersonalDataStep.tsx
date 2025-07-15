@@ -67,20 +67,17 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
       if (value.length === 8) {
         const cepData = await lookupCep(value);
         if (cepData) {
-          onInputChange('street', cepData.street);
-          onInputChange('neighborhood', cepData.district);
-          onInputChange('city', cepData.city);
-          onInputChange('state', cepData.state);
+          onInputChange('rua', cepData.street);
+          onInputChange('bairro', cepData.district);
+          onInputChange('cidade', cepData.city);
+          onInputChange('estado', cepData.state);
         }
       }
     }
   };
 
-  const handleCityChange = (cityName: string, ibgeCode?: string) => {
-    onInputChange('city', cityName);
-    if (ibgeCode) {
-      onInputChange('cityIbgeCode', ibgeCode);
-    }
+  const handleCityChange = (cityName: string) => {
+    onInputChange('cidade', cityName);
   };
 
   const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,11 +107,11 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
   return (
     <div className="space-y-6">
       <div>
-        <Label htmlFor="fullName" className="text-orange-600 font-medium">Nome completo *</Label>
+        <Label htmlFor="nome" className="text-orange-600 font-medium">Nome completo *</Label>
         <Input
-          id="fullName"
-          value={formData.fullName}
-          onChange={(e) => onInputChange('fullName', e.target.value)}
+          id="nome"
+          value={formData.nome || ''}
+          onChange={(e) => onInputChange('nome', e.target.value)}
           placeholder="Seu nome completo"
           required
           className={`mt-1 ${errors.fullName ? 'border-orange-500' : ''}`}
