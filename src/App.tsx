@@ -28,6 +28,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EstablishmentProfile from './pages/EstablishmentProfile';
 import GroupProfile from './pages/GroupProfile';
 import CriarGrupoEsportivo from './pages/CriarGrupoEsportivo';
+import CadastroEstabelecimento from './pages/CadastroEstabelecimento';
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ function App() {
               <Route path="/estabelecimento" element={<Estabelecimento />} />
               <Route path="/grupo-esportivo" element={<GrupoEsportivo />} />
               <Route path="/criar-grupo-esportivo" element={<CriarGrupoEsportivo />} />
+              <Route path="/cadastro-estabelecimento" element={<CadastroEstabelecimento />} />
               <Route path="/landing-estabelecimento" element={<LandingEstabelecimento />} />
               <Route path="/landing-estabelecimento/:referralCode" element={<LandingEstabelecimento />} />
               <Route path="/landing-grupo" element={<LandingGrupo />} />

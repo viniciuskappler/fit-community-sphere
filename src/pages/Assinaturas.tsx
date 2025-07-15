@@ -36,17 +36,19 @@ const Assinaturas = () => {
 
   const fetchPlans = async () => {
     try {
-      const { data, error } = await supabase
-        .from('subscription_plans')
-        .select('*')
-        .eq('active', true)
-        .order('type', { ascending: true });
-
-      if (error) throw error;
-      setPlans(data?.map(plan => ({
-        ...plan,
-        features: Array.isArray(plan.features) ? plan.features : []
-      })) || []);
+      // Como não temos tabela subscription_plans, usar dados mock
+      const mockPlans: Plan[] = [
+        {
+          id: '1',
+          name: 'Gratuito',
+          type: 'free',
+          price_monthly: 0,
+          price_yearly: 0,
+          is_free: true,
+          features: ['Acesso básico', 'Até 3 estabelecimentos']
+        }
+      ];
+      setPlans(mockPlans);
     } catch (error) {
       console.error('Erro ao buscar planos:', error);
       toast.error('Erro ao carregar planos de assinatura');

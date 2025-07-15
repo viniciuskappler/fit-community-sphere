@@ -46,7 +46,10 @@ const ResultsList: React.FC<ResultsListProps> = ({
                 return (
                   <SportsGroupCard
                     key={item.id}
-                    group={item}
+                    group={{
+                      ...item,
+                      cities: [item.cidade || '']
+                    } as SportsGroupWithDetails}
                     onFavoriteChange={() => refetchGroups()}
                   />
                 );

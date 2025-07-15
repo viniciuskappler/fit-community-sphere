@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, Users, MapPin } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import SecondaryHeader from '@/components/SecondaryHeader';
 
 const sportsOptions = [
   'Futebol', 'Basquete', 'Vôlei', 'Tênis', 'Natação', 'Corrida', 'Ciclismo',
@@ -165,6 +166,7 @@ const CriarGrupoEsportivo = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
+      <SecondaryHeader isVisible={false} />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">

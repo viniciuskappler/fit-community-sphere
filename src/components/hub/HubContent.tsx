@@ -187,8 +187,23 @@ const HubContent: React.FC<HubContentProps> = ({
         <div className="lg:col-span-1">
           <div className="sticky top-4">
             <MapLibre
-              establishments={mapEstablishments}
-              groups={mapGroups}
+              establishments={mapEstablishments.map(est => ({
+                id: est.id,
+                establishment_name: est.nome || '',
+                latitude: est.latitude || 0,
+                longitude: est.longitude || 0,
+                city: est.cidade || '',
+                state: est.estado || '',
+                sports: est.modalidades || []
+              }))}
+              groups={mapGroups.map(group => ({
+                id: group.id,
+                group_name: group.nome || '',
+                latitude: group.latitude || 0,
+                longitude: group.longitude || 0,
+                cities: [group.cidade || ''],
+                sports: group.modalidade ? [group.modalidade] : []
+              }))}
               center={location || { lat: -23.5505, lng: -46.6333 }}
               zoom={location ? 12 : 11}
               height="600px"

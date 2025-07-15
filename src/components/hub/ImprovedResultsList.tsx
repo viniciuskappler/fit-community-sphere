@@ -359,7 +359,7 @@ const ImprovedResultsList: React.FC<ImprovedResultsListProps> = ({
                   
                   <Button
                     variant="outline"
-                    onClick={() => window.open(`tel:${group.phone}`, '_self')}
+                    onClick={() => window.open(`tel:`, '_self')}
                   >
                     <Phone className="w-4 h-4 mr-2" />
                     Ligar

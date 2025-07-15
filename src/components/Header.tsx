@@ -109,10 +109,16 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <span className="text-xs">Buscar Grupos</span>
                   </button>
                   {user && (
-                    <button onClick={handleCriarGrupoClick} className="text-green-600 hover:text-green-700 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5 bg-green-50 hover:bg-green-100 px-2 py-1 rounded-md">
-                      <Plus size={14} />
-                      <span className="text-xs font-medium">Criar Grupo</span>
-                    </button>
+                    <>
+                      <Link to="/cadastro-estabelecimento" className="text-blue-600 hover:text-blue-700 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-md">
+                        <Building size={14} />
+                        <span className="text-xs font-medium">Cadastro Estabelecimento</span>
+                      </Link>
+                      <button onClick={handleCriarGrupoClick} className="text-green-600 hover:text-green-700 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5 bg-green-50 hover:bg-green-100 px-2 py-1 rounded-md">
+                        <Plus size={14} />
+                        <span className="text-xs font-medium">Criar Grupo</span>
+                      </button>
+                    </>
                   )}
                 </nav>
 
@@ -166,13 +172,23 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                         </button>
 
                         {user && (
-                          <button 
-                            onClick={handleCriarGrupoClick}
-                            className="text-green-600 hover:text-green-700 transition-colors flex items-center space-x-3 text-lg text-left bg-green-50 hover:bg-green-100 p-2 rounded-md"
-                          >
-                            <Plus size={20} />
-                            <span>Criar Grupo</span>
-                          </button>
+                          <>
+                            <Link 
+                              to="/cadastro-estabelecimento"
+                              className="text-blue-600 hover:text-blue-700 transition-colors flex items-center space-x-3 text-lg text-left bg-blue-50 hover:bg-blue-100 p-2 rounded-md"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              <Building size={20} />
+                              <span>Cadastro Estabelecimento</span>
+                            </Link>
+                            <button 
+                              onClick={handleCriarGrupoClick}
+                              className="text-green-600 hover:text-green-700 transition-colors flex items-center space-x-3 text-lg text-left bg-green-50 hover:bg-green-100 p-2 rounded-md"
+                            >
+                              <Plus size={20} />
+                              <span>Criar Grupo</span>
+                            </button>
+                          </>
                         )}
 
                         {user ? (
