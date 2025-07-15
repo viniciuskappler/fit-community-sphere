@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const { data: existingUser, error: checkError } = await supabase
         .from('usuarios')
-        .select('id')
+        .select('id, papel')
         .eq('id', userId)
         .single();
 
@@ -36,13 +36,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!existingUser) {
+        // Inserir novo usuário com papel padrão 'comum'
         const { error: insertError } = await supabase
           .from('usuarios')
           .insert({
             id: userId,
             squad_code: 'SQUAD300',
             nome: userEmail?.split('@')[0] || '',
-            email: userEmail || ''
+            email: userEmail || '',
+            papel: 'comum'
           });
 
         if (insertError) {
@@ -50,6 +52,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           console.log('✅ Usuário criado na tabela usuarios com sucesso');
         }
+      } else {
+        console.log('✅ Usuário já existe na tabela usuarios, papel:', existingUser.papel);
       }
     } catch (error) {
       console.error('Erro ao garantir usuário na tabela usuarios:', error);

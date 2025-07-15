@@ -431,6 +431,10 @@ export type Database = {
         Args: { promo_code_input: string }
         Returns: Json
       }
+      is_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
       log_login_attempt: {
         Args: { user_email: string; was_successful: boolean; user_ip?: unknown }
         Returns: undefined

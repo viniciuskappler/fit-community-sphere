@@ -1,8 +1,10 @@
 
 import React, { useState } from 'react';
-import { Home, User, Building, Users, LogOut, Menu, X, Plus } from 'lucide-react';
+import { Home, User, Building, Users, LogOut, Menu, X, Plus, Shield } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminCheck } from '@/hooks/useAdminCheck';
+import AdminBadge from './AdminBadge';
 import RegistrationModal from './RegistrationModal';
 import LoginModal from './LoginModal';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
@@ -12,6 +14,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdminCheck();
   const navigate = useNavigate();
 
   const scrollToRegistration = () => {
@@ -73,6 +76,12 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
     }
   };
 
+  const handleAdminClick = () => {
+    setIsMobileMenuOpen(false);
+    console.log('🛡️ Admin panel navigation...');
+    navigate('/admin');
+  };
+
   return (
     <>
       <header className={`pt-3 px-3 md:px-6 fixed left-0 right-0 z-40 transition-all duration-300 ${isSecondaryVisible ? 'top-12' : 'top-0'}`}>
@@ -104,6 +113,12 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <Users size={14} />
                     <span className="text-xs">Buscar Grupos</span>
                   </Link>
+                  {isAdmin && (
+                    <button onClick={handleAdminClick} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                      <Shield size={14} />
+                      <span className="text-xs">Admin</span>
+                    </button>
+                  )}
                 </nav>
 
                 {/* Mobile Menu Button */}
@@ -143,12 +158,23 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                           <span>Buscar Grupos</span>
                         </Link>
 
+                        {isAdmin && (
+                          <button 
+                            onClick={handleAdminClick}
+                            className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                          >
+                            <Shield size={20} />
+                            <span>Painel Admin</span>
+                          </button>
+                        )}
+
                         {user ? (
                           <div className="pt-6 border-t border-gray-200">
-                            <div className="mb-4">
+                            <div className="mb-4 flex items-center space-x-2">
                               <span className="text-sm text-gray-600">
                                 Olá, {user.user_metadata?.full_name || user.email}
                               </span>
+                              <AdminBadge />
                             </div>
                             <button 
                               onClick={() => {
@@ -191,11 +217,14 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                 {/* Desktop CTA Buttons */}
                 <div className="hidden md:flex items-center space-x-2 md:space-x-3">
                   {user ? (
-                    // Usuário logado - mostrar nome e logout
+                    // Usuário logado - mostrar nome, badge admin e logout
                     <div className="flex items-center space-x-2 md:space-x-3">
-                      <span className="text-xs md:text-sm text-gray-600 hidden sm:block">
-                        Olá, {user.user_metadata?.full_name || user.email}
-                      </span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-xs md:text-sm text-gray-600 hidden sm:block">
+                          Olá, {user.user_metadata?.full_name || user.email}
+                        </span>
+                        <AdminBadge />
+                      </div>
                       <button 
                         onClick={handleLogout}
                         className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium flex items-center space-x-1"
