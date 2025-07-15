@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Home, User, Building, Users, LogOut, Menu, X } from 'lucide-react';
+import { Home, User, Building, Users, LogOut, Menu, X, Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import RegistrationModal from './RegistrationModal';
@@ -57,6 +57,17 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
     }
   };
 
+  const handleCriarGrupoClick = () => {
+    setIsMobileMenuOpen(false);
+    if (user) {
+      console.log('🎯 Criar Grupo navigation - user logged in, redirecting...');
+      navigate('/criar-grupo-esportivo');
+    } else {
+      console.log('🎯 Criar Grupo navigation - user not logged in, showing login modal...');
+      setIsLoginModalOpen(true);
+    }
+  };
+
   return (
     <>
       <header className={`pt-3 px-3 md:px-6 fixed left-0 right-0 z-40 transition-all duration-300 ${isSecondaryVisible ? 'top-12' : 'top-0'}`}>
@@ -92,6 +103,12 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <Users size={14} />
                     <span className="text-xs">Buscar Grupos</span>
                   </button>
+                  {user && (
+                    <button onClick={handleCriarGrupoClick} className="text-green-600 hover:text-green-700 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5 bg-green-50 hover:bg-green-100 px-2 py-1 rounded-md">
+                      <Plus size={14} />
+                      <span className="text-xs font-medium">Criar Grupo</span>
+                    </button>
+                  )}
                 </nav>
 
                 {/* Mobile Menu Button */}
@@ -142,6 +159,16 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                           <Users size={20} />
                           <span>Buscar Grupos</span>
                         </button>
+
+                        {user && (
+                          <button 
+                            onClick={handleCriarGrupoClick}
+                            className="text-green-600 hover:text-green-700 transition-colors flex items-center space-x-3 text-lg text-left bg-green-50 hover:bg-green-100 p-2 rounded-md"
+                          >
+                            <Plus size={20} />
+                            <span>Criar Grupo</span>
+                          </button>
+                        )}
 
                         {user ? (
                           <div className="pt-6 border-t border-gray-200">

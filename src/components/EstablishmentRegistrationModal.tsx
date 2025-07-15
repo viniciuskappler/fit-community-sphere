@@ -86,18 +86,17 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
       });
 
       const { data, error: supabaseError } = await supabase
-        .from('establishments')
+        .from('estabelecimentos_esportivos')
         .insert({
           user_id: user.id,
-          establishment_name: formData.establishmentName,
-          corporate_name: formData.corporateName,
+          nome: formData.establishmentName,
           cnpj: formData.cnpj || null,
-          description: formData.description || null,
-          address: formData.address,
-          city: formData.city,
-          state: formData.state,
+          descricao: formData.description || null,
+          rua: formData.address,
+          cidade: formData.city,
+          estado: formData.state,
           cep: formData.cep,
-          phone: formData.phone,
+          telefone: formData.phone,
           email: formData.email
         })
         .select()

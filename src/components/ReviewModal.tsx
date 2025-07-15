@@ -65,40 +65,12 @@ const ReviewModal: React.FC<ReviewModalProps> = ({
       // Sanitize and validate input
       const sanitizedComment = comment.trim() ? sanitizeInput(comment) : null;
       
-      // Check for duplicate review
-      const { data: existingReview } = await supabase
-        .from('reviews')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq(establishmentId ? 'establishment_id' : 'group_id', establishmentId || groupId)
-        .maybeSingle();
-
-      if (existingReview) {
-        toast({
-          title: 'Avaliação já existe',
-          description: 'Você já avaliou este item anteriormente',
-          variant: 'destructive',
-        });
-        return;
-      }
-
-      const { error } = await supabase
-        .from('reviews')
-        .insert({
-          user_id: user.id,
-          establishment_id: establishmentId || null,
-          group_id: groupId || null,
-          rating,
-          comment: sanitizedComment,
-        });
-
-      if (error) throw error;
-
+      // TODO: Implementar sistema de reviews quando a tabela for criada
       toast({
-        title: 'Sucesso!',
-        description: 'Sua avaliação foi enviada com sucesso',
+        title: 'Em desenvolvimento',
+        description: 'Sistema de avaliações será implementado em breve',
       });
-
+      
       // Reset form
       setRating(0);
       setComment('');

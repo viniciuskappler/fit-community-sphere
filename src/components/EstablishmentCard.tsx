@@ -32,14 +32,8 @@ const EstablishmentCard: React.FC<EstablishmentCardProps> = ({
       if (!user) return;
       
       try {
-        const { data } = await supabase
-          .from('user_favorites')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('establishment_id', establishment.id)
-          .maybeSingle();
-        
-        setIsFavorited(!!data);
+        // TODO: Implementar sistema de favoritos quando a tabela for criada
+        setIsFavorited(false);
       } catch (error) {
         console.error('Erro ao verificar favoritos:', error);
       }
@@ -52,59 +46,10 @@ const EstablishmentCard: React.FC<EstablishmentCardProps> = ({
     if (!requireAuth('favoritar')) return;
     if (isLoading) return;
 
-    setIsLoading(true);
-
-    try {
-      if (!user) throw new Error('Usuário não autenticado');
-
-      if (isFavorited) {
-        // Remove from favorites
-        const { error } = await supabase
-          .from('user_favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('establishment_id', establishment.id);
-
-        if (error) throw error;
-        setIsFavorited(false);
-        toast({
-          title: 'Removido dos favoritos',
-          description: 'Estabelecimento removido dos seus favoritos',
-        });
-      } else {
-        // Add to favorites
-        const { error } = await supabase
-          .from('user_favorites')
-          .insert({
-            user_id: user.id,
-            establishment_id: establishment.id,
-          });
-
-        if (error) throw error;
-        setIsFavorited(true);
-        toast({
-          title: 'Adicionado aos favoritos',
-          description: 'Estabelecimento adicionado aos seus favoritos',
-        });
-      }
-
-      onFavoriteChange?.();
-    } catch (error: any) {
-      console.error('Erro ao favoritar:', error);
-      
-      let errorMessage = 'Não foi possível atualizar favoritos';
-      if (error.message?.includes('duplicate')) {
-        errorMessage = 'Este item já está nos seus favoritos';
-      }
-      
-      toast({
-        title: 'Erro',
-        description: errorMessage,
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    toast({
+      title: 'Em desenvolvimento',
+      description: 'Sistema de favoritos será implementado em breve',
+    });
   };
 
   const mainPhoto = establishment.photos.find(p => p.is_main)?.photo_url;
