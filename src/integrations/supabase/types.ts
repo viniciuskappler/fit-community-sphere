@@ -342,6 +342,7 @@ export type Database = {
           id: string
           nome: string | null
           numero: string | null
+          papel: string
           rua: string | null
           squad_code: string | null
           telefone: string | null
@@ -361,6 +362,7 @@ export type Database = {
           id?: string
           nome?: string | null
           numero?: string | null
+          papel?: string
           rua?: string | null
           squad_code?: string | null
           telefone?: string | null
@@ -380,6 +382,7 @@ export type Database = {
           id?: string
           nome?: string | null
           numero?: string | null
+          papel?: string
           rua?: string | null
           squad_code?: string | null
           telefone?: string | null
@@ -409,6 +412,10 @@ export type Database = {
       }
       cleanup_user_sessions: {
         Args: { user_id_param: string }
+        Returns: undefined
+      }
+      delete_all_users: {
+        Args: Record<PropertyKey, never>
         Returns: undefined
       }
       generate_referral_code: {

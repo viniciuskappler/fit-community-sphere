@@ -29,6 +29,11 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
     setIsLoginModalOpen(true);
   };
 
+  const handleSwitchToLogin = () => {
+    setIsModalOpen(false);
+    setIsLoginModalOpen(true);
+  };
+
   const handleLogout = async () => {
     console.log('🚪 User logging out...');
     await signOut();
@@ -261,6 +266,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialType="supporter"
+        onSwitchToLogin={handleSwitchToLogin}
       />
       
       <LoginModal 

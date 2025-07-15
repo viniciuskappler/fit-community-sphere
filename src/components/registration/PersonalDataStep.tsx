@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { ValidationErrors } from '../../utils/formValidation';
@@ -7,6 +7,8 @@ import DateSelector from './DateSelector';
 import LocationSelector from './LocationSelector';
 import { formatCPF } from '../../utils/cpfValidation';
 import { useCepLookup } from '../../hooks/useCepLookup';
+import { useEmailCheck } from '../../hooks/useEmailCheck';
+import { Button } from '../ui/button';
 
 interface PersonalDataStepProps {
   formData: {
@@ -25,10 +27,13 @@ interface PersonalDataStepProps {
   };
   onInputChange: (field: string, value: any) => void;
   errors?: ValidationErrors;
+  onSwitchToLogin?: () => void;
 }
 
-const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalDataStepProps) => {
+const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogin }: PersonalDataStepProps) => {
   const { lookupCep, loading: cepLoading, error: cepError } = useCepLookup();
+  const { checkEmailExists, checking } = useEmailCheck();
+  const [emailExists, setEmailExists] = useState(false);
 
   const handleCPFChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Remove non-digits
@@ -75,6 +80,30 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalData
     onInputChange('city', cityName);
     if (ibgeCode) {
       onInputChange('cityIbgeCode', ibgeCode);
+    }
+  };
+
+  const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const email = e.target.value;
+    onInputChange('email', email);
+    
+    // Reset email exists state when email changes
+    setEmailExists(false);
+    
+    // Check if email exists when user stops typing (debounce effect)
+    if (email && email.includes('@')) {
+      setTimeout(async () => {
+        if (formData.email === email) { // Only check if email hasn't changed
+          const exists = await checkEmailExists(email);
+          setEmailExists(exists);
+        }
+      }, 1000);
+    }
+  };
+
+  const handleLoginRedirect = () => {
+    if (onSwitchToLogin) {
+      onSwitchToLogin();
     }
   };
 
@@ -133,11 +162,29 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {} }: PersonalData
           id="email"
           type="email"
           value={formData.email}
-          onChange={(e) => onInputChange('email', e.target.value)}
+          onChange={handleEmailChange}
           placeholder="seu@email.com"
           required
-          className={`mt-1 ${errors.email ? 'border-orange-500' : ''}`}
+          className={`mt-1 ${errors.email ? 'border-orange-500' : ''} ${emailExists ? 'border-blue-500' : ''}`}
         />
+        {checking && (
+          <p className="text-blue-600 text-sm mt-1">Verificando e-mail...</p>
+        )}
+        {emailExists && (
+          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="text-blue-800 text-sm mb-2">
+              Você já tem uma conta com este e-mail. Deseja fazer login?
+            </p>
+            <Button 
+              type="button"
+              onClick={handleLoginRedirect}
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              Ir para Login
+            </Button>
+          </div>
+        )}
         {errors.email && (
           <p className="text-orange-500 text-sm mt-1">{errors.email}</p>
         )}

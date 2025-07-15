@@ -14,6 +14,7 @@ interface RegistrationStepRendererProps {
   onInputChange: (field: string, value: any) => void;
   onSportToggle: (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => void;
   errors: ValidationErrors;
+  onSwitchToLogin?: () => void;
 }
 
 const RegistrationStepRenderer = ({
@@ -22,7 +23,8 @@ const RegistrationStepRenderer = ({
   formData,
   onInputChange,
   onSportToggle,
-  errors
+  errors,
+  onSwitchToLogin
 }: RegistrationStepRendererProps) => {
   switch (currentStep) {
     case 1:
@@ -31,6 +33,7 @@ const RegistrationStepRenderer = ({
           formData={formData}
           onInputChange={onInputChange}
           errors={errors}
+          onSwitchToLogin={onSwitchToLogin}
         />
       );
     case 2:

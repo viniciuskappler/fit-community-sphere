@@ -23,9 +23,10 @@ interface RegistrationModalProps {
   initialType?: 'supporter' | 'establishment' | 'group';
   referralCode?: string;
   promoCode?: string;
+  onSwitchToLogin?: () => void;
 }
 
-const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referralCode, promoCode }: RegistrationModalProps) => {
+const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referralCode, promoCode, onSwitchToLogin }: RegistrationModalProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [registrationType, setRegistrationType] = useState(initialType);
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -323,6 +324,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
             onSubmit={handleSubmit}
             promoCode={promoCode}
             promoValidation={promoValidation}
+            onSwitchToLogin={onSwitchToLogin}
           />
         </DialogContent>
       </Dialog>

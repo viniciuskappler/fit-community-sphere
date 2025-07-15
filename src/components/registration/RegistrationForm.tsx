@@ -20,6 +20,7 @@ interface RegistrationFormProps {
   onSubmit: () => Promise<void>;
   promoCode?: string;
   promoValidation?: any;
+  onSwitchToLogin?: () => void;
 }
 
 const RegistrationForm = ({
@@ -35,7 +36,8 @@ const RegistrationForm = ({
   onNextStep,
   onSubmit,
   promoCode,
-  promoValidation
+  promoValidation,
+  onSwitchToLogin
 }: RegistrationFormProps) => {
   return (
     <>
@@ -87,6 +89,7 @@ const RegistrationForm = ({
           onInputChange={onInputChange}
           onSportToggle={onSportToggle}
           errors={errors}
+          onSwitchToLogin={onSwitchToLogin}
         />
 
         <NavigationButtons
