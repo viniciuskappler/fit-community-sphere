@@ -110,8 +110,8 @@ const PersonalDataStep = ({ formData, onInputChange, errors = {}, onSwitchToLogi
         <Label htmlFor="nome" className="text-orange-600 font-medium">Nome completo *</Label>
         <Input
           id="nome"
-          value={formData.nome || ''}
-          onChange={(e) => onInputChange('nome', e.target.value)}
+          value={formData.fullName || ''}
+          onChange={(e) => onInputChange('fullName', e.target.value)}
           placeholder="Seu nome completo"
           required
           className={`mt-1 ${errors.fullName ? 'border-orange-500' : ''}`}

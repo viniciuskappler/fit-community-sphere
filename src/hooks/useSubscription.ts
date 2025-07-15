@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+// Hook simplificado para assinaturas - temporariamente desabilitado
+import { useState } from 'react';
 
 interface Plan {
   id: string;
@@ -21,55 +20,20 @@ interface UserSubscription {
 }
 
 export const useSubscription = () => {
-  const { user } = useAuth();
-  const [subscriptions, setSubscriptions] = useState<UserSubscription[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      fetchUserSubscriptions();
-    }
-  }, [user]);
-
-  const fetchUserSubscriptions = async () => {
-    if (!user) return;
-    
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('user_subscriptions')
-        .select(`
-          *,
-          plan:subscription_plans(*)
-        `)
-        .eq('user_id', user.id)
-        .eq('status', 'active');
-
-      if (error) throw error;
-      setSubscriptions(data?.map(sub => ({
-        ...sub,
-        plan: {
-          ...sub.plan,
-          features: Array.isArray(sub.plan.features) ? sub.plan.features : []
-        }
-      })) || []);
-    } catch (error) {
-      console.error('Erro ao buscar assinaturas:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [subscriptions] = useState<UserSubscription[]>([]);
+  const [loading] = useState(false);
 
   const hasActivePlan = (type: string) => {
-    return subscriptions.some(sub => 
-      sub.plan.type === type && sub.status === 'active'
-    );
+    return false; // Temporariamente desabilitado
   };
 
   const getActivePlan = (type: string) => {
-    return subscriptions.find(sub => 
-      sub.plan.type === type && sub.status === 'active'
-    );
+    return undefined; // Temporariamente desabilitado
+  };
+
+  const fetchUserSubscriptions = async () => {
+    // Temporariamente desabilitado
+    console.log('Subscriptions temporarily disabled');
   };
 
   return {

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Label } from '../ui/label';
 import { Checkbox } from '../ui/checkbox';
@@ -8,11 +7,11 @@ import { ValidationErrors } from '../../utils/formValidation';
 
 interface SportsPreferencesStepProps {
   formData: {
-    favoriteStateSports: string[];
-    practicedSports: string[];
-    interestedSports: string[];
+    esportes_favoritos: string[];
+    esportes_praticados: string[];
+    esportes_interesse: string[];
   };
-  onSportToggle: (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => void;
+  onSportToggle: (field: 'esportes_favoritos' | 'esportes_praticados' | 'esportes_interesse', sport: string) => void;
   sportsList: string[];
   errors?: ValidationErrors;
 }
@@ -24,18 +23,18 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
     sport.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSportToggle = (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => {
+  const handleSportToggle = (field: 'esportes_favoritos' | 'esportes_praticados' | 'esportes_interesse', sport: string) => {
     // Quando selecionamos um esporte em qualquer campo, removemos ele dos outros campos
     if (!formData[field].includes(sport)) {
       // Removendo de outros campos se estiver selecionado
-      if (field !== 'favoriteStateSports' && formData.favoriteStateSports.includes(sport)) {
-        onSportToggle('favoriteStateSports', sport);
+      if (field !== 'esportes_favoritos' && formData.esportes_favoritos.includes(sport)) {
+        onSportToggle('esportes_favoritos', sport);
       }
-      if (field !== 'practicedSports' && formData.practicedSports.includes(sport)) {
-        onSportToggle('practicedSports', sport);
+      if (field !== 'esportes_praticados' && formData.esportes_praticados.includes(sport)) {
+        onSportToggle('esportes_praticados', sport);
       }
-      if (field !== 'interestedSports' && formData.interestedSports.includes(sport)) {
-        onSportToggle('interestedSports', sport);
+      if (field !== 'esportes_interesse' && formData.esportes_interesse.includes(sport)) {
+        onSportToggle('esportes_interesse', sport);
       }
     }
     
@@ -43,13 +42,13 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
   };
 
   // Filtrar esportes disponíveis para cada seção (removendo os já selecionados em outros campos)
-  const getAvailableSports = (currentField: 'favoriteStateSports' | 'practicedSports' | 'interestedSports') => {
+  const getAvailableSports = (currentField: 'esportes_favoritos' | 'esportes_praticados' | 'esportes_interesse') => {
     return filteredSports.filter(sport => {
       // Manter se já está selecionado no campo atual
       if (formData[currentField].includes(sport)) return true;
       
       // Remover se está selecionado em outros campos
-      const otherFields = ['favoriteStateSports', 'practicedSports', 'interestedSports'].filter(f => f !== currentField) as Array<'favoriteStateSports' | 'practicedSports' | 'interestedSports'>;
+      const otherFields = ['esportes_favoritos', 'esportes_praticados', 'esportes_interesse'].filter(f => f !== currentField) as Array<'esportes_favoritos' | 'esportes_praticados' | 'esportes_interesse'>;
       return !otherFields.some(field => formData[field].includes(sport));
     });
   };
@@ -61,10 +60,10 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
           Esportes que você mais gosta (selecione entre 5 e 20) *
         </Label>
         <p className="text-sm text-gray-600 mb-3">
-          Selecionados: {formData.favoriteStateSports.length}/20
+          Selecionados: {formData.esportes_favoritos.length}/20
         </p>
-        {errors.favoriteStateSports && (
-          <p className="text-red-500 text-sm mb-3">{errors.favoriteStateSports}</p>
+        {errors.esportes_favoritos && (
+          <p className="text-red-500 text-sm mb-3">{errors.esportes_favoritos}</p>
         )}
         
         {/* Barra de pesquisa */}
@@ -79,19 +78,19 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-40 overflow-y-auto border rounded-lg p-3">
-          {getAvailableSports('favoriteStateSports').map((sport) => (
+          {getAvailableSports('esportes_favoritos').map((sport) => (
             <div key={sport} className="flex items-center space-x-2">
               <Checkbox
                 id={`favorite-${sport}`}
-                checked={formData.favoriteStateSports.includes(sport)}
-                onCheckedChange={() => handleSportToggle('favoriteStateSports', sport)}
-                disabled={formData.favoriteStateSports.length >= 20 && !formData.favoriteStateSports.includes(sport)}
-                className={formData.favoriteStateSports.includes(sport) ? 'data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-red-600 data-[state=checked]:to-orange-500 data-[state=checked]:border-red-600' : ''}
+                checked={formData.esportes_favoritos.includes(sport)}
+                onCheckedChange={() => handleSportToggle('esportes_favoritos', sport)}
+                disabled={formData.esportes_favoritos.length >= 20 && !formData.esportes_favoritos.includes(sport)}
+                className={formData.esportes_favoritos.includes(sport) ? 'data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-red-600 data-[state=checked]:to-orange-500 data-[state=checked]:border-red-600' : ''}
               />
               <Label 
                 htmlFor={`favorite-${sport}`} 
                 className={`text-sm cursor-pointer ${
-                  formData.favoriteStateSports.includes(sport) ? 'bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent font-medium' : ''
+                  formData.esportes_favoritos.includes(sport) ? 'bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent font-medium' : ''
                 }`}
               >
                 {sport}
@@ -106,22 +105,22 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
           Esportes que você já praticou (máximo 20)
         </Label>
         <p className="text-sm text-gray-600 mb-3">
-          Selecionados: {formData.practicedSports.length}/20
+          Selecionados: {formData.esportes_praticados.length}/20
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3 max-h-40 overflow-y-auto border rounded-lg p-3">
-          {getAvailableSports('practicedSports').map((sport) => (
+          {getAvailableSports('esportes_praticados').map((sport) => (
             <div key={sport} className="flex items-center space-x-2">
               <Checkbox
                 id={`practiced-${sport}`}
-                checked={formData.practicedSports.includes(sport)}
-                onCheckedChange={() => handleSportToggle('practicedSports', sport)}
-                disabled={formData.practicedSports.length >= 20 && !formData.practicedSports.includes(sport)}
-                className={formData.practicedSports.includes(sport) ? 'data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-red-600 data-[state=checked]:to-orange-500 data-[state=checked]:border-red-600' : ''}
+                checked={formData.esportes_praticados.includes(sport)}
+                onCheckedChange={() => handleSportToggle('esportes_praticados', sport)}
+                disabled={formData.esportes_praticados.length >= 20 && !formData.esportes_praticados.includes(sport)}
+                className={formData.esportes_praticados.includes(sport) ? 'data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-red-600 data-[state=checked]:to-orange-500 data-[state=checked]:border-red-600' : ''}
               />
               <Label 
                 htmlFor={`practiced-${sport}`} 
                 className={`text-sm cursor-pointer ${
-                  formData.practicedSports.includes(sport) ? 'bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent font-medium' : ''
+                  formData.esportes_praticados.includes(sport) ? 'bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent font-medium' : ''
                 }`}
               >
                 {sport}
@@ -136,22 +135,22 @@ const SportsPreferencesStep = ({ formData, onSportToggle, sportsList, errors = {
           Esportes que tem interesse (máximo 20)
         </Label>
         <p className="text-sm text-gray-600 mb-3">
-          Selecionados: {formData.interestedSports.length}/20
+          Selecionados: {formData.esportes_interesse.length}/20
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3 max-h-40 overflow-y-auto border rounded-lg p-3">
-          {getAvailableSports('interestedSports').map((sport) => (
+          {getAvailableSports('esportes_interesse').map((sport) => (
             <div key={sport} className="flex items-center space-x-2">
               <Checkbox
                 id={`interested-${sport}`}
-                checked={formData.interestedSports.includes(sport)}
-                onCheckedChange={() => handleSportToggle('interestedSports', sport)}
-                disabled={formData.interestedSports.length >= 20 && !formData.interestedSports.includes(sport)}
-                className={formData.interestedSports.includes(sport) ? 'data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-red-600 data-[state=checked]:to-orange-500 data-[state=checked]:border-red-600' : ''}
+                checked={formData.esportes_interesse.includes(sport)}
+                onCheckedChange={() => handleSportToggle('esportes_interesse', sport)}
+                disabled={formData.esportes_interesse.length >= 20 && !formData.esportes_interesse.includes(sport)}
+                className={formData.esportes_interesse.includes(sport) ? 'data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-red-600 data-[state=checked]:to-orange-500 data-[state=checked]:border-red-600' : ''}
               />
               <Label 
                 htmlFor={`interested-${sport}`} 
                 className={`text-sm cursor-pointer ${
-                  formData.interestedSports.includes(sport) ? 'bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent font-medium' : ''
+                  formData.esportes_interesse.includes(sport) ? 'bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent font-medium' : ''
                 }`}
               >
                 {sport}

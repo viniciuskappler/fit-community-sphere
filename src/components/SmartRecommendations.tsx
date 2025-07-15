@@ -22,18 +22,10 @@ const SmartRecommendations: React.FC<SmartRecommendationsProps> = ({
   userPreferences = []
 }) => {
   const { location } = useGeolocation();
-  const { data: establishments } = useEstablishments(location?.lat, location?.lng);
-  const { data: groups } = useSportsGroups(location?.lat, location?.lng);
+  const { establishments } = useEstablishments();
+  const { groups } = useSportsGroups();
   
-  const { recommendations } = useSmartRecommendations({
-    establishments,
-    groups,
-    userId,
-    currentItemId,
-    currentItemType,
-    userPreferences,
-    userLocation: location || undefined
-  });
+  const { recommendations } = useSmartRecommendations();
 
   const handleItemClick = (item: RecommendationItemType) => {
     const path = item.type === 'establishment' ? '/estabelecimento' : '/grupo-esportivo';

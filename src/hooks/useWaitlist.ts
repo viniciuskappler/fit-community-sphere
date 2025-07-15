@@ -1,6 +1,5 @@
-
+// Hook simplificado para waitlist - temporariamente desabilitado
 import { useState } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 interface WaitlistData {
@@ -15,25 +14,13 @@ export const useWaitlist = () => {
   const addToWaitlist = async (data: WaitlistData): Promise<boolean> => {
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('waitlist')
-        .insert({
-          email: data.email,
-          full_name: data.full_name,
-          phone: data.phone
-        });
-
-      if (error) {
-        if (error.code === '23505') { // Unique constraint violation
-          toast.error('Este e-mail já está na lista de espera');
-          return false;
-        }
-        console.error('Erro ao adicionar à lista de espera:', error);
-        toast.error('Erro ao adicionar à lista de espera. Tente novamente.');
-        return false;
-      }
-
-      toast.success('Cadastro realizado na lista de espera com sucesso!');
+      // Funcionalidade de waitlist temporariamente desabilitada
+      console.log('Waitlist functionality disabled:', data);
+      
+      // Simular delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast.success('Funcionalidade temporariamente indisponível. Tente novamente mais tarde.');
       return true;
     } catch (error) {
       console.error('Erro inesperado:', error);

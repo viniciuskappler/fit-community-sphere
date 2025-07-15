@@ -1,4 +1,4 @@
-
+// Hook simplificado para estatísticas - usando tabelas corretas
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -22,17 +22,17 @@ export const useUserStats = () => {
     try {
       // Buscar contagem total de usuários
       const { count: totalCount, error: totalError } = await supabase
-        .from('user_profiles')
+        .from('usuarios')
         .select('*', { count: 'exact', head: true });
 
       // Buscar contagem de estabelecimentos
       const { count: establishmentCount, error: establishmentError } = await supabase
-        .from('establishments')
+        .from('estabelecimentos_esportivos')
         .select('*', { count: 'exact', head: true });
 
       // Buscar contagem de grupos
       const { count: groupCount, error: groupError } = await supabase
-        .from('sports_groups')
+        .from('grupos_esportivos')
         .select('*', { count: 'exact', head: true });
 
       if (totalError || establishmentError || groupError) {
