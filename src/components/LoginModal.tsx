@@ -185,9 +185,9 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white border border-gray-200 shadow-xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-center">
+          <DialogTitle className="text-2xl font-bold text-center text-gray-800">
             Entrar ou Criar Conta
           </DialogTitle>
         </DialogHeader>
@@ -221,19 +221,20 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
           {/* Formulário de Email/Senha */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="login-email">E-mail</Label>
+              <Label htmlFor="login-email" className="text-gray-700 font-medium">E-mail</Label>
               <Input
                 id="login-email"
                 type="email"
                 placeholder="seu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="login-password">Senha</Label>
+              <Label htmlFor="login-password" className="text-gray-700 font-medium">Senha</Label>
               <div className="relative">
                 <Input
                   id="login-password"
@@ -241,13 +242,13 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                   placeholder="Digite sua senha"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pr-10"
+                  className="pr-10 border-gray-300 focus:border-orange-500 focus:ring-orange-500"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-orange-500 transition-colors"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -256,7 +257,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
             <Button 
               type="submit" 
-              className="w-full" 
+              className="w-full bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" 
               disabled={isLoading}
             >
               {isLoading ? 'Processando...' : 'Entrar / Criar Conta'}

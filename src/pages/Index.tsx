@@ -66,7 +66,6 @@ const Index = () => {
       <Header isSecondaryVisible={showTopBar} />
       <main className="pt-[120px]">
         <HeroSection />
-        <PromoCodeBanner />
         <RegistrationSection />
         <InteractiveMapSection />
         <SportsSection />

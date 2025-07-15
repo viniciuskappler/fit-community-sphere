@@ -50,10 +50,10 @@ const SquadCounter = () => {
 
   return (
     <div className="text-center py-4">
-      <p className="text-lg font-semibold text-orange-600">
-        Já somos <span className="text-2xl font-bold text-orange-500">{count}</span> pessoas no SQUAD300! 🏆
+      <p className="text-lg font-semibold text-white">
+        Já somos <span className="text-2xl font-bold text-white">{count}</span> atletas revolucionários! 🏆
       </p>
-      <p className="text-sm text-gray-600 mt-1">
+      <p className="text-sm text-white/80 mt-1">
         Contagem atualizada em tempo real
       </p>
     </div>
