@@ -9,11 +9,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Users, MapPin } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import GroupsSearch from '../components/groups/GroupsSearch';
+import GroupsGrid from '../components/groups/GroupsGrid';
 
 const Busca = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('grupos');
+  
+  // States para filtros de grupos
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCity, setSelectedCity] = useState('Todas as cidades');
+  const [selectedSport, setSelectedSport] = useState('Todos os esportes');
 
   return (
     <div className="min-h-screen bg-background">
@@ -43,47 +50,20 @@ const Busca = () => {
             </TabsList>
 
             <TabsContent value="grupos" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold text-foreground">
-                  Grupos Esportivos
-                </h2>
-                {user && (
-                  <Button 
-                    onClick={() => navigate('/criar-grupo-esportivo')}
-                    className="flex items-center gap-2"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Criar Grupo
-                  </Button>
-                )}
-              </div>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Grupos da Região</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8">
-                    <Users className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium text-foreground mb-2">
-                      Busca de grupos em desenvolvimento
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                      Em breve você poderá encontrar grupos esportivos na sua região.
-                    </p>
-                    {user && (
-                      <Button 
-                        onClick={() => navigate('/criar-grupo-esportivo')}
-                        variant="outline"
-                        className="flex items-center gap-2"
-                      >
-                        <Plus className="h-4 w-4" />
-                        Seja o primeiro a criar um grupo
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+              <GroupsSearch
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                selectedCity={selectedCity}
+                setSelectedCity={setSelectedCity}
+                selectedSport={selectedSport}
+                setSelectedSport={setSelectedSport}
+              />
+              
+              <GroupsGrid
+                searchTerm={searchTerm}
+                selectedCity={selectedCity}
+                selectedSport={selectedSport}
+              />
             </TabsContent>
 
             <TabsContent value="estabelecimentos" className="space-y-6">
