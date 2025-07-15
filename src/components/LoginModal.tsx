@@ -28,52 +28,30 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
 
   const checkUserProfile = async (userId: string) => {
     try {
-      // Verificar se o perfil existe e está completo
-      const { data: profile, error: profileError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.error('Erro ao verificar perfil:', profileError);
-        return false;
-      }
-
       // Verificar se o usuário já existe na tabela usuarios
       const { data: existingUser, error: userError } = await supabase
         .from('usuarios')
-        .select('id')
+        .select('*')
         .eq('id', userId)
         .single();
 
       if (userError && userError.code !== 'PGRST116') {
         console.error('Erro ao verificar usuário:', userError);
+        return false;
       }
 
-      // Se não existe na tabela usuarios, criar registro
+      // Se não existe na tabela usuarios, redirecionar para completar perfil
       if (!existingUser) {
-        const { error: insertError } = await supabase
-          .from('usuarios')
-          .insert({
-            id: userId,
-            code: 'SQUAD300',
-            name: profile?.full_name || '',
-            city: profile?.city || '',
-            sport: ''
-          });
-
-        if (insertError) {
-          console.error('Erro ao criar usuário na tabela usuarios:', insertError);
-        } else {
-          console.log('Usuário criado na tabela usuarios com sucesso');
-        }
+        console.log('Usuário não encontrado na tabela usuarios, redirecionando para completar perfil');
+        return false;
       }
 
       // Verificar se o perfil está completo
-      const isProfileComplete = profile && 
-        profile.city && 
-        profile.city.trim() !== '';
+      const isProfileComplete = existingUser && 
+        existingUser.nome && 
+        existingUser.cidade && 
+        existingUser.nome.trim() !== '' &&
+        existingUser.cidade.trim() !== '';
 
       return isProfileComplete;
     } catch (error) {

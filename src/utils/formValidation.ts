@@ -6,29 +6,30 @@ export interface ValidationErrors {
 
 export interface FormData {
   // Personal Data
-  fullName: string;
+  nome: string;
   cpf: string;
-  phone: string;
+  telefone: string;
   email: string;
-  city: string;
-  state: string;
-  birthDate: string;
-  street: string;
-  number: string;
-  neighborhood: string;
+  cidade: string;
+  estado: string;
+  data_dia: string;
+  data_mes: string;
+  data_ano: string;
   cep: string;
-  cityIbgeCode: string;
+  rua: string;
+  numero: string;
+  bairro: string;
   
   // Sports Preferences
-  favoriteStateSports: string[];
-  practicedSports: string[];
-  interestedSports: string[];
+  esportes_favoritos: string[];
+  esportes_praticados: string[];
+  esportes_interesse: string[];
   
   // Password
-  password: string;
-  confirmPassword: string;
+  senha: string;
+  confirmar_senha: string;
   
-  // Business/Group Data
+  // Business/Group Data (mantido para compatibilidade)
   businessName: string;
   cnpj: string;
   description: string;
@@ -43,10 +44,10 @@ export interface FormData {
 export const validateRegistrationForm = (formData: any, currentStep?: number): ValidationErrors => {
   const errors: ValidationErrors = {};
 
-  // Personal data validation
+  // Personal data validation (Step 1)
   if (currentStep === 1 || !currentStep) {
-    if (!formData.fullName?.trim()) {
-      errors.fullName = 'Nome completo é obrigatório';
+    if (!formData.nome?.trim()) {
+      errors.nome = 'Nome completo é obrigatório';
     }
 
     if (!formData.email?.trim()) {
@@ -58,77 +59,109 @@ export const validateRegistrationForm = (formData: any, currentStep?: number): V
       }
     }
 
-    if (!formData.phone?.trim()) {
-      errors.phone = 'Telefone é obrigatório';
+    if (!formData.telefone?.trim()) {
+      errors.telefone = 'Telefone é obrigatório';
     }
 
     if (!formData.cpf?.trim()) {
       errors.cpf = 'CPF é obrigatório';
     }
-  }
 
-  // Sports preferences validation (step 2)
-  if (currentStep === 2 || !currentStep) {
-    // Sports preferences are optional, no validation needed
-  }
-
-  // Password validation (step 3)
-  if (currentStep === 3 || !currentStep) {
-    const passwordValidation = validatePassword(formData.password || '');
-    
-    if (!formData.password) {
-      errors.password = 'Senha é obrigatória';
-    } else if (!passwordValidation.isValid) {
-      errors.password = 'Senha não atende aos requisitos de segurança';
+    if (!formData.cep?.trim()) {
+      errors.cep = 'CEP é obrigatório';
     }
 
-    if (!formData.confirmPassword) {
-      errors.confirmPassword = 'Confirmação de senha é obrigatória';
-    } else if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Senhas não coincidem';
-    }
-  }
-
-  // Location and final step validation
-  if (currentStep === 4 || !currentStep) {
-    if (!formData.state?.trim()) {
-      errors.state = 'Estado é obrigatório';
+    if (!formData.rua?.trim()) {
+      errors.rua = 'Rua/Avenida é obrigatória';
     }
 
-    if (!formData.city?.trim()) {
-      errors.city = 'Cidade é obrigatória';
+    if (!formData.numero?.trim()) {
+      errors.numero = 'Número é obrigatório';
     }
 
-    if (!formData.birthDate) {
-      errors.birthDate = 'Data de nascimento é obrigatória';
-    } else {
-      // Parse date directly from string to avoid timezone issues
-      const dateParts = formData.birthDate.split('-');
-      if (dateParts.length === 3) {
-        const year = parseInt(dateParts[0]);
-        const month = parseInt(dateParts[1]) - 1; // Month is 0-indexed
-        const day = parseInt(dateParts[2]);
-        const birthDate = new Date(year, month, day);
+    if (!formData.bairro?.trim()) {
+      errors.bairro = 'Bairro é obrigatório';
+    }
+
+    if (!formData.estado?.trim()) {
+      errors.estado = 'Estado é obrigatório';
+    }
+
+    if (!formData.cidade?.trim()) {
+      errors.cidade = 'Cidade é obrigatória';
+    }
+
+    if (!formData.data_dia?.trim()) {
+      errors.data_dia = 'Dia de nascimento é obrigatório';
+    }
+
+    if (!formData.data_mes?.trim()) {
+      errors.data_mes = 'Mês de nascimento é obrigatório';
+    }
+
+    if (!formData.data_ano?.trim()) {
+      errors.data_ano = 'Ano de nascimento é obrigatório';
+    }
+
+    // Validar data de nascimento se todos os campos estão preenchidos
+    if (formData.data_dia && formData.data_mes && formData.data_ano) {
+      const day = parseInt(formData.data_dia);
+      const month = parseInt(formData.data_mes);
+      const year = parseInt(formData.data_ano);
+      
+      if (isNaN(day) || day < 1 || day > 31) {
+        errors.data_dia = 'Dia inválido';
+      }
+      
+      if (isNaN(month) || month < 1 || month > 12) {
+        errors.data_mes = 'Mês inválido';
+      }
+      
+      if (isNaN(year) || year < 1900) {
+        errors.data_ano = 'Ano inválido';
+      }
+
+      // Verificar idade mínima
+      if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+        const birthDate = new Date(year, month - 1, day);
         const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth();
-        const currentDay = today.getDate();
+        let age = today.getFullYear() - year;
         
-        let age = currentYear - year;
-        if (currentMonth < month || (currentMonth === month && currentDay < day)) {
+        if (today.getMonth() < month - 1 || (today.getMonth() === month - 1 && today.getDate() < day)) {
           age--;
         }
         
         if (age < 13) {
-          errors.birthDate = 'Você deve ter pelo menos 13 anos';
+          errors.data_ano = 'Você deve ter pelo menos 13 anos';
         }
-        
-        if (year > currentYear || (year === currentYear && month > currentMonth) || (year === currentYear && month === currentMonth && day > currentDay)) {
-          errors.birthDate = 'Data de nascimento não pode ser no futuro';
-        }
-      } else {
-        errors.birthDate = 'Data de nascimento inválida';
       }
+    }
+  }
+
+  // Sports preferences validation (Step 2)
+  if (currentStep === 2 || !currentStep) {
+    if (formData.esportes_favoritos && formData.esportes_favoritos.length < 5) {
+      errors.esportes_favoritos = 'Selecione entre 5 e 20 esportes favoritos';
+    }
+    if (formData.esportes_favoritos && formData.esportes_favoritos.length > 20) {
+      errors.esportes_favoritos = 'Máximo de 20 esportes favoritos';
+    }
+  }
+
+  // Password validation (Step 3)
+  if (currentStep === 3 || !currentStep) {
+    const passwordValidation = validatePassword(formData.senha || '');
+    
+    if (!formData.senha) {
+      errors.senha = 'Senha é obrigatória';
+    } else if (!passwordValidation.isValid) {
+      errors.senha = 'Senha não atende aos requisitos de segurança';
+    }
+
+    if (!formData.confirmar_senha) {
+      errors.confirmar_senha = 'Confirmação de senha é obrigatória';
+    } else if (formData.senha !== formData.confirmar_senha) {
+      errors.confirmar_senha = 'Senhas não coincidem';
     }
   }
 

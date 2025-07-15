@@ -46,29 +46,30 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
 
   const [formData, setFormData] = useState<FormData>({
     // Personal Data
-    fullName: '',
+    nome: '',
     cpf: '',
-    phone: '',
+    telefone: '',
     email: '',
-    city: '',
-    state: '',
-    birthDate: '',
-    street: '',
-    number: '',
-    neighborhood: '',
+    cidade: '',
+    estado: '',
+    data_dia: '',
+    data_mes: '',
+    data_ano: '',
     cep: '',
-    cityIbgeCode: '',
+    rua: '',
+    numero: '',
+    bairro: '',
     
     // Sports Preferences
-    favoriteStateSports: [],
-    practicedSports: [],
-    interestedSports: [],
+    esportes_favoritos: [],
+    esportes_praticados: [],
+    esportes_interesse: [],
     
     // Password
-    password: '',
-    confirmPassword: '',
+    senha: '',
+    confirmar_senha: '',
     
-    // Business/Group Data
+    // Business/Group Data (mantido para compatibilidade)
     businessName: '',
     cnpj: '',
     description: '',
@@ -88,7 +89,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     }
   };
 
-  const handleSportToggle = (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => {
+  const handleSportToggle = (field: 'esportes_favoritos' | 'esportes_praticados' | 'esportes_interesse', sport: string) => {
     setFormData(prev => {
       const currentSports = prev[field];
       const isSelected = currentSports.includes(sport);
@@ -184,15 +185,18 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     console.log('✅ All validations passed, proceeding with registration');
     setErrors({});
     
+    // Montar data de nascimento combinando dia, mês e ano
+    const data_nascimento = `${formData.data_ano}-${formData.data_mes.padStart(2, '0')}-${formData.data_dia.padStart(2, '0')}`;
+    
     console.log('📝 Submitting registration data:', {
       email: formData.email,
-      fullName: formData.fullName,
+      nome: formData.nome,
       registrationType,
-      birthDate: formData.birthDate,
+      data_nascimento,
       sportsCount: {
-        favorite: formData.favoriteStateSports.length,
-        practiced: formData.practicedSports.length,
-        interested: formData.interestedSports.length
+        favorite: formData.esportes_favoritos.length,
+        practiced: formData.esportes_praticados.length,
+        interested: formData.esportes_interesse.length
       },
       acceptTerms: formData.acceptTerms,
       acceptNewsletter: formData.acceptNewsletter
@@ -201,16 +205,21 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     console.log('🚀 Calling registerUser function...');
     const result = await registerUser(
       {
-        fullName: formData.fullName,
+        nome: formData.nome,
         cpf: formData.cpf,
-        phone: formData.phone,
+        telefone: formData.telefone,
         email: formData.email,
-        city: formData.city,
-        birthDate: formData.birthDate,
-        favoriteStateSports: formData.favoriteStateSports,
-        practicedSports: formData.practicedSports,
-        interestedSports: formData.interestedSports,
-        password: formData.password,
+        cidade: formData.cidade,
+        estado: formData.estado,
+        cep: formData.cep,
+        rua: formData.rua,
+        numero: formData.numero,
+        bairro: formData.bairro,
+        data_nascimento,
+        esportes_favoritos: formData.esportes_favoritos,
+        esportes_praticados: formData.esportes_praticados,
+        esportes_interesse: formData.esportes_interesse,
+        senha: formData.senha,
         promoCode: formData.promoCode
       },
       registrationType,

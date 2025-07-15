@@ -14,966 +14,375 @@ export type Database = {
   }
   public: {
     Tables: {
-      cities: {
+      estabelecimentos_esportivos: {
         Row: {
-          created_at: string | null
-          ibge_code: string
-          id: number
-          name: string
-          state_code: string
-        }
-        Insert: {
-          created_at?: string | null
-          ibge_code: string
-          id?: number
-          name: string
-          state_code: string
-        }
-        Update: {
-          created_at?: string | null
-          ibge_code?: string
-          id?: number
-          name?: string
-          state_code?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "cities_state_code_fkey"
-            columns: ["state_code"]
-            isOneToOne: false
-            referencedRelation: "states"
-            referencedColumns: ["code"]
-          },
-        ]
-      }
-      establishment_amenities: {
-        Row: {
-          amenity: string
-          available: boolean | null
-          created_at: string
-          description: string | null
-          establishment_id: string
-          id: string
-        }
-        Insert: {
-          amenity: string
-          available?: boolean | null
-          created_at?: string
-          description?: string | null
-          establishment_id: string
-          id?: string
-        }
-        Update: {
-          amenity?: string
-          available?: boolean | null
-          created_at?: string
-          description?: string | null
-          establishment_id?: string
-          id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "establishment_amenities_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      establishment_categories: {
-        Row: {
-          category: string
-          created_at: string
-          establishment_id: string
-          id: string
-          subcategory: string | null
-        }
-        Insert: {
-          category: string
-          created_at?: string
-          establishment_id: string
-          id?: string
-          subcategory?: string | null
-        }
-        Update: {
-          category?: string
-          created_at?: string
-          establishment_id?: string
-          id?: string
-          subcategory?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "establishment_categories_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      establishment_hours: {
-        Row: {
-          close_time: string | null
-          created_at: string
-          day_of_week: number
-          establishment_id: string
-          id: string
-          is_closed: boolean | null
-          open_time: string | null
-        }
-        Insert: {
-          close_time?: string | null
-          created_at?: string
-          day_of_week: number
-          establishment_id: string
-          id?: string
-          is_closed?: boolean | null
-          open_time?: string | null
-        }
-        Update: {
-          close_time?: string | null
-          created_at?: string
-          day_of_week?: number
-          establishment_id?: string
-          id?: string
-          is_closed?: boolean | null
-          open_time?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "establishment_hours_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      establishment_photos: {
-        Row: {
-          caption: string | null
-          created_at: string
-          establishment_id: string
-          id: string
-          is_main: boolean | null
-          photo_url: string
-        }
-        Insert: {
-          caption?: string | null
-          created_at?: string
-          establishment_id: string
-          id?: string
-          is_main?: boolean | null
-          photo_url: string
-        }
-        Update: {
-          caption?: string | null
-          created_at?: string
-          establishment_id?: string
-          id?: string
-          is_main?: boolean | null
-          photo_url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "establishment_photos_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      establishment_pricing: {
-        Row: {
-          created_at: string
-          description: string | null
-          establishment_id: string
-          id: string
-          price_max: number | null
-          price_min: number | null
-          service_type: string
-          unit: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          establishment_id: string
-          id?: string
-          price_max?: number | null
-          price_min?: number | null
-          service_type: string
-          unit: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          establishment_id?: string
-          id?: string
-          price_max?: number | null
-          price_min?: number | null
-          service_type?: string
-          unit?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "establishment_pricing_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      establishment_sports: {
-        Row: {
-          created_at: string
-          establishment_id: string
-          id: string
-          sport_name: string
-          sport_type: string
-        }
-        Insert: {
-          created_at?: string
-          establishment_id: string
-          id?: string
-          sport_name: string
-          sport_type: string
-        }
-        Update: {
-          created_at?: string
-          establishment_id?: string
-          id?: string
-          sport_name?: string
-          sport_type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "establishment_sports_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      establishment_stats: {
-        Row: {
-          average_rating: number | null
-          establishment_id: string
-          id: string
-          last_updated: string
-          total_contacts: number | null
-          total_favorites: number | null
-          total_views: number | null
-        }
-        Insert: {
-          average_rating?: number | null
-          establishment_id: string
-          id?: string
-          last_updated?: string
-          total_contacts?: number | null
-          total_favorites?: number | null
-          total_views?: number | null
-        }
-        Update: {
-          average_rating?: number | null
-          establishment_id?: string
-          id?: string
-          last_updated?: string
-          total_contacts?: number | null
-          total_favorites?: number | null
-          total_views?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "establishment_stats_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: true
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      establishments: {
-        Row: {
-          address: string
-          cep: string
-          city: string
-          cnpj: string | null
-          corporate_name: string
-          created_at: string
-          description: string | null
-          email: string
-          establishment_name: string
-          id: string
-          latitude: number | null
-          longitude: number | null
-          phone: string
-          state: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          address: string
-          cep: string
-          city: string
-          cnpj?: string | null
-          corporate_name: string
-          created_at?: string
-          description?: string | null
-          email: string
-          establishment_name: string
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          phone: string
-          state: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          address?: string
-          cep?: string
-          city?: string
-          cnpj?: string | null
-          corporate_name?: string
-          created_at?: string
-          description?: string | null
-          email?: string
-          establishment_name?: string
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          phone?: string
-          state?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      group_photos: {
-        Row: {
-          caption: string | null
-          created_at: string
-          group_id: string
-          id: string
-          is_main: boolean | null
-          photo_url: string
-        }
-        Insert: {
-          caption?: string | null
-          created_at?: string
-          group_id: string
-          id?: string
-          is_main?: boolean | null
-          photo_url: string
-        }
-        Update: {
-          caption?: string | null
-          created_at?: string
-          group_id?: string
-          id?: string
-          is_main?: boolean | null
-          photo_url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "group_photos_group_id_fkey"
-            columns: ["group_id"]
-            isOneToOne: false
-            referencedRelation: "sports_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      group_sports: {
-        Row: {
-          created_at: string
-          group_id: string
-          id: string
-          sport_name: string
-          sport_type: string
-        }
-        Insert: {
-          created_at?: string
-          group_id: string
-          id?: string
-          sport_name: string
-          sport_type: string
-        }
-        Update: {
-          created_at?: string
-          group_id?: string
-          id?: string
-          sport_name?: string
-          sport_type?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "group_sports_group_id_fkey"
-            columns: ["group_id"]
-            isOneToOne: false
-            referencedRelation: "sports_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      login_attempts: {
-        Row: {
-          attempted_at: string
-          email: string
-          id: string
-          ip_address: unknown | null
-          success: boolean
-        }
-        Insert: {
-          attempted_at?: string
-          email: string
-          id?: string
-          ip_address?: unknown | null
-          success?: boolean
-        }
-        Update: {
-          attempted_at?: string
-          email?: string
-          id?: string
-          ip_address?: unknown | null
-          success?: boolean
-        }
-        Relationships: []
-      }
-      promotional_codes: {
-        Row: {
-          active: boolean
-          code: string
-          created_at: string | null
-          current_uses: number
-          discount_percent: number
-          expires_at: string | null
-          max_uses: number
-        }
-        Insert: {
-          active?: boolean
-          code: string
-          created_at?: string | null
-          current_uses?: number
-          discount_percent?: number
-          expires_at?: string | null
-          max_uses?: number
-        }
-        Update: {
-          active?: boolean
-          code?: string
-          created_at?: string | null
-          current_uses?: number
-          discount_percent?: number
-          expires_at?: string | null
-          max_uses?: number
-        }
-        Relationships: []
-      }
-      referral_codes: {
-        Row: {
-          code: string
-          created_at: string
-          id: string
-          is_active: boolean | null
-          type: string
-          user_id: string
-        }
-        Insert: {
-          code: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          type: string
-          user_id: string
-        }
-        Update: {
-          code?: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          type?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      referral_conversions: {
-        Row: {
-          commission_amount: number | null
-          commission_status: string | null
-          conversion_type: string
-          created_at: string
-          id: string
-          paid_at: string | null
-          referral_code_id: string
-          referred_user_id: string
-        }
-        Insert: {
-          commission_amount?: number | null
-          commission_status?: string | null
-          conversion_type: string
-          created_at?: string
-          id?: string
-          paid_at?: string | null
-          referral_code_id: string
-          referred_user_id: string
-        }
-        Update: {
-          commission_amount?: number | null
-          commission_status?: string | null
-          conversion_type?: string
-          created_at?: string
-          id?: string
-          paid_at?: string | null
-          referral_code_id?: string
-          referred_user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "referral_conversions_referral_code_id_fkey"
-            columns: ["referral_code_id"]
-            isOneToOne: false
-            referencedRelation: "referral_codes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      registration_attempts: {
-        Row: {
-          attempted_at: string
-          email: string
-          id: string
-          ip_address: unknown | null
-          success: boolean
-        }
-        Insert: {
-          attempted_at?: string
-          email: string
-          id?: string
-          ip_address?: unknown | null
-          success?: boolean
-        }
-        Update: {
-          attempted_at?: string
-          email?: string
-          id?: string
-          ip_address?: unknown | null
-          success?: boolean
-        }
-        Relationships: []
-      }
-      reviews: {
-        Row: {
-          comment: string | null
-          created_at: string
-          establishment_id: string | null
-          group_id: string | null
-          id: string
-          rating: number
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          comment?: string | null
-          created_at?: string
-          establishment_id?: string | null
-          group_id?: string | null
-          id?: string
-          rating: number
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          comment?: string | null
-          created_at?: string
-          establishment_id?: string | null
-          group_id?: string | null
-          id?: string
-          rating?: number
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "reviews_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_group_id_fkey"
-            columns: ["group_id"]
-            isOneToOne: false
-            referencedRelation: "sports_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      sports_groups: {
-        Row: {
-          cities: string[]
-          corporate_name: string
-          created_at: string
-          description: string | null
-          email: string
-          group_name: string
-          id: string
-          latitude: number | null
-          longitude: number | null
-          meeting_point: string | null
-          phone: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          cities: string[]
-          corporate_name: string
-          created_at?: string
-          description?: string | null
-          email: string
-          group_name: string
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          meeting_point?: string | null
-          phone: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          cities?: string[]
-          corporate_name?: string
-          created_at?: string
-          description?: string | null
-          email?: string
-          group_name?: string
-          id?: string
-          latitude?: number | null
-          longitude?: number | null
-          meeting_point?: string | null
-          phone?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      states: {
-        Row: {
-          code: string
-          created_at: string | null
-          id: number
-          name: string
-        }
-        Insert: {
-          code: string
-          created_at?: string | null
-          id?: number
-          name: string
-        }
-        Update: {
-          code?: string
-          created_at?: string | null
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
-      subscription_plans: {
-        Row: {
-          active: boolean
-          created_at: string
-          features: Json
-          id: string
-          is_free: boolean
-          name: string
-          price_monthly: number
-          price_yearly: number
-          type: string
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          features?: Json
-          id?: string
-          is_free?: boolean
-          name: string
-          price_monthly?: number
-          price_yearly?: number
-          type: string
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          features?: Json
-          id?: string
-          is_free?: boolean
-          name?: string
-          price_monthly?: number
-          price_yearly?: number
-          type?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      user_favorites: {
-        Row: {
-          created_at: string
-          establishment_id: string | null
-          group_id: string | null
-          id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          establishment_id?: string | null
-          group_id?: string | null
-          id?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          establishment_id?: string | null
-          group_id?: string | null
-          id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_favorites_establishment_id_fkey"
-            columns: ["establishment_id"]
-            isOneToOne: false
-            referencedRelation: "establishments"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "user_favorites_group_id_fkey"
-            columns: ["group_id"]
-            isOneToOne: false
-            referencedRelation: "sports_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      user_profiles: {
-        Row: {
-          beta_selected_at: string | null
-          birth_date: string | null
+          bairro: string | null
           cep: string | null
-          city: string | null
-          city_ibge_code: string | null
-          cpf: string | null
-          created_at: string
-          full_name: string
+          cidade: string | null
+          cnpj: string | null
+          criado_em: string | null
+          descricao: string | null
+          email: string | null
+          estado: string | null
+          estrutura: string[] | null
+          horario_funcionamento: string | null
           id: string
-          is_beta_tester: boolean | null
-          neighborhood: string | null
-          number: string | null
-          phone: string | null
-          promo_code: string | null
-          state: string | null
-          street: string | null
-          updated_at: string
-          user_type: string | null
+          imagem_url: string | null
+          latitude: number | null
+          longitude: number | null
+          modalidades: string[] | null
+          nome: string
+          numero: string | null
+          rua: string | null
+          site: string | null
+          telefone: string | null
+          user_id: string | null
         }
         Insert: {
-          beta_selected_at?: string | null
-          birth_date?: string | null
+          bairro?: string | null
           cep?: string | null
-          city?: string | null
-          city_ibge_code?: string | null
-          cpf?: string | null
-          created_at?: string
-          full_name: string
-          id: string
-          is_beta_tester?: boolean | null
-          neighborhood?: string | null
-          number?: string | null
-          phone?: string | null
-          promo_code?: string | null
-          state?: string | null
-          street?: string | null
-          updated_at?: string
-          user_type?: string | null
+          cidade?: string | null
+          cnpj?: string | null
+          criado_em?: string | null
+          descricao?: string | null
+          email?: string | null
+          estado?: string | null
+          estrutura?: string[] | null
+          horario_funcionamento?: string | null
+          id?: string
+          imagem_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          modalidades?: string[] | null
+          nome: string
+          numero?: string | null
+          rua?: string | null
+          site?: string | null
+          telefone?: string | null
+          user_id?: string | null
         }
         Update: {
-          beta_selected_at?: string | null
-          birth_date?: string | null
+          bairro?: string | null
           cep?: string | null
-          city?: string | null
-          city_ibge_code?: string | null
-          cpf?: string | null
-          created_at?: string
-          full_name?: string
+          cidade?: string | null
+          cnpj?: string | null
+          criado_em?: string | null
+          descricao?: string | null
+          email?: string | null
+          estado?: string | null
+          estrutura?: string[] | null
+          horario_funcionamento?: string | null
           id?: string
-          is_beta_tester?: boolean | null
-          neighborhood?: string | null
-          number?: string | null
-          phone?: string | null
-          promo_code?: string | null
-          state?: string | null
-          street?: string | null
-          updated_at?: string
-          user_type?: string | null
-        }
-        Relationships: []
-      }
-      user_sessions: {
-        Row: {
-          created_at: string
-          id: string
-          ip_address: unknown | null
-          last_activity: string
-          session_token: string
-          user_agent: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          ip_address?: unknown | null
-          last_activity?: string
-          session_token: string
-          user_agent?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          ip_address?: unknown | null
-          last_activity?: string
-          session_token?: string
-          user_agent?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_sports: {
-        Row: {
-          created_at: string
-          id: string
-          sport_name: string
-          sport_type: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          sport_name: string
-          sport_type: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          sport_name?: string
-          sport_type?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      user_subscriptions: {
-        Row: {
-          created_at: string
-          current_period_end: string | null
-          current_period_start: string | null
-          id: string
-          plan_id: string
-          status: string
-          stripe_customer_id: string | null
-          stripe_subscription_id: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          plan_id: string
-          status?: string
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          current_period_end?: string | null
-          current_period_start?: string | null
-          id?: string
-          plan_id?: string
-          status?: string
-          stripe_customer_id?: string | null
-          stripe_subscription_id?: string | null
-          updated_at?: string
-          user_id?: string
+          imagem_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          modalidades?: string[] | null
+          nome?: string
+          numero?: string | null
+          rua?: string | null
+          site?: string | null
+          telefone?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "user_subscriptions_plan_id_fkey"
-            columns: ["plan_id"]
+            foreignKeyName: "estabelecimentos_esportivos_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "subscription_plans"
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      eventos_esportivos: {
+        Row: {
+          bairro: string | null
+          cep: string | null
+          cidade: string | null
+          criado_em: string | null
+          data: string | null
+          descricao: string | null
+          estado: string | null
+          evento_privado: boolean | null
+          hora: string | null
+          id: string
+          imagem_url: string | null
+          ingressos_disponiveis: number | null
+          latitude: number | null
+          link_compra: string | null
+          longitude: number | null
+          modalidade: string | null
+          numero: string | null
+          organizador_id: string | null
+          rua: string | null
+          tipo_organizador: string | null
+          titulo: string
+          valor_ingresso: number | null
+        }
+        Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          criado_em?: string | null
+          data?: string | null
+          descricao?: string | null
+          estado?: string | null
+          evento_privado?: boolean | null
+          hora?: string | null
+          id?: string
+          imagem_url?: string | null
+          ingressos_disponiveis?: number | null
+          latitude?: number | null
+          link_compra?: string | null
+          longitude?: number | null
+          modalidade?: string | null
+          numero?: string | null
+          organizador_id?: string | null
+          rua?: string | null
+          tipo_organizador?: string | null
+          titulo: string
+          valor_ingresso?: number | null
+        }
+        Update: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          criado_em?: string | null
+          data?: string | null
+          descricao?: string | null
+          estado?: string | null
+          evento_privado?: boolean | null
+          hora?: string | null
+          id?: string
+          imagem_url?: string | null
+          ingressos_disponiveis?: number | null
+          latitude?: number | null
+          link_compra?: string | null
+          longitude?: number | null
+          modalidade?: string | null
+          numero?: string | null
+          organizador_id?: string | null
+          rua?: string | null
+          tipo_organizador?: string | null
+          titulo?: string
+          valor_ingresso?: number | null
+        }
+        Relationships: []
+      }
+      grupos_esportivos: {
+        Row: {
+          bairro: string | null
+          cep: string | null
+          cidade: string | null
+          criado_em: string | null
+          descricao: string | null
+          dias_semana: string[] | null
+          estado: string | null
+          horario: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          modalidade: string | null
+          nome: string
+          numero: string | null
+          publico_alvo: string | null
+          rua: string | null
+          tem_local_fisico: boolean | null
+          user_id: string | null
+        }
+        Insert: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          criado_em?: string | null
+          descricao?: string | null
+          dias_semana?: string[] | null
+          estado?: string | null
+          horario?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          modalidade?: string | null
+          nome: string
+          numero?: string | null
+          publico_alvo?: string | null
+          rua?: string | null
+          tem_local_fisico?: boolean | null
+          user_id?: string | null
+        }
+        Update: {
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          criado_em?: string | null
+          descricao?: string | null
+          dias_semana?: string[] | null
+          estado?: string | null
+          horario?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          modalidade?: string | null
+          nome?: string
+          numero?: string | null
+          publico_alvo?: string | null
+          rua?: string | null
+          tem_local_fisico?: boolean | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grupos_esportivos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profissionais_esportivos: {
+        Row: {
+          atende_em_estabelecimento: boolean | null
+          bairro: string | null
+          bio: string | null
+          cep: string | null
+          cidade: string | null
+          criado_em: string | null
+          email: string | null
+          especialidade: string | null
+          estabelecimentos_ids: string[] | null
+          estado: string | null
+          horarios_disponiveis: string | null
+          id: string
+          imagem_url: string | null
+          instagram: string | null
+          latitude: number | null
+          longitude: number | null
+          modalidades: string[] | null
+          nome: string
+          numero: string | null
+          rua: string | null
+          site: string | null
+          telefone: string | null
+          user_id: string | null
+        }
+        Insert: {
+          atende_em_estabelecimento?: boolean | null
+          bairro?: string | null
+          bio?: string | null
+          cep?: string | null
+          cidade?: string | null
+          criado_em?: string | null
+          email?: string | null
+          especialidade?: string | null
+          estabelecimentos_ids?: string[] | null
+          estado?: string | null
+          horarios_disponiveis?: string | null
+          id?: string
+          imagem_url?: string | null
+          instagram?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          modalidades?: string[] | null
+          nome: string
+          numero?: string | null
+          rua?: string | null
+          site?: string | null
+          telefone?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          atende_em_estabelecimento?: boolean | null
+          bairro?: string | null
+          bio?: string | null
+          cep?: string | null
+          cidade?: string | null
+          criado_em?: string | null
+          email?: string | null
+          especialidade?: string | null
+          estabelecimentos_ids?: string[] | null
+          estado?: string | null
+          horarios_disponiveis?: string | null
+          id?: string
+          imagem_url?: string | null
+          instagram?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          modalidades?: string[] | null
+          nome?: string
+          numero?: string | null
+          rua?: string | null
+          site?: string | null
+          telefone?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profissionais_esportivos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
         ]
       }
       usuarios: {
         Row: {
-          city: string | null
-          code: string | null
-          created_at: string
+          bairro: string | null
+          cep: string | null
+          cidade: string | null
+          cpf: string | null
+          criado_em: string | null
+          data_nascimento: string | null
+          email: string | null
+          esportes_favoritos: string[] | null
+          esportes_interesse: string[] | null
+          esportes_praticados: string[] | null
+          estado: string | null
           id: string
-          name: string | null
-          sport: string | null
+          nome: string | null
+          numero: string | null
+          rua: string | null
+          squad_code: string | null
+          telefone: string | null
         }
         Insert: {
-          city?: string | null
-          code?: string | null
-          created_at?: string
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf?: string | null
+          criado_em?: string | null
+          data_nascimento?: string | null
+          email?: string | null
+          esportes_favoritos?: string[] | null
+          esportes_interesse?: string[] | null
+          esportes_praticados?: string[] | null
+          estado?: string | null
           id?: string
-          name?: string | null
-          sport?: string | null
+          nome?: string | null
+          numero?: string | null
+          rua?: string | null
+          squad_code?: string | null
+          telefone?: string | null
         }
         Update: {
-          city?: string | null
-          code?: string | null
-          created_at?: string
+          bairro?: string | null
+          cep?: string | null
+          cidade?: string | null
+          cpf?: string | null
+          criado_em?: string | null
+          data_nascimento?: string | null
+          email?: string | null
+          esportes_favoritos?: string[] | null
+          esportes_interesse?: string[] | null
+          esportes_praticados?: string[] | null
+          estado?: string | null
           id?: string
-          name?: string | null
-          sport?: string | null
-        }
-        Relationships: []
-      }
-      waitlist: {
-        Row: {
-          created_at: string | null
-          email: string
-          full_name: string
-          id: string
-          phone: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          email: string
-          full_name: string
-          id?: string
-          phone?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          email?: string
-          full_name?: string
-          id?: string
-          phone?: string | null
+          nome?: string | null
+          numero?: string | null
+          rua?: string | null
+          squad_code?: string | null
+          telefone?: string | null
         }
         Relationships: []
       }

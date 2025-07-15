@@ -6,16 +6,21 @@ import { useRegistrationSecurity } from './useRegistrationSecurity';
 import { toast } from 'sonner';
 
 interface RegistrationData {
-  fullName: string;
+  nome: string;
   cpf: string;
-  phone: string;
+  telefone: string;
   email: string;
-  city: string;
-  birthDate: string;
-  favoriteStateSports: string[];
-  practicedSports: string[];
-  interestedSports: string[];
-  password: string;
+  cidade: string;
+  estado: string;
+  cep: string;
+  rua: string;
+  numero: string;
+  bairro: string;
+  data_nascimento: string;
+  esportes_favoritos: string[];
+  esportes_praticados: string[];
+  esportes_interesse: string[];
+  senha: string;
   promoCode?: string;
 }
 
@@ -44,13 +49,13 @@ export const useRegistration = () => {
     console.log('🚀 Starting registration submission...');
     console.log('📊 Registration data:', {
       email: data.email,
-      fullName: data.fullName,
+      nome: data.nome,
       registrationType,
       hasPromoCode: !!data.promoCode,
       sportsCount: {
-        favorite: data.favoriteStateSports.length,
-        practiced: data.practicedSports.length,
-        interested: data.interestedSports.length
+        favorite: data.esportes_favoritos.length,
+        practiced: data.esportes_praticados.length,
+        interested: data.esportes_interesse.length
       }
     });
     
@@ -72,15 +77,16 @@ export const useRegistration = () => {
 
       // 2. Create user account with enhanced metadata
       console.log('👤 Creating user account...');
-      const { data: signUpData, error: signUpError } = await signUp(data.email, data.password, {
-        fullName: data.fullName,
-        full_name: data.fullName,
+      const { data: signUpData, error: signUpError } = await signUp(data.email, data.senha, {
+        nome: data.nome,
+        full_name: data.nome,
         registration_type: registrationType,
         promo_code: data.promoCode,
         cpf: data.cpf,
-        phone: data.phone,
-        city: data.city,
-        birth_date: data.birthDate
+        telefone: data.telefone,
+        cidade: data.cidade,
+        estado: data.estado,
+        data_nascimento: data.data_nascimento
       });
       
       // 3. Log registration attempt
@@ -131,123 +137,61 @@ export const useRegistration = () => {
 
       console.log('✅ User account created successfully with ID:', newUserId);
 
-      // 4. Wait for profile creation by trigger with retry mechanism
-      console.log('⏳ Waiting for profile creation...');
-      let profileCreated = false;
-      let retries = 0;
-      const maxRetries = 5;
+      // 4. Verificar se o usuário já existe na tabela usuarios
+      console.log('🔍 Verificando se usuário já existe...');
+      const { data: existingUser } = await supabase
+        .from('usuarios')
+        .select('id')
+        .eq('email', data.email)
+        .single();
 
-      while (!profileCreated && retries < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 2000 + (retries * 1000)));
-        
-        const { data: profile, error: profileCheckError } = await supabase
-          .from('user_profiles')
-          .select('id')
-          .eq('id', newUserId)
-          .single();
-
-        if (profile && !profileCheckError) {
-          profileCreated = true;
-          console.log('✅ Profile found, proceeding with update');
-        } else {
-          retries++;
-          console.log(`⏳ Profile not ready yet, retry ${retries}/${maxRetries}`);
-          
-          if (retries === maxRetries) {
-            // Force create profile if trigger failed
-            console.log('🔧 Trigger failed, creating profile manually');
-            const { error: manualProfileError } = await supabase
-              .from('user_profiles')
-              .insert({
-                id: newUserId,
-                full_name: data.fullName
-              });
-
-            if (manualProfileError && !manualProfileError.message.includes('duplicate')) {
-              console.error('❌ Manual profile creation failed:', manualProfileError);
-            } else {
-              profileCreated = true;
-            }
-          }
-        }
+      if (existingUser) {
+        return {
+          success: false,
+          error: 'Este e-mail já está cadastrado. Faça login.'
+        };
       }
 
-      // 5. Update profile with complete data
-      console.log('💾 Updating user profile with complete data...');
-      const { error: profileError } = await supabase
-        .from('user_profiles')
-        .update({
-          full_name: data.fullName,
+      // 5. Criar registro na tabela usuarios
+      console.log('💾 Criando registro na tabela usuarios...');
+      const { error: usuarioError } = await supabase
+        .from('usuarios')
+        .insert({
+          id: newUserId,
+          nome: data.nome,
           cpf: data.cpf,
-          phone: data.phone,
-          city: data.city,
-          birth_date: data.birthDate,
-          promo_code: data.promoCode || null
-        })
-        .eq('id', newUserId);
+          telefone: data.telefone,
+          email: data.email,
+          cep: data.cep,
+          rua: data.rua,
+          numero: data.numero,
+          bairro: data.bairro,
+          estado: data.estado,
+          cidade: data.cidade,
+          data_nascimento: data.data_nascimento,
+          esportes_favoritos: data.esportes_favoritos,
+          esportes_praticados: data.esportes_praticados,
+          esportes_interesse: data.esportes_interesse,
+          squad_code: 'SQUAD300'
+        });
 
-      if (profileError) {
-        console.error('❌ Error updating profile:', profileError);
-        toast.error('Aviso: Alguns dados do perfil podem não ter sido salvos');
-      } else {
-        console.log('✅ Profile updated successfully');
-      }
-
-      // 6. Save user sports with enhanced error handling
-      const allSports = [
-        ...data.favoriteStateSports.map(sport => ({ 
-          user_id: newUserId,
-          sport_name: sport, 
-          sport_type: 'favorite' as const
-        })),
-        ...data.practicedSports.map(sport => ({ 
-          user_id: newUserId,
-          sport_name: sport, 
-          sport_type: 'practiced' as const
-        })),
-        ...data.interestedSports.map(sport => ({ 
-          user_id: newUserId,
-          sport_name: sport, 
-          sport_type: 'interested' as const
-        }))
-      ];
-
-      if (allSports.length > 0) {
-        console.log('🏃 Saving user sports...', allSports.length, 'sports');
+      if (usuarioError) {
+        console.error('❌ Error creating user in usuarios table:', usuarioError);
         
-        // First, clear any existing sports for this user
-        const { error: deleteError } = await supabase
-          .from('user_sports')
-          .delete()
-          .eq('user_id', newUserId);
-
-        if (deleteError) {
-          console.warn('⚠️ Warning clearing existing sports:', deleteError);
+        if (usuarioError.message.includes('duplicate') || usuarioError.message.includes('already exists')) {
+          return {
+            success: false,
+            error: 'Este e-mail ou CPF já está cadastrado. Faça login.'
+          };
         }
-
-        // Then insert new sports with retry mechanism
-        let sportsRetries = 0;
-        let sportsSaved = false;
-
-        while (!sportsSaved && sportsRetries < 3) {
-          const { error: sportsError } = await supabase
-            .from('user_sports')
-            .insert(allSports);
-
-          if (sportsError) {
-            sportsRetries++;
-            console.error(`❌ Error saving sports (attempt ${sportsRetries}):`, sportsError);
-            
-            if (sportsRetries < 3) {
-              await new Promise(resolve => setTimeout(resolve, 1000 * sportsRetries));
-            } else {
-              toast.error('Aviso: Esportes podem não ter sido salvos completamente');
-            }
-          } else {
-            sportsSaved = true;
-            console.log('✅ Sports saved successfully');
-          }
-        }
+        
+        toast.error('Erro ao salvar dados do usuário');
+        return {
+          success: false,
+          error: 'Erro ao salvar dados do usuário'
+        };
+      } else {
+        console.log('✅ User created in usuarios table successfully');
       }
 
       // 7. Track referral conversion if referralCode is present

@@ -13,7 +13,7 @@ interface RegistrationFormProps {
   errors: ValidationErrors;
   loading: boolean;
   onInputChange: (field: string, value: any) => void;
-  onSportToggle: (field: 'favoriteStateSports' | 'practicedSports' | 'interestedSports', sport: string) => void;
+  onSportToggle: (field: 'esportes_favoritos' | 'esportes_praticados' | 'esportes_interesse', sport: string) => void;
   onPromoValidation: (isValid: boolean, data?: any) => void;
   onPrevStep: () => void;
   onNextStep: () => void;
