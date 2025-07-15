@@ -37,7 +37,7 @@ const RegistrationStepRenderer = ({
             email: formData.email || '',
             cidade: formData.cidade || '',
             estado: formData.estado || '',
-            data_nascimento: formData.data_nascimento || '',
+            data_nascimento: `${formData.data_ano || ''}-${formData.data_mes?.padStart(2, '0') || ''}-${formData.data_dia?.padStart(2, '0') || ''}`,
             rua: formData.rua || '',
             numero: formData.numero || '',
             bairro: formData.bairro || '',
@@ -66,7 +66,7 @@ const RegistrationStepRenderer = ({
         <PasswordStep 
           formData={{
             password: formData.senha || '',
-            confirmPassword: formData.confirmPassword || ''
+            confirmPassword: formData.confirmar_senha || ''
           }}
           onInputChange={onInputChange}
           errors={errors}

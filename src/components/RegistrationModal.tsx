@@ -53,6 +53,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     email: '',
     cidade: '',
     estado: '',
+    data_nascimento: '',
     data_dia: '',
     data_mes: '',
     data_ano: '',
@@ -69,6 +70,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     // Password
     senha: '',
     confirmar_senha: '',
+    confirmPassword: '',
     
     // Business/Group Data (mantido para compatibilidade)
     businessName: '',

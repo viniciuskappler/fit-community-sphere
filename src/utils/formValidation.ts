@@ -12,6 +12,7 @@ export interface FormData {
   email: string;
   cidade: string;
   estado: string;
+  data_nascimento: string;
   data_dia: string;
   data_mes: string;
   data_ano: string;
@@ -28,6 +29,7 @@ export interface FormData {
   // Password
   senha: string;
   confirmar_senha: string;
+  confirmPassword: string;
   
   // Business/Group Data (mantido para compatibilidade)
   businessName: string;
@@ -201,8 +203,8 @@ export const validateStep4 = (formData: FormData, registrationType?: string): Va
       errors.address = 'Endereço é obrigatório';
     }
     
-    if (!formData.state?.trim()) {
-      errors.state = 'Estado é obrigatório';
+    if (!formData.estado?.trim()) {
+      errors.estado = 'Estado é obrigatório';
     }
     
     if (!formData.cep?.trim()) {
