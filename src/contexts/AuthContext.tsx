@@ -72,6 +72,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           
           // Garantir que o usuário existe na tabela usuarios
           await ensureUserInUsuariosTable(session.user.id, session.user.email);
+          
+          // Redirecionar para dashboard após login
+          if (window.location.pathname === '/') {
+            window.location.href = '/dashboard';
+          }
         }
       }
     );

@@ -54,8 +54,8 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   const handlePraticanteClick = () => {
     setIsMobileMenuOpen(false);
     if (user) {
-      console.log('🎯 Praticante navigation - user logged in, redirecting...');
-      navigate('/praticante');
+      console.log('🎯 Praticante navigation - user logged in, redirecting to dashboard...');
+      navigate('/dashboard');
     } else {
       console.log('🎯 Praticante navigation - user not logged in, showing login modal...');
       setIsLoginModalOpen(true);
@@ -96,30 +96,18 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <Home size={14} />
                     <span className="text-xs">Início</span>
                   </Link>
-                  <button onClick={handleHubNavigation} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  <button onClick={handlePraticanteClick} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <User size={14} />
                     <span className="text-xs">Praticante</span>
                   </button>
-                  <button onClick={handleHubNavigation} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  <Link to="/busca" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Building size={14} />
                     <span className="text-xs">Buscar Locais</span>
-                  </button>
-                  <button onClick={handleHubNavigation} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  </Link>
+                  <Link to="/busca" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Users size={14} />
                     <span className="text-xs">Buscar Grupos</span>
-                  </button>
-                  {user && (
-                    <>
-                      <Link to="/cadastro-estabelecimento" className="text-blue-600 hover:text-blue-700 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-md">
-                        <Building size={14} />
-                        <span className="text-xs font-medium">Cadastro Estabelecimento</span>
-                      </Link>
-                      <button onClick={handleCriarGrupoClick} className="text-green-600 hover:text-green-700 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5 bg-green-50 hover:bg-green-100 px-2 py-1 rounded-md">
-                        <Plus size={14} />
-                        <span className="text-xs font-medium">Criar Grupo</span>
-                      </button>
-                    </>
-                  )}
+                  </Link>
                 </nav>
 
                 {/* Mobile Menu Button */}
@@ -149,47 +137,23 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                           <span>Praticante</span>
                         </button>
                         
-                        <button 
-                          onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            handleHubNavigation;
-                          }}
+                        <Link 
+                          to="/busca"
                           className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                          onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Building size={20} />
                           <span>Buscar Locais</span>
-                        </button>
+                        </Link>
                         
-                        <button 
-                          onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            handleHubNavigation;
-                          }}
+                        <Link 
+                          to="/busca"
                           className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                          onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Users size={20} />
                           <span>Buscar Grupos</span>
-                        </button>
-
-                        {user && (
-                          <>
-                            <Link 
-                              to="/cadastro-estabelecimento"
-                              className="text-blue-600 hover:text-blue-700 transition-colors flex items-center space-x-3 text-lg text-left bg-blue-50 hover:bg-blue-100 p-2 rounded-md"
-                              onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                              <Building size={20} />
-                              <span>Cadastro Estabelecimento</span>
-                            </Link>
-                            <button 
-                              onClick={handleCriarGrupoClick}
-                              className="text-green-600 hover:text-green-700 transition-colors flex items-center space-x-3 text-lg text-left bg-green-50 hover:bg-green-100 p-2 rounded-md"
-                            >
-                              <Plus size={20} />
-                              <span>Criar Grupo</span>
-                            </button>
-                          </>
-                        )}
+                        </Link>
 
                         {user ? (
                           <div className="pt-6 border-t border-gray-200">

@@ -2,6 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Index from '@/pages/Index';
+import Dashboard from '@/pages/Dashboard';
 import Hub from '@/pages/Hub';
 import Busca from '@/pages/Busca';
 import Esportes from '@/pages/Esportes';
@@ -40,6 +41,7 @@ function App() {
           <div className="min-h-screen bg-background font-sans antialiased">
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/hub" element={<Hub />} />
               <Route path="/busca" element={<Busca />} />
               <Route path="/esportes" element={<Esportes />} />
