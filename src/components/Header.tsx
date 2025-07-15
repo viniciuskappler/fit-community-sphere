@@ -92,10 +92,6 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center space-x-6">
-                  <Link to="/" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
-                    <Home size={14} />
-                    <span className="text-xs">Início</span>
-                  </Link>
                   <button onClick={handlePraticanteClick} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <User size={14} />
                     <span className="text-xs">Praticante</span>
@@ -120,14 +116,6 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     </SheetTrigger>
                     <SheetContent side="right" className="w-80 bg-white">
                       <div className="flex flex-col space-y-6 mt-8">
-                        <Link 
-                          to="/" 
-                          className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          <Home size={20} />
-                          <span>Início</span>
-                        </Link>
                         
                         <button 
                           onClick={handlePraticanteClick}

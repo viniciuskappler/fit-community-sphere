@@ -12,10 +12,12 @@ import InteractiveMapSection from '../components/InteractiveMapSection';
 import CookieConsent from '../components/CookieConsent';
 import PromoCodeBanner from '../components/PromoCodeBanner';
 import { preloadHomepageImages } from '../utils/performance';
+import { useAuth } from '../contexts/AuthContext';
 
 const Index = () => {
   const [showTopBar, setShowTopBar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { user } = useAuth();
 
   useEffect(() => {
     // Preload critical images on component mount
@@ -65,7 +67,7 @@ const Index = () => {
       <SecondaryHeader isVisible={showTopBar} />
       <Header isSecondaryVisible={showTopBar} />
       <main className="pt-[120px]">
-        <HeroSection />
+        {!user && <HeroSection />}
         <RegistrationSection />
         <InteractiveMapSection />
         <SportsSection />

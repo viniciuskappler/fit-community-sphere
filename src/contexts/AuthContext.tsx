@@ -40,10 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .from('usuarios')
           .insert({
             id: userId,
-            code: 'SQUAD300',
-            name: userEmail?.split('@')[0] || '',
-            city: '',
-            sport: ''
+            squad_code: 'SQUAD300',
+            nome: userEmail?.split('@')[0] || '',
+            email: userEmail || ''
           });
 
         if (insertError) {
@@ -180,6 +179,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         console.log('✅ Signout successful');
         toast.success('Logout realizado com sucesso!');
+        // Redirecionar para a página inicial
+        window.location.href = '/';
       }
     } catch (error) {
       console.error('💥 Signout exception:', error);
