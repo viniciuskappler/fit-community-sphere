@@ -8,68 +8,44 @@ interface City {
   state_code: string;
 }
 
-interface State {
-  code: string;
-  name: string;
-}
-
-export const useCities = () => {
-  const [states, setStates] = useState<State[]>([]);
+export const useCities = (stateCode?: string) => {
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchStates = async () => {
+    if (!stateCode) {
+      setCities([]);
+      return;
+    }
+
+    const fetchCities = async () => {
+      setLoading(true);
+      setError(null);
+      
       try {
         const { data, error: fetchError } = await supabase
-          .from('states')
-          .select('code, name')
+          .from('cities')
+          .select('ibge_code, name, state_code')
+          .eq('state_code', stateCode)
           .order('name');
 
         if (fetchError) {
           throw fetchError;
         }
 
-        setStates(data || []);
+        setCities(data || []);
       } catch (err: any) {
-        console.error('Erro ao buscar estados:', err);
-        setError('Erro ao carregar estados');
+        console.error('Erro ao buscar cidades:', err);
+        setError('Erro ao carregar cidades');
+        setCities([]);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchStates();
-  }, []);
+    fetchCities();
+  }, [stateCode]);
 
-  const loadCities = async (stateCode: string) => {
-    if (!stateCode) {
-      setCities([]);
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('cities')
-        .select('ibge_code, name, state_code')
-        .eq('state_code', stateCode)
-        .order('name');
-
-      if (fetchError) {
-        throw fetchError;
-      }
-
-      setCities(data || []);
-    } catch (err: any) {
-      console.error('Erro ao buscar cidades:', err);
-      setError('Erro ao carregar cidades');
-      setCities([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { states, cities, loadCities, loading, error };
+  return { cities, loading, error };
 };

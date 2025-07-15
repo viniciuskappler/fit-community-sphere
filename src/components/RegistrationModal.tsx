@@ -294,6 +294,7 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
           <SquadBanner currentStep={currentStep} showOnStep={1} />
 
           <GoogleSignupSection
+            currentStep={currentStep}
             onGoogleSignup={handleGoogleSignup}
             googleLoading={googleLoading}
             errors={errors}
