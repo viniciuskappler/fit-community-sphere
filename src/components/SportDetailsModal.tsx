@@ -81,7 +81,7 @@ const SportDetailsModal: React.FC<SportDetailsModalProps> = ({ isOpen, onClose, 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-background border shadow-2xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-900 border shadow-2xl">
         {/* Header com gradiente da identidade visual */}
         <div className="bg-gradient-to-r from-primary via-primary-foreground to-accent p-6 -m-6 mb-0 rounded-t-lg">
           <DialogHeader>
