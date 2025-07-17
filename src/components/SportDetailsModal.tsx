@@ -94,7 +94,7 @@ const SportDetailsModal: React.FC<SportDetailsModalProps> = ({ isOpen, onClose, 
           </DialogHeader>
         </div>
         
-        <div className="space-y-6 p-6 bg-background">
+        <div className="space-y-6 p-6 bg-white dark:bg-gray-900">
           {/* Carrossel de Imagens */}
           <div className="relative">
             <div className="relative h-64 bg-muted rounded-lg overflow-hidden shadow-lg border">
