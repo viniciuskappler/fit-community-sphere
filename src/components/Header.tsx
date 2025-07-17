@@ -40,7 +40,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   const handleLogout = async () => {
     console.log('🚪 User logging out...');
     await signOut();
-    navigate('/');
+    // O signOut já redireciona para '/' automaticamente
   };
 
   const handleLogoClick = () => {
