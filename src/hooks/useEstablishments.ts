@@ -76,7 +76,7 @@ export const useEstablishments = () => {
         sports: est.modalidades || [],
         amenities: ['Estacionamento', 'Vestiário'], // Mock data
         operating_hours: '06h às 22h', // Mock data
-        instagram_url: est.instagram,
+        instagram_url: est.site, // Use site field for now since instagram field doesn't exist
         website_url: est.site,
         photos: []
       }));
