@@ -44,85 +44,91 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 group cursor-pointer">
-        <div className="relative h-48 overflow-hidden">
-          <img 
-            src={group.image_url} 
-            alt={group.nome}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-          <div className="absolute top-3 left-3">
-            <Badge variant="secondary" className="bg-background/80 text-foreground">
-              {group.modalidade}
-            </Badge>
-          </div>
-          <div 
-            className="absolute top-3 right-3 cursor-pointer"
-            onClick={handleSportImageClick}
-          >
-            <div className="relative">
-              <div className="w-16 h-16 bg-black/60 rounded-full flex items-center justify-center text-white text-xs font-semibold hover:bg-black/80 transition-colors">
-                <img 
-                  src={group.image_url} 
-                  alt={group.modalidade}
-                  className="w-full h-full object-cover rounded-full opacity-50"
-                />
-                <div className="absolute inset-0 flex items-center justify-center text-white font-bold text-xs">
-                  {group.modalidade}
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+        <CardContent className="p-0">
+          <div className="flex flex-col md:flex-row">
+            {/* Imagem do Grupo - Lado Esquerdo */}
+            <div className="w-full md:w-48 h-48 md:h-auto flex-shrink-0">
+              <img 
+                src={group.image_url} 
+                alt={group.nome}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
+            {/* Descrição do Grupo - Centro */}
+            <div className="flex-1 p-6">
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="font-semibold text-xl text-foreground">
+                      {group.nome}
+                    </h3>
+                    <Badge variant="secondary" className="ml-2">
+                      {group.modalidade}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {group.descricao}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4 flex-shrink-0" />
+                    <span>
+                      {group.bairro}, {group.cidade} - {group.estado}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    <span>{group.members} membros</span>
+                  </div>
+                  {group.horario && (
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      <span>{group.horario}</span>
+                    </div>
+                  )}
+                </div>
+
+                {group.dias_semana && group.dias_semana.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {group.dias_semana.map(dia => (
+                      <Badge key={dia} variant="outline" className="text-xs">
+                        {dia}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <Button 
+                    onClick={handleViewGroup}
+                    variant="outline"
+                    className="w-full md:w-auto"
+                  >
+                    Ver Grupo
+                  </Button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        
-        <CardContent className="p-4">
-          <div className="space-y-3">
-            <div>
-              <h3 className="font-semibold text-lg text-foreground truncate">
-                {group.nome}
-              </h3>
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {group.descricao}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Users className="h-4 w-4" />
-                <span>{group.members} membros</span>
-              </div>
-              {group.horario && (
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{group.horario}</span>
+            
+            {/* Imagem do Esporte - Lado Direito */}
+            <div className="w-full md:w-32 h-32 md:h-auto flex-shrink-0 relative">
+              <div 
+                className="w-full h-full bg-cover bg-center cursor-pointer group relative overflow-hidden"
+                style={{ backgroundImage: `url(${group.image_url})` }}
+                onClick={handleSportImageClick}
+              >
+                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/70 transition-colors" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-white font-bold text-sm text-center px-2">
+                    {group.modalidade}
+                  </span>
                 </div>
-              )}
-            </div>
-
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <MapPin className="h-4 w-4 flex-shrink-0" />
-              <span className="truncate">
-                {group.bairro}, {group.cidade} - {group.estado}
-              </span>
-            </div>
-
-            {group.dias_semana && group.dias_semana.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {group.dias_semana.map(dia => (
-                  <Badge key={dia} variant="outline" className="text-xs">
-                    {dia}
-                  </Badge>
-                ))}
               </div>
-            )}
-
-            <Button 
-              onClick={handleViewGroup}
-              className="w-full mt-3"
-              variant="outline"
-            >
-              Ver Grupo
-            </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
