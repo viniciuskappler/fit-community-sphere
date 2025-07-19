@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, User, Building, Users, LogOut, Menu, X, Plus, Shield } from 'lucide-react';
+import { Home, User, Building, Users, LogOut, Menu, X, Plus, Shield, Stethoscope } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdminCheck } from '@/hooks/useAdminCheck';
@@ -111,6 +111,10 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <Users size={14} />
                     <span className="text-xs">Buscar Grupos</span>
                   </Link>
+                  <Link to="/profissionais" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                    <Stethoscope size={14} />
+                    <span className="text-xs">Profissionais</span>
+                  </Link>
                   {isAdmin && (
                     <button onClick={handleAdminClick} className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                       <Shield size={14} />
@@ -154,6 +158,15 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                         >
                           <Users size={20} />
                           <span>Buscar Grupos</span>
+                        </Link>
+
+                        <Link 
+                          to="/profissionais"
+                          className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <Stethoscope size={20} />
+                          <span>Profissionais</span>
                         </Link>
 
                         {isAdmin && (
@@ -236,13 +249,13 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     // Usuário não logado - mostrar botões de cadastro e login
                     <>
                       <button 
-                        onClick={handleCadastrarClick}
+                        onClick={() => setIsModalOpen(true)}
                         className="bg-gradient-to-r from-orange-600 to-orange-400 text-white px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
                       >
                         <span>Cadastrar agora</span>
                       </button>
                       <button 
-                        onClick={handleLoginClick}
+                        onClick={() => setIsLoginModalOpen(true)}
                         className="bg-gradient-to-r from-gray-100 to-white text-gray-800 border border-gray-200 px-2 md:px-4 py-1 md:py-1.5 rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-xs font-medium"
                       >
                         <span>Fazer Login</span>
@@ -261,7 +274,10 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialType="supporter"
-        onSwitchToLogin={handleSwitchToLogin}
+        onSwitchToLogin={() => {
+          setIsModalOpen(false);
+          setIsLoginModalOpen(true);
+        }}
       />
       
       <LoginModal 

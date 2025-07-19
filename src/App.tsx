@@ -32,6 +32,7 @@ import TermosPrivacidade from "./pages/TermosPrivacidade";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import Profissionais from "./pages/Profissionais";
 import "./App.css";
 
 const queryClient = new QueryClient({
@@ -77,6 +78,7 @@ function App() {
               <Route path="/termos-privacidade" element={<TermosPrivacidade />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/profissionais" element={<Profissionais />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
