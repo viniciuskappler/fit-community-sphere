@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Home, User, Building, Users, LogOut, Menu, X, Plus, Shield } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,12 +7,13 @@ import AdminBadge from './AdminBadge';
 import RegistrationModal from './RegistrationModal';
 import LoginModal from './LoginModal';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import logoutUsuario from '@/utils/logout';
 
 const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { isAdmin } = useAdminCheck();
   const navigate = useNavigate();
 
@@ -39,8 +39,7 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
 
   const handleLogout = async () => {
     console.log('🚪 User logging out...');
-    await signOut();
-    // O signOut já redireciona para '/' automaticamente
+    await logoutUsuario();
   };
 
   const handleLogoClick = () => {
