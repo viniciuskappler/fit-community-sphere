@@ -32,7 +32,9 @@ const ProfessionalCard = ({ professional }: ProfessionalCardProps) => {
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-lg font-semibold text-gray-900">{professional.nome}</h3>
             {professional.verificado && (
-              <CheckCircle size={16} className="text-green-500" title="Profissional verificado" />
+              <span title="Profissional verificado">
+                <CheckCircle size={16} className="text-green-500" />
+              </span>
             )}
           </div>
           
