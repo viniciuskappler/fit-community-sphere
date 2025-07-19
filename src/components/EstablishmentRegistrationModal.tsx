@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
@@ -17,41 +16,88 @@ interface EstablishmentRegistrationModalProps {
   onClose: () => void;
 }
 
+interface FormData {
+  establishmentName: string;
+  slug: string;
+  corporateName: string;
+  cnpj: string;
+  description: string;
+  establishmentType: string;
+  address: string;
+  city: string;
+  state: string;
+  cep: string;
+  phone: string;
+  email: string;
+  operatingHours: string;
+  website: string;
+  instagram: string;
+  sports: string[];
+  amenities: string[];
+}
+
 const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegistrationModalProps) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     establishmentName: '',
     slug: '',
     corporateName: '',
     cnpj: '',
     description: '',
+    establishmentType: '',
     address: '',
     city: '',
     state: '',
     cep: '',
     phone: '',
-    email: ''
+    email: '',
+    operatingHours: '',
+    website: '',
+    instagram: '',
+    sports: [] as string[],
+    amenities: [] as string[]
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleInputChange = (field: string, value: string) => {
+  const sportsOptions = [
+    'Musculação', 'CrossFit', 'Pilates', 'Yoga', 'Natação', 'Hidroginástica',
+    'Vôlei de Praia', 'Beach Tennis', 'Futevôlei', 'Meditação', 'Aqua Fitness'
+  ];
+
+  const amenitiesOptions = [
+    'Estacionamento', 'Vestiário', 'Ar condicionado', 'Personal trainer',
+    'Equipamentos CrossFit', 'Área externa', 'Piscina aquecida', 'Sauna',
+    'Sala climatizada', 'Tapetes inclusos', 'Quadras de areia', 'Lanchonete'
+  ];
+
+  const establishmentTypes = ['Academia', 'Box CrossFit', 'Estúdio', 'Centro Aquático', 'Arena', 'Clínica'];
+
+  const handleInputChange = (field: string, value: string | string[]) => {
     if (field === 'establishmentName') {
       // Auto-generate slug from establishment name
-      const slug = value
+      const slug = typeof value === 'string' ? value
         .toLowerCase()
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
-        .trim();
+        .trim() : '';
       setFormData(prev => ({ ...prev, [field]: value, slug }));
     } else {
       setFormData(prev => ({ ...prev, [field]: value }));
     }
     if (error) setError('');
+  };
+
+  const handleMultiSelectToggle = (field: 'sports' | 'amenities', option: string) => {
+    const currentValues = formData[field];
+    const newValues = currentValues.includes(option)
+      ? currentValues.filter(item => item !== option)
+      : [...currentValues, option];
+    handleInputChange(field, newValues);
   };
 
   const handleSubmit = async () => {
@@ -72,17 +118,19 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
     try {
       console.log('Salvando estabelecimento no Supabase:', {
         user_id: user.id,
-        establishment_name: formData.establishmentName,
-        corporate_name: formData.corporateName,
+        nome: formData.establishmentName,
         cnpj: formData.cnpj || null,
-        description: formData.description || null,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
+        descricao: formData.description || null,
+        rua: formData.address,
+        cidade: formData.city,
+        estado: formData.state,
         cep: formData.cep,
-        phone: formData.phone,
+        telefone: formData.phone,
         email: formData.email,
-        slug: formData.slug || null
+        horario_funcionamento: formData.operatingHours || null,
+        site: formData.website || null,
+        modalidades: formData.sports,
+        estrutura: formData.amenities
       });
 
       const { data, error: supabaseError } = await supabase
@@ -97,7 +145,11 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
           estado: formData.state,
           cep: formData.cep,
           telefone: formData.phone,
-          email: formData.email
+          email: formData.email,
+          horario_funcionamento: formData.operatingHours || null,
+          site: formData.website || null,
+          modalidades: formData.sports,
+          estrutura: formData.amenities
         })
         .select()
         .single();
@@ -152,6 +204,23 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
               />
             </div>
             <div>
+              <Label htmlFor="establishmentType" className="text-sm font-medium text-gray-700">Tipo do Estabelecimento *</Label>
+              <select
+                id="establishmentType"
+                value={formData.establishmentType}
+                onChange={(e) => handleInputChange('establishmentType', e.target.value)}
+                className="mt-1 w-full p-2 border border-gray-300 rounded-md text-sm"
+              >
+                <option value="">Selecione o tipo</option>
+                {establishmentTypes.map(type => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
               <Label htmlFor="corporateName" className="text-sm font-medium text-gray-700">Razão Social *</Label>
               <Input
                 id="corporateName"
@@ -161,9 +230,6 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
                 placeholder="Ex: Fitness Pro Ltda"
               />
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="cnpj" className="text-sm font-medium text-gray-700">CNPJ</Label>
               <Input
@@ -174,6 +240,9 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
                 placeholder="00.000.000/0000-00"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Telefone *</Label>
               <Input
@@ -184,17 +253,50 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
                 placeholder="(11) 99999-9999"
               />
             </div>
+            <div>
+              <Label htmlFor="email" className="text-sm font-medium text-gray-700">E-mail *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="contato@estabelecimento.com"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="operatingHours" className="text-sm font-medium text-gray-700">Horário de Funcionamento</Label>
+              <Input
+                id="operatingHours"
+                value={formData.operatingHours}
+                onChange={(e) => handleInputChange('operatingHours', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="06h às 22h"
+              />
+            </div>
+            <div>
+              <Label htmlFor="website" className="text-sm font-medium text-gray-700">Site</Label>
+              <Input
+                id="website"
+                value={formData.website}
+                onChange={(e) => handleInputChange('website', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="https://estabelecimento.com.br"
+              />
+            </div>
           </div>
 
           <div>
-            <Label htmlFor="email" className="text-sm font-medium text-gray-700">E-mail *</Label>
+            <Label htmlFor="instagram" className="text-sm font-medium text-gray-700">Instagram</Label>
             <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleInputChange('email', e.target.value)}
+              id="instagram"
+              value={formData.instagram}
+              onChange={(e) => handleInputChange('instagram', e.target.value)}
               className="mt-1 text-sm"
-              placeholder="contato@estabelecimento.com"
+              placeholder="https://instagram.com/estabelecimento"
             />
           </div>
 
@@ -207,6 +309,48 @@ const EstablishmentRegistrationModal = ({ isOpen, onClose }: EstablishmentRegist
               className="mt-1 h-20 text-sm"
               placeholder="Descreva seu estabelecimento e os serviços oferecidos..."
             />
+          </div>
+
+          {/* Sports Multi-select */}
+          <div>
+            <Label className="text-sm font-medium text-gray-700">Modalidades Oferecidas</Label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {sportsOptions.map(sport => (
+                <button
+                  key={sport}
+                  type="button"
+                  onClick={() => handleMultiSelectToggle('sports', sport)}
+                  className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+                    formData.sports.includes(sport)
+                      ? 'bg-blue-500 text-white border-blue-500'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
+                  }`}
+                >
+                  {sport}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Amenities Multi-select */}
+          <div>
+            <Label className="text-sm font-medium text-gray-700">Estrutura Disponível</Label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {amenitiesOptions.map(amenity => (
+                <button
+                  key={amenity}
+                  type="button"
+                  onClick={() => handleMultiSelectToggle('amenities', amenity)}
+                  className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+                    formData.amenities.includes(amenity)
+                      ? 'bg-green-500 text-white border-green-500'
+                      : 'bg-white text-gray-700 border-gray-300 hover:border-green-300'
+                  }`}
+                >
+                  {amenity}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>
