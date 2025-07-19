@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -30,46 +31,32 @@ const Header = () => {
           Núcleo do Esporte
         </Link>
 
-      <nav className="hidden md:flex space-x-8">
-        <Link 
-          to="/" 
-          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
-        >
-          Início
-        </Link>
-        <AuthGuard>
+        <nav className="hidden md:flex space-x-8">
           <Link 
-            to="/hub" 
+            to="/praticante" 
             className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
           >
-            Hub
+            Praticante
           </Link>
-        </AuthGuard>
-        <Link 
-          to="/grupos" 
-          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
-        >
-          Grupos
-        </Link>
-        <Link 
-          to="/locais" 
-          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
-        >
-          Locais
-        </Link>
-        <Link 
-          to="/esportes" 
-          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
-        >
-          Modalidades
-        </Link>
-        <Link 
-          to="/profissionais" 
-          className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
-        >
-          Profissionais
-        </Link>
-      </nav>
+          <Link 
+            to="/locais" 
+            className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
+          >
+            Buscar Locais
+          </Link>
+          <Link 
+            to="/grupos" 
+            className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
+          >
+            Grupos
+          </Link>
+          <Link 
+            to="/profissionais" 
+            className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
+          >
+            Profissionais
+          </Link>
+        </nav>
 
         <div className="flex items-center space-x-4">
           {user ? (
@@ -83,7 +70,7 @@ const Header = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+                <DropdownMenuLabel>Olá, {user?.user_metadata?.full_name || 'Usuário'}</DropdownMenuLabel>
                 <DropdownMenuItem onClick={() => navigate('/dashboard')}>Dashboard</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate('/meus-referrals')}>Meus Referrals</DropdownMenuItem>
                 <DropdownMenuSeparator />

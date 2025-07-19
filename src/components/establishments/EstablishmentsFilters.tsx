@@ -4,7 +4,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+} from "@/components/ui/dropdown-menu"
 
 interface EstablishmentFilters {
   name: string;
@@ -60,7 +67,7 @@ const EstablishmentsFilters: React.FC<EstablishmentsFiltersProps> = ({
   };
 
   return (
-    <Card>
+    <Card className="mb-6">
       <CardContent className="p-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-semibold text-gray-900">Filtros</h3>
@@ -70,7 +77,7 @@ const EstablishmentsFilters: React.FC<EstablishmentsFiltersProps> = ({
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* Name Filter */}
           <div className="space-y-2">
             <Label htmlFor="name">Nome do Local</Label>
@@ -84,74 +91,96 @@ const EstablishmentsFilters: React.FC<EstablishmentsFiltersProps> = ({
 
           {/* City Filter */}
           <div className="space-y-2">
-            <Label htmlFor="city">Cidade</Label>
-            <select
-              id="city"
-              value={filters.city}
-              onChange={(e) => onFilterChange({ city: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            >
-              <option value="">Todas as cidades</option>
-              {cities.map(city => (
-                <option key={city} value={city}>{city}</option>
-              ))}
-            </select>
+            <Label>Cidade</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {filters.city || 'Todas as cidades'}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full">
+                <DropdownMenuItem onClick={() => onFilterChange({ city: '' })}>
+                  Todas as cidades
+                </DropdownMenuItem>
+                {cities.map(city => (
+                  <DropdownMenuItem key={city} onClick={() => onFilterChange({ city })}>
+                    {city}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Type Filter */}
           <div className="space-y-2">
-            <Label htmlFor="type">Tipo do Local</Label>
-            <select
-              id="type"
-              value={filters.type}
-              onChange={(e) => onFilterChange({ type: e.target.value })}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            >
-              <option value="">Todos os tipos</option>
-              {establishmentTypes.map(type => (
-                <option key={type} value={type}>{type}</option>
-              ))}
-            </select>
+            <Label>Tipo do Local</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {filters.type || 'Todos os tipos'}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full">
+                <DropdownMenuItem onClick={() => onFilterChange({ type: '' })}>
+                  Todos os tipos
+                </DropdownMenuItem>
+                {establishmentTypes.map(type => (
+                  <DropdownMenuItem key={type} onClick={() => onFilterChange({ type })}>
+                    {type}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        </div>
 
-        {/* Sports Filter */}
-        <div className="mt-4">
-          <Label className="text-sm font-medium">Modalidades</Label>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {sportsOptions.map(sport => (
-              <button
-                key={sport}
-                onClick={() => handleSportToggle(sport)}
-                className={`text-xs px-3 py-1 rounded-full border transition-colors ${
-                  filters.sports.includes(sport)
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-blue-300'
-                }`}
-              >
-                {sport}
-              </button>
-            ))}
+          {/* Sports Filter */}
+          <div className="space-y-2">
+            <Label>Modalidades</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {filters.sports.length > 0 ? `${filters.sports.length} selecionadas` : 'Modalidades'}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full">
+                {sportsOptions.map(sport => (
+                  <DropdownMenuCheckboxItem
+                    key={sport}
+                    checked={filters.sports.includes(sport)}
+                    onCheckedChange={() => handleSportToggle(sport)}
+                  >
+                    {sport}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-        </div>
 
-        {/* Amenities Filter */}
-        <div className="mt-4">
-          <Label className="text-sm font-medium">Estrutura</Label>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {amenitiesOptions.map(amenity => (
-              <button
-                key={amenity}
-                onClick={() => handleAmenityToggle(amenity)}
-                className={`text-xs px-3 py-1 rounded-full border transition-colors ${
-                  filters.amenities.includes(amenity)
-                    ? 'bg-green-500 text-white border-green-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:border-green-300'
-                }`}
-              >
-                {amenity}
-              </button>
-            ))}
+          {/* Amenities Filter */}
+          <div className="space-y-2">
+            <Label>Estrutura</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {filters.amenities.length > 0 ? `${filters.amenities.length} selecionadas` : 'Estrutura'}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full">
+                {amenitiesOptions.map(amenity => (
+                  <DropdownMenuCheckboxItem
+                    key={amenity}
+                    checked={filters.amenities.includes(amenity)}
+                    onCheckedChange={() => handleAmenityToggle(amenity)}
+                  >
+                    {amenity}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </CardContent>

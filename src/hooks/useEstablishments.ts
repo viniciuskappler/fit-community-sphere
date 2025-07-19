@@ -1,3 +1,4 @@
+
 // Hook simplificado para estabelecimentos
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,18 +13,27 @@ export interface EstablishmentWithDetails {
   telefone?: string;
   email?: string;
   imagem_url?: string;
-  establishment_name?: string;
-  city?: string;
-  state?: string;
-  description?: string;
+  establishment_name: string;
+  establishment_type: string;
+  city: string;
+  state: string;
+  neighborhood: string;
+  street: string;
+  number: string;
+  cep: string;
+  description: string;
   address?: string;
   phone?: string;
-  latitude?: number;
-  longitude?: number;
+  latitude: number;
+  longitude: number;
   averageRating: number;
   reviewCount: number;
   sports: string[];
-  photos: any[];
+  amenities: string[];
+  operating_hours: string;
+  instagram_url?: string;
+  website_url?: string;
+  photos: Array<{ photo_url: string; is_main: boolean }>;
 }
 
 export const useEstablishments = () => {
@@ -49,14 +59,25 @@ export const useEstablishments = () => {
       const transformedData: EstablishmentWithDetails[] = (data || []).map(est => ({
         ...est,
         establishment_name: est.nome,
+        establishment_type: 'Academia', // Mock data
         city: est.cidade,
         state: est.estado,
+        neighborhood: est.bairro || '',
+        street: est.rua || '',
+        number: est.numero || '',
+        cep: est.cep || '',
         description: est.descricao,
         address: `${est.rua || ''} ${est.numero || ''}, ${est.bairro || ''}`.trim(),
         phone: est.telefone,
+        latitude: est.latitude || -23.5505,
+        longitude: est.longitude || -46.6333,
         averageRating: 4.5, // Mock data
         reviewCount: 12, // Mock data
         sports: est.modalidades || [],
+        amenities: ['Estacionamento', 'Vestiário'], // Mock data
+        operating_hours: '06h às 22h', // Mock data
+        instagram_url: est.instagram,
+        website_url: est.site,
         photos: []
       }));
 

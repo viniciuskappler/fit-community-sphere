@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, MapPin } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useGeolocation } from '@/hooks/useGeolocation';
+import Header from '@/components/Header';
 import EstablishmentsList from '@/components/establishments/EstablishmentsList';
 import EstablishmentsFilters from '@/components/establishments/EstablishmentsFilters';
 import EstablishmentRegistrationModal from '@/components/EstablishmentRegistrationModal';
@@ -14,6 +16,7 @@ import { EstablishmentWithDetails } from '@/hooks/useEstablishments';
 const mockEstablishments: EstablishmentWithDetails[] = [
   {
     id: '1',
+    nome: 'Academia FitMax Elite',
     establishment_name: 'Academia FitMax Elite',
     establishment_type: 'Academia',
     city: 'São Paulo',
@@ -39,6 +42,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
   },
   {
     id: '2',
+    nome: 'CrossFit Box São Paulo',
     establishment_name: 'CrossFit Box São Paulo',
     establishment_type: 'Box CrossFit',
     city: 'São Paulo',
@@ -64,6 +68,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
   },
   {
     id: '3',
+    nome: 'Aqua Center Natação',
     establishment_name: 'Aqua Center Natação',
     establishment_type: 'Centro Aquático',
     city: 'São Paulo',
@@ -89,6 +94,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
   },
   {
     id: '4',
+    nome: 'Estúdio Yoga Zen',
     establishment_name: 'Estúdio Yoga Zen',
     establishment_type: 'Estúdio',
     city: 'Rio de Janeiro',
@@ -114,6 +120,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
   },
   {
     id: '5',
+    nome: 'Arena Vôlei Beach',
     establishment_name: 'Arena Vôlei Beach',
     establishment_type: 'Arena',
     city: 'Rio de Janeiro',
@@ -149,6 +156,7 @@ interface EstablishmentFilters {
 
 const Locais = () => {
   const { user } = useAuth();
+  const { location } = useGeolocation();
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [filteredEstablishments, setFilteredEstablishments] = useState(mockEstablishments);
   const [filters, setFilters] = useState<EstablishmentFilters>({
@@ -196,8 +204,13 @@ const Locais = () => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
+  // Calculate map center based on user location or default to São Paulo
+  const mapCenter = location ? { lat: location.lat, lng: location.lng } : { lat: -23.5505, lng: -46.6333 };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <Header />
+      
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -237,37 +250,36 @@ const Locais = () => {
           onFilterChange={handleFilterChange}
         />
 
-        {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          {/* Establishments List */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Estabelecimentos ({filteredEstablishments.length})
-            </h2>
-            <EstablishmentsList establishments={filteredEstablishments} />
+        {/* Map - Featured prominently */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            Mapa Interativo
+          </h2>
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <MapLibre
+              establishments={filteredEstablishments.map(est => ({
+                id: est.id,
+                establishment_name: est.establishment_name,
+                latitude: est.latitude,
+                longitude: est.longitude,
+                city: est.city,
+                state: est.state,
+                sports: est.sports,
+                photos: est.photos
+              }))}
+              center={mapCenter}
+              zoom={11}
+              height="600px"
+            />
           </div>
+        </div>
 
-          {/* Map */}
-          <div className="space-y-6">
-            <h2 className="text-xl font-semibold text-gray-900">Mapa</h2>
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-              <MapLibre
-                establishments={filteredEstablishments.map(est => ({
-                  id: est.id,
-                  establishment_name: est.establishment_name,
-                  latitude: est.latitude,
-                  longitude: est.longitude,
-                  city: est.city,
-                  state: est.state,
-                  sports: est.sports,
-                  photos: est.photos
-                }))}
-                center={{ lat: -23.5505, lng: -46.6333 }}
-                zoom={11}
-                height="600px"
-              />
-            </div>
-          </div>
+        {/* Establishments List */}
+        <div className="space-y-6">
+          <h2 className="text-xl font-semibold text-gray-900">
+            Estabelecimentos ({filteredEstablishments.length})
+          </h2>
+          <EstablishmentsList establishments={filteredEstablishments} />
         </div>
       </div>
 
