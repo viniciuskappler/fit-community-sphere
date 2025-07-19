@@ -12,7 +12,7 @@ interface AuthGuardProps {
   onClick?: () => void;
 }
 
-const AuthGuard = ({ children, redirectTo = '/hub', className, onClick }: AuthGuardProps) => {
+const AuthGuard = ({ children, redirectTo = '/', className, onClick }: AuthGuardProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
