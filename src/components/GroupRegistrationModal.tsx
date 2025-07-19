@@ -5,10 +5,14 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { Label } from './ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Checkbox } from './ui/checkbox';
 import { ArrowLeft, Check, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface GroupRegistrationModalProps {
   isOpen: boolean;
@@ -17,36 +21,55 @@ interface GroupRegistrationModalProps {
 
 const GroupRegistrationModal = ({ isOpen, onClose }: GroupRegistrationModalProps) => {
   const [formData, setFormData] = useState({
-    groupName: '',
-    slug: '',
-    corporateName: '',
-    description: '',
-    cities: '',
-    meetingPoint: '',
-    phone: '',
-    email: ''
+    nome: '',
+    descricao: '',
+    modalidade: '',
+    cidade: '',
+    estado: '',
+    bairro: '',
+    rua: '',
+    numero: '',
+    cep: '',
+    dias_semana: [] as string[],
+    horario: '',
+    publico_alvo: '',
+    tem_local_fisico: false,
+    latitude: null as number | null,
+    longitude: null as number | null
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleInputChange = (field: string, value: string) => {
-    if (field === 'groupName') {
-      // Auto-generate slug from group name
-      const slug = value
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
-      setFormData(prev => ({ ...prev, [field]: value, slug }));
-    } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
-    }
+  const modalidades = [
+    'Futebol', 'Futsal', 'Basquete', 'Vôlei', 'Tênis', 'Natação', 
+    'Corrida', 'Ciclismo', 'Crossfit', 'Musculação', 'Artes Marciais'
+  ];
+
+  const estados = [
+    'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
+    'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
+    'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+  ];
+
+  const diasSemana = [
+    'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'
+  ];
+
+  const handleInputChange = (field: string, value: any) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
     if (error) setError('');
+  };
+
+  const handleDiasSemanaChange = (dia: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      dias_semana: checked 
+        ? [...prev.dias_semana, dia]
+        : prev.dias_semana.filter(d => d !== dia)
+    }));
   };
 
   const handleSubmit = async () => {
@@ -56,7 +79,7 @@ const GroupRegistrationModal = ({ isOpen, onClose }: GroupRegistrationModalProps
     }
 
     // Validação básica
-    if (!formData.groupName || !formData.corporateName || !formData.email || !formData.phone || !formData.slug) {
+    if (!formData.nome || !formData.modalidade || !formData.cidade || !formData.estado) {
       setError('Por favor, preencha todos os campos obrigatórios');
       return;
     }
@@ -64,16 +87,67 @@ const GroupRegistrationModal = ({ isOpen, onClose }: GroupRegistrationModalProps
     setLoading(true);
     
     try {
-      // Aqui você implementaria a lógica de salvamento no Supabase
-      console.log('Salvando grupo esportivo:', formData);
-      
-      // Simular delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const { data, error: insertError } = await supabase
+        .from('grupos_esportivos')
+        .insert({
+          nome: formData.nome,
+          descricao: formData.descricao,
+          modalidade: formData.modalidade,
+          cidade: formData.cidade,
+          estado: formData.estado,
+          bairro: formData.bairro,
+          rua: formData.rua,
+          numero: formData.numero,
+          cep: formData.cep,
+          dias_semana: formData.dias_semana,
+          horario: formData.horario,
+          publico_alvo: formData.publico_alvo,
+          tem_local_fisico: formData.tem_local_fisico,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          user_id: user.id
+        })
+        .select()
+        .single();
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      toast({
+        title: 'Sucesso!',
+        description: 'Grupo cadastrado com sucesso!',
+      });
+
+      // Reset form
+      setFormData({
+        nome: '',
+        descricao: '',
+        modalidade: '',
+        cidade: '',
+        estado: '',
+        bairro: '',
+        rua: '',
+        numero: '',
+        cep: '',
+        dias_semana: [],
+        horario: '',
+        publico_alvo: '',
+        tem_local_fisico: false,
+        latitude: null,
+        longitude: null
+      });
+
       onClose();
-      navigate('/cadastro-finalizado-grupo');
-    } catch (err) {
+      
+    } catch (err: any) {
+      console.error('Error creating group:', err);
       setError('Erro ao cadastrar grupo esportivo. Tente novamente.');
+      toast({
+        title: 'Erro',
+        description: 'Erro ao cadastrar grupo esportivo. Tente novamente.',
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
@@ -100,98 +174,160 @@ const GroupRegistrationModal = ({ isOpen, onClose }: GroupRegistrationModalProps
         <div className="space-y-4 bg-white p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="groupName" className="text-sm font-medium text-gray-700">Nome do Grupo *</Label>
+              <Label htmlFor="nome" className="text-sm font-medium text-gray-700">Nome do Grupo *</Label>
               <Input
-                id="groupName"
-                value={formData.groupName}
-                onChange={(e) => handleInputChange('groupName', e.target.value)}
+                id="nome"
+                value={formData.nome}
+                onChange={(e) => handleInputChange('nome', e.target.value)}
                 className="mt-1 text-sm"
                 placeholder="Ex: Grupo de Corrida Matinal"
               />
             </div>
             <div>
-              <Label htmlFor="slug" className="text-sm font-medium text-gray-700">URL do Grupo *</Label>
-              <div className="mt-1 flex">
-                <span className="inline-flex items-center px-3 text-xs text-gray-500 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md">
-                  /grupo-esportivo/
-                </span>
-                <Input
-                  id="slug"
-                  value={formData.slug}
-                  onChange={(e) => handleInputChange('slug', e.target.value)}
-                  className="rounded-l-none text-sm"
-                  placeholder="grupo-corrida-matinal"
-                />
-              </div>
+              <Label htmlFor="modalidade" className="text-sm font-medium text-gray-700">Modalidade *</Label>
+              <Select value={formData.modalidade} onValueChange={(value) => handleInputChange('modalidade', value)}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="Selecione a modalidade" />
+                </SelectTrigger>
+                <SelectContent>
+                  {modalidades.map(modalidade => (
+                    <SelectItem key={modalidade} value={modalidade}>
+                      {modalidade}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           <div>
-            <Label htmlFor="corporateName" className="text-sm font-medium text-gray-700">Nome da Organização *</Label>
-            <Input
-              id="corporateName"
-              value={formData.corporateName}
-              onChange={(e) => handleInputChange('corporateName', e.target.value)}
-              className="mt-1 text-sm"
-              placeholder="Ex: Associação Esportiva"
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="phone" className="text-sm font-medium text-gray-700">Telefone *</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                className="mt-1 text-sm"
-                placeholder="(11) 99999-9999"
-              />
-            </div>
-            <div>
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">E-mail *</Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange('email', e.target.value)}
-                className="mt-1 text-sm"
-                placeholder="contato@grupo.com"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label htmlFor="description" className="text-sm font-medium text-gray-700">Descrição do Grupo</Label>
+            <Label htmlFor="descricao" className="text-sm font-medium text-gray-700">Descrição do Grupo</Label>
             <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
+              id="descricao"
+              value={formData.descricao}
+              onChange={(e) => handleInputChange('descricao', e.target.value)}
               className="mt-1 h-20 text-sm"
               placeholder="Descreva o grupo, atividades e objetivos..."
             />
           </div>
 
-          <div>
-            <Label htmlFor="cities" className="text-sm font-medium text-gray-700">Cidades de Atuação</Label>
-            <Input
-              id="cities"
-              value={formData.cities}
-              onChange={(e) => handleInputChange('cities', e.target.value)}
-              className="mt-1 text-sm"
-              placeholder="Ex: São Paulo, Guarulhos, Osasco"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="cidade" className="text-sm font-medium text-gray-700">Cidade *</Label>
+              <Input
+                id="cidade"
+                value={formData.cidade}
+                onChange={(e) => handleInputChange('cidade', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="Ex: São Paulo"
+              />
+            </div>
+            <div>
+              <Label htmlFor="estado" className="text-sm font-medium text-gray-700">Estado *</Label>
+              <Select value={formData.estado} onValueChange={(value) => handleInputChange('estado', value)}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder="UF" />
+                </SelectTrigger>
+                <SelectContent>
+                  {estados.map(estado => (
+                    <SelectItem key={estado} value={estado}>
+                      {estado}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="bairro" className="text-sm font-medium text-gray-700">Bairro</Label>
+              <Input
+                id="bairro"
+                value={formData.bairro}
+                onChange={(e) => handleInputChange('bairro', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="Ex: Vila Madalena"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="rua" className="text-sm font-medium text-gray-700">Rua</Label>
+              <Input
+                id="rua"
+                value={formData.rua}
+                onChange={(e) => handleInputChange('rua', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="Ex: Rua das Flores"
+              />
+            </div>
+            <div>
+              <Label htmlFor="numero" className="text-sm font-medium text-gray-700">Número</Label>
+              <Input
+                id="numero"
+                value={formData.numero}
+                onChange={(e) => handleInputChange('numero', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="123"
+              />
+            </div>
+            <div>
+              <Label htmlFor="cep" className="text-sm font-medium text-gray-700">CEP</Label>
+              <Input
+                id="cep"
+                value={formData.cep}
+                onChange={(e) => handleInputChange('cep', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="00000-000"
+              />
+            </div>
           </div>
 
           <div>
-            <Label htmlFor="meetingPoint" className="text-sm font-medium text-gray-700">Ponto de Encontro</Label>
-            <Input
-              id="meetingPoint"
-              value={formData.meetingPoint}
-              onChange={(e) => handleInputChange('meetingPoint', e.target.value)}
-              className="mt-1 text-sm"
-              placeholder="Local onde o grupo se reúne"
+            <Label className="text-sm font-medium text-gray-700">Dias da Semana</Label>
+            <div className="mt-1 grid grid-cols-2 md:grid-cols-4 gap-2">
+              {diasSemana.map(dia => (
+                <div key={dia} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={dia}
+                    checked={formData.dias_semana.includes(dia)}
+                    onCheckedChange={(checked) => handleDiasSemanaChange(dia, checked as boolean)}
+                  />
+                  <Label htmlFor={dia} className="text-sm">{dia}</Label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="horario" className="text-sm font-medium text-gray-700">Horário</Label>
+              <Input
+                id="horario"
+                value={formData.horario}
+                onChange={(e) => handleInputChange('horario', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="Ex: 19:00 - 21:00"
+              />
+            </div>
+            <div>
+              <Label htmlFor="publico_alvo" className="text-sm font-medium text-gray-700">Público-alvo</Label>
+              <Input
+                id="publico_alvo"
+                value={formData.publico_alvo}
+                onChange={(e) => handleInputChange('publico_alvo', e.target.value)}
+                className="mt-1 text-sm"
+                placeholder="Ex: Iniciantes, Intermediários"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="tem_local_fisico"
+              checked={formData.tem_local_fisico}
+              onCheckedChange={(checked) => handleInputChange('tem_local_fisico', checked)}
             />
+            <Label htmlFor="tem_local_fisico" className="text-sm">Tem local físico?</Label>
           </div>
         </div>
 

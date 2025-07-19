@@ -107,9 +107,9 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                     <Building size={14} />
                     <span className="text-xs">Buscar Locais</span>
                   </Link>
-                  <Link to="/busca" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
+                  <Link to="/grupos" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Users size={14} />
-                    <span className="text-xs">Buscar Grupos</span>
+                    <span className="text-xs">Grupos</span>
                   </Link>
                   <Link to="/profissionais" className="text-gray-600 hover:text-orange-500 transition-all duration-300 hover:scale-110 flex items-center space-x-1.5">
                     <Stethoscope size={14} />
@@ -152,12 +152,12 @@ const Header = ({ isSecondaryVisible }: { isSecondaryVisible: boolean }) => {
                         </Link>
                         
                         <Link 
-                          to="/busca"
+                          to="/grupos"
                           className="text-gray-600 hover:text-orange-500 transition-colors flex items-center space-x-3 text-lg text-left"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Users size={20} />
-                          <span>Buscar Grupos</span>
+                          <span>Grupos</span>
                         </Link>
 
                         <Link 

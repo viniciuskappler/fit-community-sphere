@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import CadastroRealizado from "./pages/CadastroRealizado";
 import Busca from "./pages/Busca";
+import Grupos from "./pages/Grupos";
 import Assinaturas from "./pages/Assinaturas";
 import CadastroEstabelecimento from "./pages/CadastroEstabelecimento";
 import CriarGrupoEsportivo from "./pages/CriarGrupoEsportivo";
@@ -60,6 +61,7 @@ function App() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/cadastro-realizado" element={<CadastroRealizado />} />
               <Route path="/busca" element={<Busca />} />
+              <Route path="/grupos" element={<Grupos />} />
               <Route path="/assinaturas" element={<Assinaturas />} />
               <Route path="/cadastro-estabelecimento" element={<CadastroEstabelecimento />} />
               <Route path="/criar-grupo-esportivo" element={<CriarGrupoEsportivo />} />
