@@ -9,12 +9,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="bg-gradient-to-br from-orange-600 to-orange-400 p-2 rounded-xl">
-                <div className="w-6 h-6 bg-white rounded-md flex items-center justify-center">
-                  <div className="w-3 h-3 bg-gradient-to-br from-orange-600 to-orange-400 rounded-full"></div>
-                </div>
-              </div>
+            <div className="flex items-center space-x-3 mb-4">
+              <img 
+                src="/lovable-uploads/9b9b532c-7139-4906-9879-199e107ef2a9.png" 
+                alt="Núcleo do Esporte" 
+                className="w-8 h-8"
+              />
               <span className="text-xl font-bold text-white">Núcleo do Esporte</span>
             </div>
             <p className="mb-6 max-w-md text-gray-300">
