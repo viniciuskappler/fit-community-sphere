@@ -89,7 +89,9 @@ const ProfessionalDetailModal = ({ professional, isOpen, onClose }: Professional
               <div className="flex items-center gap-2 mb-2">
                 <h2 className="text-2xl font-bold text-gray-900">{professional.nome}</h2>
                 {professional.verificado && (
-                  <CheckCircle size={20} className="text-green-500" title="Profissional verificado" />
+                  <span title="Profissional verificado">
+                    <CheckCircle size={20} className="text-green-500" />
+                  </span>
                 )}
               </div>
               
