@@ -1,21 +1,21 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle, MapPin, Navigation } from 'lucide-react';
+import { AlertTriangle, MapPin, Plus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGeolocation } from '@/hooks/useGeolocation';
+import { useEstablishments } from '@/hooks/useEstablishments';
 import Header from '@/components/Header';
+import SecondaryHeader from '@/components/SecondaryHeader';
+import Footer from '@/components/Footer';
 import EstablishmentsList from '@/components/establishments/EstablishmentsList';
 import EstablishmentsFilters from '@/components/establishments/EstablishmentsFilters';
 import EstablishmentRegistrationModal from '@/components/EstablishmentRegistrationModal';
-import MapLibre from '@/components/MapLibre';
 import { EstablishmentWithDetails } from '@/hooks/useEstablishments';
 
-// Mock data for establishments
+// Mock data for demonstration purposes
 const mockEstablishments: EstablishmentWithDetails[] = [
   {
-    id: '1',
+    id: 'mock-1',
     nome: 'Academia FitMax Elite',
     establishment_name: 'Academia FitMax Elite',
     establishment_type: 'Academia',
@@ -41,7 +41,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
     reviewCount: 156
   },
   {
-    id: '2',
+    id: 'mock-2',
     nome: 'CrossFit Box São Paulo',
     establishment_name: 'CrossFit Box São Paulo',
     establishment_type: 'Box CrossFit',
@@ -67,7 +67,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
     reviewCount: 89
   },
   {
-    id: '3',
+    id: 'mock-3',
     nome: 'Aqua Center Natação',
     establishment_name: 'Aqua Center Natação',
     establishment_type: 'Centro Aquático',
@@ -93,7 +93,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
     reviewCount: 203
   },
   {
-    id: '4',
+    id: 'mock-4',
     nome: 'Estúdio Yoga Zen',
     establishment_name: 'Estúdio Yoga Zen',
     establishment_type: 'Estúdio',
@@ -119,7 +119,7 @@ const mockEstablishments: EstablishmentWithDetails[] = [
     reviewCount: 78
   },
   {
-    id: '5',
+    id: 'mock-5',
     nome: 'Arena Vôlei Beach',
     establishment_name: 'Arena Vôlei Beach',
     establishment_type: 'Arena',
@@ -151,155 +151,85 @@ interface EstablishmentFilters {
   city: string;
   type: string;
   sports: string[];
-  amenities: string[];
 }
-
-// Calculate distance between two coordinates in km
-const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-  const R = 6371; // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  const distance = R * c;
-  return distance;
-};
 
 const Locais = () => {
   const { user } = useAuth();
-  const { location, error: locationError, isLocating, requestPermission } = useGeolocation();
+  const { establishments: realEstablishments, loading } = useEstablishments();
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
-  const [filteredEstablishments, setFilteredEstablishments] = useState(mockEstablishments);
+  const [filteredMockEstablishments, setFilteredMockEstablishments] = useState(mockEstablishments);
+  const [filteredRealEstablishments, setFilteredRealEstablishments] = useState(realEstablishments);
   const [filters, setFilters] = useState<EstablishmentFilters>({
     name: '',
     city: '',
     type: '',
-    sports: [],
-    amenities: []
+    sports: []
   });
 
-  // Apply filters and location-based filtering
+  // Apply filters to both mock and real establishments
   useEffect(() => {
-    let filtered = mockEstablishments;
+    const applyFilters = (establishments: EstablishmentWithDetails[]) => {
+      return establishments.filter(est => {
+        // Name filter
+        if (filters.name) {
+          const matchesName = est.establishment_name.toLowerCase().includes(filters.name.toLowerCase());
+          if (!matchesName) return false;
+        }
 
-    // Apply location filter first (50km radius)
-    if (location) {
-      filtered = filtered.filter(est => {
-        const distance = calculateDistance(
-          location.lat, 
-          location.lng, 
-          est.latitude, 
-          est.longitude
-        );
-        return distance <= 50; // 50km radius
+        // City filter
+        if (filters.city) {
+          if (est.city !== filters.city) return false;
+        }
+
+        // Type filter
+        if (filters.type) {
+          if (est.establishment_type !== filters.type) return false;
+        }
+
+        // Sports filter
+        if (filters.sports.length > 0) {
+          const hasSport = filters.sports.some(sport => 
+            est.sports.some(estSport => estSport.toLowerCase().includes(sport.toLowerCase()))
+          );
+          if (!hasSport) return false;
+        }
+
+        return true;
       });
-    }
+    };
 
-    // Apply other filters
-    if (filters.name) {
-      filtered = filtered.filter(est => 
-        est.establishment_name.toLowerCase().includes(filters.name.toLowerCase())
-      );
-    }
-
-    if (filters.city) {
-      filtered = filtered.filter(est => est.city === filters.city);
-    }
-
-    if (filters.type) {
-      filtered = filtered.filter(est => est.establishment_type === filters.type);
-    }
-
-    if (filters.sports.length > 0) {
-      filtered = filtered.filter(est => 
-        filters.sports.some(sport => est.sports.includes(sport))
-      );
-    }
-
-    if (filters.amenities.length > 0) {
-      filtered = filtered.filter(est => 
-        filters.amenities.some(amenity => est.amenities.includes(amenity))
-      );
-    }
-
-    setFilteredEstablishments(filtered);
-  }, [filters, location]);
+    setFilteredMockEstablishments(applyFilters(mockEstablishments));
+    setFilteredRealEstablishments(applyFilters(realEstablishments));
+  }, [filters, realEstablishments]);
 
   const handleFilterChange = (newFilters: Partial<EstablishmentFilters>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
-  // Calculate map center based on user location or default to São Paulo
-  const mapCenter = location ? { lat: location.lat, lng: location.lng } : { lat: -23.5505, lng: -46.6333 };
-
   return (
     <div className="min-h-screen bg-gray-50">
+      <SecondaryHeader isVisible={true} />
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pt-[140px]">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
             Locais de Prática
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explore estabelecimentos e espaços voltados ao esporte e bem-estar próximos de você
+            Explore estabelecimentos e espaços voltados ao esporte e bem-estar
           </p>
         </div>
 
-        {/* Location Status */}
-        {isLocating && (
-          <Alert className="mb-6 bg-blue-50 border-blue-200">
-            <Navigation className="h-4 w-4 text-blue-600" />
-            <AlertDescription className="text-blue-800">
-              Obtendo sua localização para mostrar estabelecimentos próximos...
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {locationError && (
-          <Alert className="mb-6 bg-yellow-50 border-yellow-200">
-            <AlertTriangle className="h-4 w-4 text-yellow-600" />
-            <AlertDescription className="text-yellow-800">
-              <div className="flex items-center justify-between">
-                <span>{locationError}</span>
-                <Button onClick={requestPermission} size="sm" variant="outline">
-                  Tentar novamente
-                </Button>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {location && (
-          <Alert className="mb-6 bg-green-50 border-green-200">
-            <MapPin className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800">
-              Mostrando estabelecimentos num raio de 50km da sua localização atual.
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Warning Banner */}
-        <Alert className="mb-6 bg-yellow-50 border-yellow-200">
-          <AlertTriangle className="h-4 w-4 text-yellow-600" />
-          <AlertDescription className="text-yellow-800">
-            <strong>Atenção:</strong> os locais exibidos aqui são fictícios, inseridos como exemplo visual. 
-            Você pode sugerir melhorias ou cadastrar um local real abaixo!
-          </AlertDescription>
-        </Alert>
-
-        {/* Create Establishment Button */}
+        {/* Create Establishment Button - Only for logged in users */}
         {user && (
           <div className="mb-6 text-center">
             <Button
               onClick={() => setShowRegistrationModal(true)}
               className="bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500 text-white"
             >
-              <MapPin className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 mr-2" />
               Cadastrar Local
             </Button>
           </div>
@@ -311,40 +241,66 @@ const Locais = () => {
           onFilterChange={handleFilterChange}
         />
 
-        {/* Map - Featured prominently */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Mapa Interativo
-          </h2>
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-            <MapLibre
-              establishments={filteredEstablishments.map(est => ({
-                id: est.id,
-                establishment_name: est.establishment_name,
-                latitude: est.latitude,
-                longitude: est.longitude,
-                city: est.city,
-                state: est.state,
-                sports: est.sports,
-                photos: est.photos
-              }))}
-              center={mapCenter}
-              zoom={location ? 12 : 11}
-              height="600px"
-            />
+        {/* Mock Establishments Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Locais para Teste ({filteredMockEstablishments.length})
+            </h2>
           </div>
+          
+          <Alert className="mb-6 bg-yellow-50 border-yellow-200">
+            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-yellow-800">
+              <strong>⚠️ Atenção:</strong> Os locais abaixo são fictícios, inseridos apenas para demonstração visual da plataforma.
+            </AlertDescription>
+          </Alert>
+
+          <EstablishmentsList establishments={filteredMockEstablishments} showMockWarning={true} />
         </div>
 
-        {/* Establishments List */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Estabelecimentos ({filteredEstablishments.length})
-            {location && <span className="text-sm font-normal text-gray-600 ml-2">(até 50km de distância)</span>}
-          </h2>
-          <EstablishmentsList establishments={filteredEstablishments} />
+        {/* Real Establishments Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              Locais Cadastrados ({filteredRealEstablishments.length})
+            </h2>
+          </div>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+            </div>
+          ) : filteredRealEstablishments.length > 0 ? (
+            <EstablishmentsList establishments={filteredRealEstablishments} showMockWarning={false} />
+          ) : (
+            <div className="text-center py-12 bg-white rounded-lg shadow-sm">
+              <MapPin className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Nenhum local encontrado
+              </h3>
+              <p className="text-gray-500 mb-4">
+                {filters.name || filters.city || filters.type || filters.sports.length > 0
+                  ? 'Tente ajustar os filtros para encontrar mais locais.'
+                  : 'Seja o primeiro a cadastrar um local na sua região!'
+                }
+              </p>
+              {user && (
+                <Button
+                  onClick={() => setShowRegistrationModal(true)}
+                  variant="outline"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Cadastrar Primeiro Local
+                </Button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
+      <Footer />
+      
       {/* Registration Modal */}
       <EstablishmentRegistrationModal
         isOpen={showRegistrationModal}

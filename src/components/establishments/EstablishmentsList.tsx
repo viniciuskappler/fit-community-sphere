@@ -1,13 +1,18 @@
 
 import React from 'react';
 import EstablishmentListCard from './EstablishmentListCard';
+import MockEstablishmentCard from './MockEstablishmentCard';
 import { EstablishmentWithDetails } from '@/hooks/useEstablishments';
 
 interface EstablishmentsListProps {
   establishments: EstablishmentWithDetails[];
+  showMockWarning?: boolean;
 }
 
-const EstablishmentsList: React.FC<EstablishmentsListProps> = ({ establishments }) => {
+const EstablishmentsList: React.FC<EstablishmentsListProps> = ({ 
+  establishments, 
+  showMockWarning = false 
+}) => {
   if (establishments.length === 0) {
     return (
       <div className="text-center py-8">
@@ -19,7 +24,11 @@ const EstablishmentsList: React.FC<EstablishmentsListProps> = ({ establishments 
   return (
     <div className="space-y-4">
       {establishments.map((establishment) => (
-        <EstablishmentListCard key={establishment.id} establishment={establishment} />
+        showMockWarning ? (
+          <MockEstablishmentCard key={establishment.id} establishment={establishment} />
+        ) : (
+          <EstablishmentListCard key={establishment.id} establishment={establishment} />
+        )
       ))}
     </div>
   );
