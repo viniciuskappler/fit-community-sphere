@@ -225,7 +225,7 @@ const Esportes = () => {
   return (
     <div className="min-h-screen bg-white">
       <SecondaryHeader isVisible={true} />
-      <Header isSecondaryVisible={true} />
+      <Header />
       <main className="pt-[120px]">
         <div className="w-full md:w-11/12 lg:w-3/4 mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center mb-8">

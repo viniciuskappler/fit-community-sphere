@@ -107,7 +107,7 @@ const Assinaturas = () => {
       ]
     },
     {
-      type: 'establishment', 
+      type: 'establishment',
       name: 'Estabelecimento',
       description: 'Para academias, clubes e locais que oferecem atividades esportivas',
       icon: Building2,
@@ -121,7 +121,7 @@ const Assinaturas = () => {
     },
     {
       type: 'group',
-      name: 'Grupo Esportivo', 
+      name: 'Grupo Esportivo',
       description: 'Para grupos, equipes e coletivos esportivos organizados',
       icon: Users,
       color: 'from-red-600 to-orange-500',
@@ -252,7 +252,7 @@ const Assinaturas = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header isSecondaryVisible={true} />
+      <Header />
       
       <div className="pt-24 pb-16">
         <div className="container mx-auto px-4">

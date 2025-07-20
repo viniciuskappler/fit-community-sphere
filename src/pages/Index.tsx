@@ -1,93 +1,63 @@
 
-import React, { useState, useEffect } from 'react';
-import Header from '../components/Header';
-import SecondaryHeader from '../components/SecondaryHeader';
-import HeroSection from '../components/HeroSection';
-import LoggedInHeroSection from '../components/LoggedInHeroSection';
-import SquadCounter from '../components/SquadCounter';
-import EventsKanban from '../components/EventsKanban';
-import SportsSection from '../components/SportsSection';
-import EventsSection from '../components/EventsSection';
-import EstablishmentsSection from '../components/EstablishmentsSection';
-import Footer from '../components/Footer';
-import RegistrationSection from '../components/RegistrationSection';
-import InteractiveMapSection from '../components/InteractiveMapSection';
-import CookieConsent from '../components/CookieConsent';
-import PromoCodeBanner from '../components/PromoCodeBanner';
-import { preloadHomepageImages } from '../utils/performance';
-import { useAuth } from '../contexts/AuthContext';
+import React from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import Header from '@/components/Header';
+import SecondaryHeader from '@/components/SecondaryHeader';
+import Footer from '@/components/Footer';
+import HeroSection from '@/components/HeroSection';
+import LoggedInHeroSection from '@/components/LoggedInHeroSection';
+import SportsSection from '@/components/SportsSection';
+import EstablishmentsSection from '@/components/EstablishmentsSection';
+import InteractiveMapSection from '@/components/InteractiveMapSection';
+import SmartRecommendations from '@/components/SmartRecommendations';
+import { useDevelopmentModal } from '@/hooks/useDevelopmentModal';
+import DevelopmentModal from '@/components/DevelopmentModal';
+import RegistrationSection from '@/components/RegistrationSection';
+import CookieConsent from '@/components/CookieConsent';
 
 const Index = () => {
-  const [showTopBar, setShowTopBar] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const { user } = useAuth();
-
-  useEffect(() => {
-    // Preload critical images on component mount
-    preloadHomepageImages();
-    
-    const controlNavbar = () => {
-      if (typeof window !== 'undefined') {
-        if (window.scrollY > lastScrollY && window.scrollY > 50) {
-          setShowTopBar(false);
-        } else {
-          setShowTopBar(true);
-        }
-        setLastScrollY(window.scrollY);
-      }
-    };
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', controlNavbar);
-      return () => {
-        window.removeEventListener('scroll', controlNavbar);
-      };
-    }
-  }, [lastScrollY]);
-
-  useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-in', 'animate-scale-in');
-        }
-      });
-    }, observerOptions);
-
-    const revealElements = document.querySelectorAll('.reveal-on-scroll');
-    revealElements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
+  const {
+    isModalOpen,
+    modalFeature,
+    closeModal,
+    openModal
+  } = useDevelopmentModal();
 
   return (
-    <div className="min-h-screen bg-white">
-      <SecondaryHeader isVisible={showTopBar} />
-      <Header isSecondaryVisible={showTopBar} />
+    <div className="min-h-screen bg-background">
+      <SecondaryHeader 
+        isVisible={true} 
+        developmentFeatures={[
+          { name: 'Mapa Interativo', key: 'interactive-map' },
+          { name: 'Sistema de Recomendações', key: 'recommendations' },
+          { name: 'Localização Automática', key: 'auto-location' },
+          { name: 'Filtros Avançados', key: 'advanced-filters' },
+          { name: 'Notificações Push', key: 'push-notifications' }
+        ]}
+        onFeatureClick={openModal}
+      />
+      <Header />
+      
       <main className="pt-[120px]">
-        {user ? (
-          <>
-            <LoggedInHeroSection />
-            <SquadCounter />
-            <EventsKanban />
-          </>
-        ) : (
-          <>
-            <HeroSection />
-            <RegistrationSection />
-            <InteractiveMapSection />
-            <SportsSection />
-            <EventsSection />
-            <EstablishmentsSection />
-          </>
-        )}
+        {user ? <LoggedInHeroSection /> : <HeroSection />}
+        
+        <SportsSection />
+        <EstablishmentsSection />
+        <InteractiveMapSection />
+        <SmartRecommendations />
+        
+        {!user && <RegistrationSection />}
       </main>
+
       <Footer />
+      
+      <DevelopmentModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        feature={modalFeature}
+      />
+      
       <CookieConsent />
     </div>
   );

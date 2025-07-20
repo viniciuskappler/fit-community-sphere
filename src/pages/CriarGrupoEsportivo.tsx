@@ -165,7 +165,7 @@ const CriarGrupoEsportivo = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header isSecondaryVisible={false} />
+      <Header />
       <SecondaryHeader isVisible={false} />
       
       <div className="container mx-auto px-4 py-8">

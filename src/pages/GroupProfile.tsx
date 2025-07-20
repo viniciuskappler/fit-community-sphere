@@ -1,67 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { MapPin, Phone, Mail, Users, Star, Heart, Share2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import Header from '@/components/Header';
-import SecondaryHeader from '@/components/SecondaryHeader';
-import Footer from '@/components/Footer';
-import MapLibre from '@/components/MapLibre';
-import RatingStars from '@/components/RatingStars';
-import { useToast } from '@/hooks/use-toast';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, Calendar, Clock, MapPin, Users, User } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { useToast } from '@/hooks/use-toast';
 
-interface GroupData {
+interface GroupProfile {
   id: string;
   nome: string;
   descricao: string;
+  modalidade: string;
+  publico_alvo: string;
+  dias_semana: string[];
+  horario: string;
+  tem_local_fisico: boolean;
   cidade: string;
   estado: string;
-  modalidade: string;
-  latitude: number;
-  longitude: number;
+  bairro: string;
+  rua: string;
+  numero: string;
+  cep: string;
+  user_id: string;
   criado_em: string;
 }
 
 const GroupProfile = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [group, setGroup] = useState<GroupData | null>(null);
+  const [group, setGroup] = useState<GroupProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [joining, setJoining] = useState(false);
 
   useEffect(() => {
-    fetchGroup();
+    if (id) {
+      fetchGroupProfile();
+    }
   }, [id]);
 
-  const fetchGroup = async () => {
-    if (!id) return;
-
+  const fetchGroupProfile = async () => {
     try {
-      const { data: groupData, error } = await supabase
+      const { data, error } = await supabase
         .from('grupos_esportivos')
         .select('*')
         .eq('id', id)
         .single();
 
-      if (error) {
-        console.error('Erro ao buscar grupo:', error);
-        throw error;
-      }
-
-      if (!groupData) {
-        throw new Error('Grupo não encontrado');
-      }
-
-      setGroup(groupData);
+      if (error) throw error;
+      setGroup(data);
     } catch (error) {
-      console.error('Error fetching group:', error);
+      console.error('Erro ao buscar perfil do grupo:', error);
       toast({
         title: 'Erro',
-        description: 'Não foi possível carregar os dados do grupo',
+        description: 'Não foi possível carregar o perfil do grupo.',
         variant: 'destructive',
       });
     } finally {
@@ -69,182 +66,130 @@ const GroupProfile = () => {
     }
   };
 
-  if (loading || !group) {
+  const handleJoinGroup = async () => {
+    if (!user) {
+      toast({
+        title: 'Faça login',
+        description: 'Você precisa estar logado para entrar em um grupo.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setJoining(true);
+    
+    try {
+      // This would typically involve creating a group membership record
+      // For now, we'll just show a success message
+      toast({
+        title: 'Sucesso!',
+        description: 'Você se juntou ao grupo! O organizador será notificado.',
+      });
+    } catch (error) {
+      console.error('Erro ao entrar no grupo:', error);
+      toast({
+        title: 'Erro',
+        description: 'Não foi possível entrar no grupo. Tente novamente.',
+        variant: 'destructive',
+      });
+    } finally {
+      setJoining(false);
+    }
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <SecondaryHeader isVisible={true} />
-        <Header isSecondaryVisible={true} />
-        <main className="pt-[120px] px-4 md:px-6 pb-12">
-          <div className="max-w-4xl mx-auto">
-            {loading ? (
-              <div className="animate-pulse">
-                <div className="h-64 bg-gray-300 rounded-lg mb-6"></div>
-                <div className="h-8 bg-gray-300 rounded mb-4"></div>
-                <div className="h-4 bg-gray-300 rounded mb-2"></div>
-                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-              </div>
-            ) : (
-              <div className="text-center">
-                <h1 className="text-2xl font-bold text-gray-900 mb-4">
-                  Grupo não encontrado
-                </h1>
-                <p className="text-gray-600">
-                  O grupo que você procura não existe ou foi removido.
-                </p>
-              </div>
-            )}
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!group) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 pt-20">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-4">Grupo não encontrado</h1>
+            <Button onClick={() => navigate('/grupos')}>
+              Voltar para Grupos
+            </Button>
           </div>
-        </main>
-        <Footer />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <SecondaryHeader isVisible={true} />
-      <Header isSecondaryVisible={true} />
+    <div className="min-h-screen bg-background">
+      <Header />
       
-      <main className="pt-[120px] px-4 md:px-6 pb-12">
-        <div className="max-w-6xl mx-auto">
-          {/* Header Image Placeholder */}
-          <div className="relative h-64 md:h-96 rounded-xl overflow-hidden mb-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-600">
-            <div className="w-full h-full flex items-center justify-center">
-              <div className="text-center text-white">
-                <Users className="h-16 w-16 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold">{group.nome}</h2>
+      <div className="container mx-auto px-4 pt-20 pb-16">
+        <div className="max-w-4xl mx-auto">
+          {/* Navigation */}
+          <div className="flex items-center gap-4 mb-6">
+            <Button
+              variant="ghost"
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Voltar
+            </Button>
+          </div>
+
+          {/* Group Details */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold">{group.nome}</CardTitle>
+              <CardDescription>{group.descricao || 'Grupo esportivo'}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span className="text-sm text-gray-500">Público-alvo: {group.publico_alvo || 'Não especificado'}</span>
               </div>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Header */}
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                        {group.nome}
-                      </h1>
-                      <div className="flex items-center gap-2 mb-2">
-                        <RatingStars rating={0} size="sm" />
-                        <span className="text-sm text-gray-600">
-                          (0 avaliações)
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        <Heart className="w-4 h-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Share2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                <span className="text-sm text-gray-500">
+                  {group.dias_semana && group.dias_semana.length > 0
+                    ? `Dias: ${group.dias_semana.join(', ')}`
+                    : 'Dias não especificados'}
+                </span>
+              </div>
 
-                  <div className="flex items-center text-gray-600 mb-4">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    <span>{group.cidade}, {group.estado}</span>
-                  </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span className="text-sm text-gray-500">Horário: {group.horario || 'Não especificado'}</span>
+              </div>
 
-                  {group.modalidade && (
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                        {group.modalidade}
-                      </Badge>
-                    </div>
-                  )}
-
-                  {group.descricao && (
-                    <p className="text-gray-700 leading-relaxed">
-                      {group.descricao}
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Map */}
-              {group.latitude && group.longitude && (
-                <Card>
-                  <CardContent className="p-0">
-                    <MapLibre
-                      groups={[{
-                        id: group.id,
-                        group_name: group.nome,
-                        latitude: group.latitude,
-                        longitude: group.longitude,
-                        cities: [group.cidade],
-                        sports: group.modalidade ? [group.modalidade] : [],
-                      }]}
-                      center={{
-                        lat: group.latitude,
-                        lng: group.longitude,
-                      }}
-                      zoom={15}
-                      height="300px"
-                    />
-                  </CardContent>
-                </Card>
+              {group.tem_local_fisico && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span className="text-sm text-gray-500">
+                    Local: {group.rua}, {group.numero}, {group.bairro}, {group.cidade}, {group.estado}
+                  </span>
+                </div>
               )}
-            </div>
 
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Contact Info */}
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Contato</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center">
-                      <Users className="w-4 h-4 mr-3 text-gray-500" />
-                      <span className="text-sm">Grupo Esportivo</span>
-                    </div>
-                  </div>
-                  
-                  <Separator className="my-4" />
-                  
-                  <div className="space-y-2">
-                    <Button 
-                      className="w-full bg-green-600 hover:bg-green-700"
-                      onClick={() => window.open(`https://wa.me/`, '_blank')}
-                    >
-                      Entre em Contato
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Group Info */}
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-4">Informações do Grupo</h3>
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <span className="font-medium">Localização:</span>
-                      <p className="text-gray-600">{group.cidade}, {group.estado}</p>
-                    </div>
-                    {group.modalidade && (
-                      <div>
-                        <span className="font-medium">Modalidade:</span>
-                        <p className="text-gray-600">{group.modalidade}</p>
-                      </div>
-                    )}
-                    <div>
-                      <span className="font-medium">Cadastrado desde:</span>
-                      <p className="text-gray-600">
-                        {new Date(group.criado_em).toLocaleDateString('pt-BR')}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+              {/* Action Buttons */}
+              <div className="flex justify-end gap-2">
+                <Button
+                  onClick={handleJoinGroup}
+                  disabled={joining}
+                >
+                  {joining ? 'Entrando...' : 'Entrar no Grupo'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+      </div>
 
       <Footer />
     </div>

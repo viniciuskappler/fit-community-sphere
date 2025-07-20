@@ -25,7 +25,7 @@ const Busca = () => {
   return (
     <div className="min-h-screen bg-background">
       <SecondaryHeader isVisible={true} />
-      <Header isSecondaryVisible={true} />
+      <Header />
       <main className="pt-[120px] px-6 pb-12">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">

@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useNavigate } from 'react-router-dom';
-import AuthGuard from './AuthGuard';
 
 const Header = () => {
   const { user, signOut } = useAuth();

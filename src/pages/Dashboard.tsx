@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -33,7 +34,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <SecondaryHeader isVisible={true} />
-      <Header isSecondaryVisible={true} />
+      <Header />
       
       <main className="pt-[120px] px-4 md:px-6 pb-12">
         <div className="max-w-7xl mx-auto">
