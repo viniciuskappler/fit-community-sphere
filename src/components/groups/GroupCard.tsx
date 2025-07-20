@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Users, Calendar } from 'lucide-react';
+import { MapPin, Users, Calendar, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import GroupDetailModal from './GroupDetailModal';
 import SportInfoModal from './SportInfoModal';
@@ -42,9 +42,22 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
     setShowSportInfo(true);
   };
 
+  // Check if this is a mock group (grupos with IDs 1-6 are mock data)
+  const isMockGroup = ['1', '2', '3', '4', '5', '6'].includes(group.id);
+
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 relative">
+        {/* Mock Group Badge */}
+        {isMockGroup && (
+          <div className="absolute top-2 right-2 z-10">
+            <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 border-yellow-300 flex items-center gap-1">
+              <AlertTriangle className="h-3 w-3" />
+              Grupo de demonstração
+            </Badge>
+          </div>
+        )}
+
         <CardContent className="p-0">
           <div className="flex flex-col md:flex-row">
             {/* Imagem do Grupo - Lado Esquerdo */}

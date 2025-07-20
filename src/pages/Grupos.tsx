@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import SecondaryHeader from '@/components/SecondaryHeader';
 import Footer from '@/components/Footer';
 import GroupsList from '@/components/groups/GroupsList';
+import GroupRegistrationModal from '@/components/GroupRegistrationModal';
 
 const Grupos = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Grupos = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedSport, setSelectedSport] = useState('');
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,7 +36,7 @@ const Grupos = () => {
           {user && (
             <div className="flex justify-center mb-8">
               <Button
-                onClick={() => navigate('/criar-grupo-esportivo')}
+                onClick={() => setShowRegistrationModal(true)}
                 className="flex items-center gap-2"
               >
                 <Plus className="h-4 w-4" />
@@ -51,6 +53,11 @@ const Grupos = () => {
         </div>
       </main>
       <Footer />
+
+      <GroupRegistrationModal
+        isOpen={showRegistrationModal}
+        onClose={() => setShowRegistrationModal(false)}
+      />
     </div>
   );
 };
