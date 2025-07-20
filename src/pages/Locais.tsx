@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -151,6 +152,7 @@ interface EstablishmentFilters {
   city: string;
   type: string;
   sports: string[];
+  amenities: string[];
 }
 
 const Locais = () => {
@@ -163,7 +165,8 @@ const Locais = () => {
     name: '',
     city: '',
     type: '',
-    sports: []
+    sports: [],
+    amenities: []
   });
 
   // Apply filters to both mock and real establishments
@@ -192,6 +195,14 @@ const Locais = () => {
             est.sports.some(estSport => estSport.toLowerCase().includes(sport.toLowerCase()))
           );
           if (!hasSport) return false;
+        }
+
+        // Amenities filter
+        if (filters.amenities.length > 0) {
+          const hasAmenity = filters.amenities.some(amenity => 
+            est.amenities.some(estAmenity => estAmenity.toLowerCase().includes(amenity.toLowerCase()))
+          );
+          if (!hasAmenity) return false;
         }
 
         return true;
@@ -280,7 +291,7 @@ const Locais = () => {
                 Nenhum local encontrado
               </h3>
               <p className="text-gray-500 mb-4">
-                {filters.name || filters.city || filters.type || filters.sports.length > 0
+                {filters.name || filters.city || filters.type || filters.sports.length > 0 || filters.amenities.length > 0
                   ? 'Tente ajustar os filtros para encontrar mais locais.'
                   : 'Seja o primeiro a cadastrar um local na sua região!'
                 }
