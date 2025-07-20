@@ -1,6 +1,7 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import ProfessionalCard from './ProfessionalCard';
+import ProfessionalDetailModal from './ProfessionalDetailModal';
 
 interface FiltersProps {
   filters: {
@@ -11,6 +12,9 @@ interface FiltersProps {
 }
 
 const ProfessionalsList = ({ filters }: FiltersProps) => {
+  const [selectedProfessional, setSelectedProfessional] = useState<any>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const mockProfessionals = [
     {
       id: '1',
@@ -20,8 +24,15 @@ const ProfessionalsList = ({ filters }: FiltersProps) => {
       modalidades: ['Musculação', 'Crossfit', 'Corrida'],
       cidade: 'São Paulo',
       estado: 'SP',
+      rua: 'Rua das Flores',
+      numero: '123',
+      bairro: 'Jardins',
       bio: 'Personal trainer com 10 anos de experiência, especializado em emagrecimento e ganho de massa muscular.',
-      verificado: true
+      telefone: '(11) 99999-9999',
+      email: 'carlos.silva@email.com',
+      instagram: '@carlospt',
+      verificado: true,
+      data_nascimento: '1985-03-15'
     },
     {
       id: '2',
@@ -31,8 +42,15 @@ const ProfessionalsList = ({ filters }: FiltersProps) => {
       modalidades: ['Reabilitação', 'Pilates', 'RPG'],
       cidade: 'Rio de Janeiro',
       estado: 'RJ',
+      rua: 'Avenida Copacabana',
+      numero: '456',
+      bairro: 'Copacabana',
       bio: 'Fisioterapeuta especializada em lesões esportivas e reabilitação de atletas.',
-      verificado: true
+      telefone: '(21) 88888-8888',
+      email: 'ana.santos@email.com',
+      instagram: '@anafisio',
+      verificado: true,
+      data_nascimento: '1990-07-22'
     },
     {
       id: '3',
@@ -42,8 +60,15 @@ const ProfessionalsList = ({ filters }: FiltersProps) => {
       modalidades: ['Futebol', 'Vôlei', 'Basquete'],
       cidade: 'Belo Horizonte',
       estado: 'MG',
+      rua: 'Rua do Esporte',
+      numero: '789',
+      bairro: 'Savassi',
       bio: 'Preparador físico com experiência em clubes profissionais, focado em performance esportiva.',
-      verificado: false
+      telefone: '(31) 77777-7777',
+      email: 'pedro.oliveira@email.com',
+      instagram: '@pedroprep',
+      verificado: false,
+      data_nascimento: '1982-11-10'
     },
     {
       id: '4',
@@ -53,8 +78,15 @@ const ProfessionalsList = ({ filters }: FiltersProps) => {
       modalidades: ['Nutrição', 'Suplementação', 'Emagrecimento'],
       cidade: 'Salvador',
       estado: 'BA',
+      rua: 'Rua da Saúde',
+      numero: '321',
+      bairro: 'Barra',
       bio: 'Nutricionista especializada em nutrição esportiva e estratégias de performance.',
-      verificado: true
+      telefone: '(71) 66666-6666',
+      email: 'mariana.costa@email.com',
+      instagram: '@marinutri',
+      verificado: true,
+      data_nascimento: '1988-01-05'
     },
     {
       id: '5',
@@ -64,8 +96,15 @@ const ProfessionalsList = ({ filters }: FiltersProps) => {
       modalidades: ['Coaching', 'Preparação Mental', 'Motivação'],
       cidade: 'Brasília',
       estado: 'DF',
+      rua: 'SQN 123',
+      numero: '45',
+      bairro: 'Asa Norte',
       bio: 'Psicólogo esportivo com foco em preparação mental para competições e superação de limites.',
-      verificado: true
+      telefone: '(61) 55555-5555',
+      email: 'rafael.mendes@email.com',
+      instagram: '@rafaelpsi',
+      verificado: true,
+      data_nascimento: '1986-09-18'
     },
     {
       id: '6',
@@ -75,8 +114,15 @@ const ProfessionalsList = ({ filters }: FiltersProps) => {
       modalidades: ['Natação', 'Hidroginástica', 'Aqua Fitness'],
       cidade: 'Curitiba',
       estado: 'PR',
+      rua: 'Rua das Águas',
+      numero: '678',
+      bairro: 'Centro',
       bio: 'Professora de educação física especializada em atividades aquáticas para todas as idades.',
-      verificado: false
+      telefone: '(41) 44444-4444',
+      email: 'juliana.ferreira@email.com',
+      instagram: '@juliaquatica',
+      verificado: false,
+      data_nascimento: '1992-04-30'
     }
   ];
 
@@ -88,12 +134,34 @@ const ProfessionalsList = ({ filters }: FiltersProps) => {
     return matchesCidade && matchesEspecialidade && matchesModalidade;
   });
 
+  const handleProfessionalClick = (professional: any) => {
+    setSelectedProfessional(professional);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedProfessional(null);
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {filteredProfessionals.map((professional) => (
-        <ProfessionalCard key={professional.id} professional={professional} />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredProfessionals.map((professional) => (
+          <ProfessionalCard 
+            key={professional.id} 
+            professional={professional}
+            onClick={() => handleProfessionalClick(professional)}
+          />
+        ))}
+      </div>
+
+      <ProfessionalDetailModal
+        professional={selectedProfessional}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+    </>
   );
 };
 

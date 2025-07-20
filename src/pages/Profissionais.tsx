@@ -9,10 +9,12 @@ import SecondaryHeader from '@/components/SecondaryHeader';
 import Footer from '@/components/Footer';
 import ProfessionalsFilters from '@/components/professionals/ProfessionalsFilters';
 import ProfessionalsList from '@/components/professionals/ProfessionalsList';
+import ProfessionalRegistrationModal from '@/components/professionals/ProfessionalRegistrationModal';
 
 const Profissionais = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [filters, setFilters] = useState({
     cidade: '',
     especialidade: '',
@@ -21,6 +23,14 @@ const Profissionais = () => {
 
   const handleFiltersChange = (newFilters: typeof filters) => {
     setFilters(newFilters);
+  };
+
+  const handleOpenRegistration = () => {
+    setShowRegistrationModal(true);
+  };
+
+  const handleCloseRegistration = () => {
+    setShowRegistrationModal(false);
   };
 
   return (
@@ -41,8 +51,8 @@ const Profissionais = () => {
           {user && (
             <div className="flex justify-center mb-8">
               <Button
-                onClick={() => navigate('/cadastro-profissional')}
-                className="flex items-center gap-2"
+                onClick={handleOpenRegistration}
+                className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-orange-400 hover:from-orange-700 hover:to-orange-500"
               >
                 <Plus className="h-4 w-4" />
                 Cadastrar como Profissional
@@ -55,6 +65,11 @@ const Profissionais = () => {
         </div>
       </main>
       <Footer />
+
+      <ProfessionalRegistrationModal
+        isOpen={showRegistrationModal}
+        onClose={handleCloseRegistration}
+      />
     </div>
   );
 };

@@ -16,17 +16,20 @@ interface ProfessionalCardProps {
     bio: string;
     verificado: boolean;
   };
+  onClick: () => void;
 }
 
-const ProfessionalCard = ({ professional }: ProfessionalCardProps) => {
+const ProfessionalCard = ({ professional, onClick }: ProfessionalCardProps) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-300">
       {/* Header */}
       <div className="flex items-start gap-4 mb-4">
-        <Avatar className="w-16 h-16">
-          <AvatarImage src={professional.imagem_url} alt={professional.nome} />
-          <AvatarFallback>{professional.nome.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-        </Avatar>
+        <button onClick={onClick} className="group">
+          <Avatar className="w-16 h-16 group-hover:ring-2 group-hover:ring-orange-300 transition-all">
+            <AvatarImage src={professional.imagem_url} alt={professional.nome} />
+            <AvatarFallback>{professional.nome.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+          </Avatar>
+        </button>
         
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
