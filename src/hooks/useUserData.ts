@@ -1,3 +1,4 @@
+
 // Hook simplificado para dados do usuário - usando tabela usuarios
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +16,7 @@ export interface UserProfile {
   city: string;
   state: string;
   cep: string;
+  photo_url?: string;
   created_at: string;
 }
 
@@ -70,6 +72,7 @@ export const useUserData = () => {
           city: userData.cidade || '',
           state: userData.estado || '',
           cep: userData.cep || '',
+          photo_url: userData.foto_url || null,
           created_at: userData.criado_em || ''
         };
         setProfile(mappedProfile);
@@ -123,6 +126,7 @@ export const useUserData = () => {
       if (updatedData.city !== undefined) userData.cidade = updatedData.city;
       if (updatedData.state !== undefined) userData.estado = updatedData.state;
       if (updatedData.cep !== undefined) userData.cep = updatedData.cep;
+      if (updatedData.photo_url !== undefined) userData.foto_url = updatedData.photo_url;
 
       const { error } = await supabase
         .from('usuarios')
