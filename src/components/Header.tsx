@@ -65,7 +65,7 @@ const Header = () => {
                 onClick={handleUserClick}
                 className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer"
               >
-                Olá, {user?.user_metadata?.full_name || 'Usuário'}
+                Olá, {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário'}
               </button>
               <Button
                 onClick={handleSignOut}
@@ -78,18 +78,18 @@ const Header = () => {
               </Button>
             </div>
           ) : (
-            <>
+            <div className="flex items-center space-x-3">
               <Link to="/praticante">
-                <Button variant="outline">
-                  Login
+                <Button variant="outline" size="sm">
+                  Entrar
                 </Button>
               </Link>
-              <Link to="/cadastro-estabelecimento">
-                <Button>
-                  Cadastrar local
+              <Link to="/praticante#cadastro">
+                <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                  Registrar-se
                 </Button>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>
