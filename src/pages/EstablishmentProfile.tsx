@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -20,6 +19,7 @@ const EstablishmentProfile = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { establishment, loading, error } = useEstablishmentProfile(id || '');
+  const [isFavorited, setIsFavorited] = useState(false);
 
   if (loading) {
     return (
@@ -48,13 +48,31 @@ const EstablishmentProfile = () => {
     );
   }
 
+  const handleToggleFavorite = () => {
+    setIsFavorited(!isFavorited);
+    // TODO: Implement favorite logic with backend
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: establishment.nome,
+        text: `Confira ${establishment.nome} no Núcleo do Esporte`,
+        url: window.location.href,
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+    }
+  };
+
   // Transform establishment data to match component interfaces
   const mappedEstablishment = {
     establishment_name: establishment.nome,
     address: `${establishment.rua}, ${establishment.numero}`,
     city: establishment.cidade || '',
     state: establishment.estado || '',
-    description: establishment.descricao,
+    description: establishment.descricao || '',
     establishment_sports: establishment.modalidades ? establishment.modalidades.map(modal => ({ sport_name: modal })) : []
   };
 
@@ -99,7 +117,12 @@ const EstablishmentProfile = () => {
           </div>
 
           {/* Header Section */}
-          <EstablishmentHeader establishment={mappedEstablishment} />
+          <EstablishmentHeader 
+            establishment={mappedEstablishment}
+            isFavorited={isFavorited}
+            onToggleFavorite={handleToggleFavorite}
+            onShare={handleShare}
+          />
 
           {/* Photo Gallery */}
           <EstablishmentPhotoGallery 
