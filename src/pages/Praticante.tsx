@@ -12,12 +12,17 @@ import LoginModal from '@/components/LoginModal';
 import RegistrationModal from '@/components/RegistrationModal';
 import UserProfileSidebar from '@/components/praticante/UserProfileSidebar';
 import FeedSection from '@/components/praticante/FeedSection';
+import FloatingActionButtons from '@/components/praticante/FloatingActionButtons';
+import CreatePostModal from '@/components/praticante/CreatePostModal';
+import CreateEventModal from '@/components/praticante/CreateEventModal';
 
 const Praticante = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
 
   // Se o usuário estiver logado, mostrar o layout de feed
   if (user) {
@@ -53,6 +58,23 @@ const Praticante = () => {
             </div>
           </div>
         </main>
+
+        {/* Botões de ação flutuantes */}
+        <FloatingActionButtons
+          onCreatePost={() => setShowCreatePostModal(true)}
+          onCreateEvent={() => setShowCreateEventModal(true)}
+        />
+
+        {/* Modals */}
+        <CreatePostModal
+          isOpen={showCreatePostModal}
+          onClose={() => setShowCreatePostModal(false)}
+        />
+
+        <CreateEventModal
+          isOpen={showCreateEventModal}
+          onClose={() => setShowCreateEventModal(false)}
+        />
 
         <Footer />
       </div>
