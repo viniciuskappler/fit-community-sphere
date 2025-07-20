@@ -10,6 +10,8 @@ import SecondaryHeader from '@/components/SecondaryHeader';
 import Footer from '@/components/Footer';
 import LoginModal from '@/components/LoginModal';
 import RegistrationModal from '@/components/RegistrationModal';
+import UserProfileSidebar from '@/components/praticante/UserProfileSidebar';
+import FeedSection from '@/components/praticante/FeedSection';
 
 const Praticante = () => {
   const navigate = useNavigate();
@@ -17,17 +19,47 @@ const Praticante = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
 
-  // If user is already logged in, redirect to dashboard
-  React.useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
-
+  // Se o usuário estiver logado, mostrar o layout de feed
   if (user) {
-    return null; // Will redirect in useEffect
+    return (
+      <div className="min-h-screen bg-background">
+        <SecondaryHeader isVisible={true} />
+        <Header />
+        
+        <main className="pt-[120px] px-4 md:px-6 pb-12">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Coluna Esquerda - Perfil do usuário */}
+              <div className="lg:col-span-3">
+                <UserProfileSidebar />
+              </div>
+              
+              {/* Coluna Central - Feed de publicações */}
+              <div className="lg:col-span-6">
+                <FeedSection />
+              </div>
+              
+              {/* Coluna Direita - Espaço reservado */}
+              <div className="lg:col-span-3">
+                <Card className="w-full">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-muted-foreground">
+                      <p className="text-sm">Espaço reservado para</p>
+                      <p className="text-sm">sugestões futuras</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <Footer />
+      </div>
+    );
   }
 
+  // Se não estiver logado, mostrar tela de login/cadastro
   return (
     <div className="min-h-screen bg-background">
       <SecondaryHeader isVisible={false} />
