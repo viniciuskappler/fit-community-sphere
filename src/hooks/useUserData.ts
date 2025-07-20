@@ -72,7 +72,7 @@ export const useUserData = () => {
           city: userData.cidade || '',
           state: userData.estado || '',
           cep: userData.cep || '',
-          photo_url: userData.foto_url || null,
+          photo_url: null, // Campo não existe na tabela usuarios
           created_at: userData.criado_em || ''
         };
         setProfile(mappedProfile);
@@ -126,7 +126,7 @@ export const useUserData = () => {
       if (updatedData.city !== undefined) userData.cidade = updatedData.city;
       if (updatedData.state !== undefined) userData.estado = updatedData.state;
       if (updatedData.cep !== undefined) userData.cep = updatedData.cep;
-      if (updatedData.photo_url !== undefined) userData.foto_url = updatedData.photo_url;
+      // Remover referência ao foto_url pois não existe na tabela
 
       const { error } = await supabase
         .from('usuarios')
