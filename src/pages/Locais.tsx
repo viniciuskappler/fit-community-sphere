@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle, MapPin } from 'lucide-react';
+import { AlertTriangle, MapPin, Navigation } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import Header from '@/components/Header';
@@ -154,9 +154,23 @@ interface EstablishmentFilters {
   amenities: string[];
 }
 
+// Calculate distance between two coordinates in km
+const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const R = 6371; // Earth's radius in kilometers
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c;
+  return distance;
+};
+
 const Locais = () => {
   const { user } = useAuth();
-  const { location } = useGeolocation();
+  const { location, error: locationError, isLocating, requestPermission } = useGeolocation();
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [filteredEstablishments, setFilteredEstablishments] = useState(mockEstablishments);
   const [filters, setFilters] = useState<EstablishmentFilters>({
@@ -167,10 +181,24 @@ const Locais = () => {
     amenities: []
   });
 
-  // Apply filters
+  // Apply filters and location-based filtering
   useEffect(() => {
     let filtered = mockEstablishments;
 
+    // Apply location filter first (50km radius)
+    if (location) {
+      filtered = filtered.filter(est => {
+        const distance = calculateDistance(
+          location.lat, 
+          location.lng, 
+          est.latitude, 
+          est.longitude
+        );
+        return distance <= 50; // 50km radius
+      });
+    }
+
+    // Apply other filters
     if (filters.name) {
       filtered = filtered.filter(est => 
         est.establishment_name.toLowerCase().includes(filters.name.toLowerCase())
@@ -198,7 +226,7 @@ const Locais = () => {
     }
 
     setFilteredEstablishments(filtered);
-  }, [filters]);
+  }, [filters, location]);
 
   const handleFilterChange = (newFilters: Partial<EstablishmentFilters>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
@@ -221,6 +249,39 @@ const Locais = () => {
             Explore estabelecimentos e espaços voltados ao esporte e bem-estar próximos de você
           </p>
         </div>
+
+        {/* Location Status */}
+        {isLocating && (
+          <Alert className="mb-6 bg-blue-50 border-blue-200">
+            <Navigation className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800">
+              Obtendo sua localização para mostrar estabelecimentos próximos...
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {locationError && (
+          <Alert className="mb-6 bg-yellow-50 border-yellow-200">
+            <AlertTriangle className="h-4 w-4 text-yellow-600" />
+            <AlertDescription className="text-yellow-800">
+              <div className="flex items-center justify-between">
+                <span>{locationError}</span>
+                <Button onClick={requestPermission} size="sm" variant="outline">
+                  Tentar novamente
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {location && (
+          <Alert className="mb-6 bg-green-50 border-green-200">
+            <MapPin className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-800">
+              Mostrando estabelecimentos num raio de 50km da sua localização atual.
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Warning Banner */}
         <Alert className="mb-6 bg-yellow-50 border-yellow-200">
@@ -268,7 +329,7 @@ const Locais = () => {
                 photos: est.photos
               }))}
               center={mapCenter}
-              zoom={11}
+              zoom={location ? 12 : 11}
               height="600px"
             />
           </div>
@@ -278,6 +339,7 @@ const Locais = () => {
         <div className="space-y-6">
           <h2 className="text-xl font-semibold text-gray-900">
             Estabelecimentos ({filteredEstablishments.length})
+            {location && <span className="text-sm font-normal text-gray-600 ml-2">(até 50km de distância)</span>}
           </h2>
           <EstablishmentsList establishments={filteredEstablishments} />
         </div>

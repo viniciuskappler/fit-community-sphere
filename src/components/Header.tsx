@@ -3,15 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { MapPin, Users, Dumbbell, User, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
@@ -23,61 +15,68 @@ const Header = () => {
     navigate('/');
   };
 
+  const handleUserClick = () => {
+    navigate('/dashboard');
+  };
+
   return (
     <header className="bg-white py-4 shadow-md sticky top-0 z-50">
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link to="/" className="text-2xl font-bold text-orange-600">
-          Núcleo do Esporte
+        <Link to="/" className="flex items-center space-x-2 text-2xl font-bold text-orange-600 hover:text-orange-700 transition-colors">
+          <Dumbbell className="w-8 h-8" />
+          <span>Núcleo do Esporte</span>
         </Link>
 
         <nav className="hidden md:flex space-x-8">
           <Link 
             to="/praticante" 
-            className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
+            className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 font-medium transition-colors"
           >
-            Praticante
+            <User className="w-5 h-5" />
+            <span>Praticante</span>
           </Link>
           <Link 
             to="/locais" 
-            className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
+            className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 font-medium transition-colors"
           >
-            Buscar Locais
+            <MapPin className="w-5 h-5" />
+            <span>Buscar Locais</span>
           </Link>
           <Link 
             to="/grupos" 
-            className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
+            className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 font-medium transition-colors"
           >
-            Grupos
+            <Users className="w-5 h-5" />
+            <span>Grupos</span>
           </Link>
           <Link 
             to="/profissionais" 
-            className="text-gray-700 hover:text-orange-600 font-medium transition-colors"
+            className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 font-medium transition-colors"
           >
-            Profissionais
+            <Dumbbell className="w-5 h-5" />
+            <span>Profissionais</span>
           </Link>
         </nav>
 
         <div className="flex items-center space-x-4">
           {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.user_metadata?.avatar_url} alt={user?.user_metadata?.full_name} />
-                    <AvatarFallback>{user?.user_metadata?.full_name?.substring(0, 2).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel>Olá, {user?.user_metadata?.full_name || 'Usuário'}</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => navigate('/dashboard')}>Dashboard</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/meus-referrals')}>Meus Referrals</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut}>
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={handleUserClick}
+                className="text-gray-700 hover:text-orange-600 font-medium transition-colors cursor-pointer"
+              >
+                Olá, {user?.user_metadata?.full_name || 'Usuário'}
+              </button>
+              <Button
+                onClick={handleSignOut}
+                variant="outline"
+                size="sm"
+                className="flex items-center space-x-1"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sair</span>
+              </Button>
+            </div>
           ) : (
             <>
               <Link to="/praticante">

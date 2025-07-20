@@ -94,12 +94,12 @@ const EstablishmentsFilters: React.FC<EstablishmentsFiltersProps> = ({
             <Label>Cidade</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
+                <Button variant="outline" className="w-full justify-between bg-white">
                   {filters.city || 'Todas as cidades'}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full">
+              <DropdownMenuContent className="w-full bg-white border border-gray-200 shadow-lg z-50">
                 <DropdownMenuItem onClick={() => onFilterChange({ city: '' })}>
                   Todas as cidades
                 </DropdownMenuItem>
@@ -117,12 +117,12 @@ const EstablishmentsFilters: React.FC<EstablishmentsFiltersProps> = ({
             <Label>Tipo do Local</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
+                <Button variant="outline" className="w-full justify-between bg-white">
                   {filters.type || 'Todos os tipos'}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full">
+              <DropdownMenuContent className="w-full bg-white border border-gray-200 shadow-lg z-50">
                 <DropdownMenuItem onClick={() => onFilterChange({ type: '' })}>
                   Todos os tipos
                 </DropdownMenuItem>
@@ -135,22 +135,23 @@ const EstablishmentsFilters: React.FC<EstablishmentsFiltersProps> = ({
             </DropdownMenu>
           </div>
 
-          {/* Sports Filter */}
+          {/* Sports Filter - Compact Dropdown */}
           <div className="space-y-2">
             <Label>Modalidades</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
+                <Button variant="outline" className="w-full justify-between bg-white">
                   {filters.sports.length > 0 ? `${filters.sports.length} selecionadas` : 'Modalidades'}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full">
+              <DropdownMenuContent className="w-full bg-white border border-gray-200 shadow-lg z-50 max-h-60 overflow-y-auto">
                 {sportsOptions.map(sport => (
                   <DropdownMenuCheckboxItem
                     key={sport}
                     checked={filters.sports.includes(sport)}
                     onCheckedChange={() => handleSportToggle(sport)}
+                    className="hover:bg-gray-50"
                   >
                     {sport}
                   </DropdownMenuCheckboxItem>
@@ -159,22 +160,23 @@ const EstablishmentsFilters: React.FC<EstablishmentsFiltersProps> = ({
             </DropdownMenu>
           </div>
 
-          {/* Amenities Filter */}
+          {/* Amenities Filter - Compact Dropdown */}
           <div className="space-y-2">
             <Label>Estrutura</Label>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
+                <Button variant="outline" className="w-full justify-between bg-white">
                   {filters.amenities.length > 0 ? `${filters.amenities.length} selecionadas` : 'Estrutura'}
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full">
+              <DropdownMenuContent className="w-full bg-white border border-gray-200 shadow-lg z-50 max-h-60 overflow-y-auto">
                 {amenitiesOptions.map(amenity => (
                   <DropdownMenuCheckboxItem
                     key={amenity}
                     checked={filters.amenities.includes(amenity)}
                     onCheckedChange={() => handleAmenityToggle(amenity)}
+                    className="hover:bg-gray-50"
                   >
                     {amenity}
                   </DropdownMenuCheckboxItem>
