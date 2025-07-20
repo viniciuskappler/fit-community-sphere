@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -12,6 +12,9 @@ import GroupsList from '@/components/groups/GroupsList';
 const Grupos = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedSport, setSelectedSport] = useState('');
 
   return (
     <div className="min-h-screen bg-background">
@@ -40,7 +43,11 @@ const Grupos = () => {
             </div>
           )}
 
-          <GroupsList />
+          <GroupsList 
+            searchTerm={searchTerm}
+            selectedCity={selectedCity}
+            selectedSport={selectedSport}
+          />
         </div>
       </main>
       <Footer />

@@ -18,25 +18,14 @@ import CookieConsent from '@/components/CookieConsent';
 const Index = () => {
   const { user } = useAuth();
   const {
-    isModalOpen,
-    modalFeature,
-    closeModal,
-    openModal
+    isOpen,
+    showDevelopmentModal,
+    closeDevelopmentModal
   } = useDevelopmentModal();
 
   return (
     <div className="min-h-screen bg-background">
-      <SecondaryHeader 
-        isVisible={true} 
-        developmentFeatures={[
-          { name: 'Mapa Interativo', key: 'interactive-map' },
-          { name: 'Sistema de Recomendações', key: 'recommendations' },
-          { name: 'Localização Automática', key: 'auto-location' },
-          { name: 'Filtros Avançados', key: 'advanced-filters' },
-          { name: 'Notificações Push', key: 'push-notifications' }
-        ]}
-        onFeatureClick={openModal}
-      />
+      <SecondaryHeader isVisible={true} />
       <Header />
       
       <main className="pt-[120px]">
@@ -53,9 +42,8 @@ const Index = () => {
       <Footer />
       
       <DevelopmentModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        feature={modalFeature}
+        isOpen={isOpen}
+        onClose={closeDevelopmentModal}
       />
       
       <CookieConsent />

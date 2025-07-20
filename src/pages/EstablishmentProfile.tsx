@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -47,6 +48,38 @@ const EstablishmentProfile = () => {
     );
   }
 
+  // Transform establishment data to match component interfaces
+  const mappedEstablishment = {
+    establishment_name: establishment.nome,
+    address: `${establishment.rua}, ${establishment.numero}`,
+    city: establishment.cidade || '',
+    state: establishment.estado || '',
+    description: establishment.descricao,
+    establishment_sports: establishment.modalidades ? establishment.modalidades.map(modal => ({ sport_name: modal })) : []
+  };
+
+  const mappedContactInfo = {
+    phone: establishment.telefone || '',
+    email: establishment.email || '',
+    address: `${establishment.rua}, ${establishment.numero}`,
+    city: establishment.cidade || '',
+    state: establishment.estado || '',
+    cep: establishment.cep || '',
+    corporate_name: establishment.nome,
+    created_at: establishment.criado_em || ''
+  };
+
+  const mappedMapData = {
+    id: establishment.id,
+    establishment_name: establishment.nome,
+    latitude: establishment.latitude || 0,
+    longitude: establishment.longitude || 0,
+    city: establishment.cidade || '',
+    state: establishment.estado || '',
+    establishment_sports: establishment.modalidades ? establishment.modalidades.map(modal => ({ sport_name: modal })) : [],
+    establishment_photos: [{ photo_url: establishment.imagem_url || '/placeholder.svg', is_main: true, caption: '' }]
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -66,19 +99,28 @@ const EstablishmentProfile = () => {
           </div>
 
           {/* Header Section */}
-          <EstablishmentHeader establishment={establishment} />
+          <EstablishmentHeader establishment={mappedEstablishment} />
 
           {/* Photo Gallery */}
-          <EstablishmentPhotoGallery photos={establishment.establishment_photos} />
+          <EstablishmentPhotoGallery 
+            photos={[{ photo_url: establishment.imagem_url || '/placeholder.svg', is_main: true, caption: '' }]}
+            establishmentName={establishment.nome}
+          />
 
           {/* Contact and Map */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <EstablishmentContactInfo establishment={establishment} />
-            <EstablishmentMap establishment={establishment} />
+            <EstablishmentContactInfo establishment={mappedContactInfo} />
+            <EstablishmentMap establishment={mappedMapData} />
           </div>
 
           {/* Review System */}
-          <ReviewSystem establishmentId={establishment.id} />
+          <ReviewSystem 
+            establishmentId={establishment.id}
+            reviews={[]}
+            onReviewSubmitted={() => {}}
+            averageRating={0}
+            totalReviews={0}
+          />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -13,6 +13,15 @@ import ProfessionalsList from '@/components/professionals/ProfessionalsList';
 const Profissionais = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [filters, setFilters] = useState({
+    cidade: '',
+    especialidade: '',
+    modalidade: ''
+  });
+
+  const handleFiltersChange = (newFilters: typeof filters) => {
+    setFilters(newFilters);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,8 +50,8 @@ const Profissionais = () => {
             </div>
           )}
 
-          <ProfessionalsFilters />
-          <ProfessionalsList />
+          <ProfessionalsFilters filters={filters} onFiltersChange={handleFiltersChange} />
+          <ProfessionalsList filters={filters} />
         </div>
       </main>
       <Footer />
