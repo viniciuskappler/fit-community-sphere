@@ -28,8 +28,13 @@ export const useAuthSecurity = () => {
       // Log the attempt
       await logLoginAttempt(email, !error);
 
+      if (data?.user && !error) {
+        console.log('✅ Login realizado com sucesso para:', email);
+      }
+
       return { data, error };
     } catch (error: any) {
+      console.error('❌ Erro no login seguro:', error);
       // Log failed attempt
       await logLoginAttempt(email, false);
       return { data: null, error };
@@ -42,6 +47,7 @@ export const useAuthSecurity = () => {
     setIsProcessing(true);
     
     try {
+      console.log('🚀 Iniciando cadastro seguro para:', email);
       const redirectUrl = `${window.location.origin}/hub`;
       
       const { data, error } = await supabase.auth.signUp({
@@ -53,8 +59,15 @@ export const useAuthSecurity = () => {
         }
       });
 
+      if (data?.user && !error) {
+        console.log('✅ Cadastro realizado com sucesso para:', email);
+      } else if (error) {
+        console.error('❌ Erro no cadastro:', error);
+      }
+
       return { data, error };
     } catch (error: any) {
+      console.error('💥 Erro inesperado no cadastro:', error);
       return { data: null, error };
     } finally {
       setIsProcessing(false);
@@ -63,15 +76,18 @@ export const useAuthSecurity = () => {
 
   const cleanupUserSessions = useCallback(async (userId: string) => {
     try {
+      console.log('🧹 Limpando sessões do usuário:', userId);
       const { error } = await supabase.rpc('cleanup_user_sessions', {
         user_id_param: userId
       });
       
       if (error) {
-        console.error('Error cleaning up user sessions:', error);
+        console.error('❌ Erro ao limpar sessões:', error);
+      } else {
+        console.log('✅ Sessões limpas com sucesso');
       }
     } catch (error) {
-      console.error('Error cleaning up user sessions:', error);
+      console.error('💥 Erro inesperado ao limpar sessões:', error);
     }
   }, []);
 
