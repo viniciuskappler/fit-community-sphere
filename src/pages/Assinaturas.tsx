@@ -89,7 +89,7 @@ const Assinaturas = () => {
       </div>
       
       {!user && (
-        <Alert variant="warning" className="mb-8 max-w-3xl mx-auto">
+        <Alert variant="destructive" className="mb-8 max-w-3xl mx-auto">
           <AlertTriangle className="h-4 w-4" />
           <AlertTitle>Você não está logado</AlertTitle>
           <AlertDescription>
