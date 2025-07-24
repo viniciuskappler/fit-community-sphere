@@ -13,17 +13,21 @@ const ConfettiAnimation = () => {
   }>>([]);
 
   useEffect(() => {
-    const colors = ['#ff6600', '#ff8533', '#ffaa66', '#cc5200', '#ff9944', '#e55100', '#ffa726'];
-    const newConfetti = Array.from({ length: 80 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      delay: Math.random() * 4,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      size: Math.random() * 12 + 6,
-      rotation: Math.random() * 360,
-      fall: Math.random() * 8 + 4
-    }));
-    setConfetti(newConfetti);
+    try {
+      const colors = ['#ff6600', '#ff8533', '#ffaa66', '#cc5200', '#ff9944', '#e55100', '#ffa726'];
+      const newConfetti = Array.from({ length: 40 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        delay: Math.random() * 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 8 + 4,
+        rotation: Math.random() * 360,
+        fall: Math.random() * 6 + 3
+      }));
+      setConfetti(newConfetti);
+    } catch (error) {
+      console.error('❌ Erro no ConfettiAnimation:', error);
+    }
   }, []);
 
   return (

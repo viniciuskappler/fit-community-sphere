@@ -35,6 +35,9 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import Profissionais from "./pages/Profissionais";
 import "./App.css";
+import ErrorBoundary from "./components/ErrorBoundary";
+import LoadingScreen from "./components/LoadingScreen";
+import { useAuth } from './contexts/AuthContext';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,14 +48,16 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
+function AppContent() {
+  const { loading } = useAuth();
+  
+  if (loading) {
+    return <LoadingScreen />;
+  }
+  
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <AuthProvider>
-          <Toaster />
-          <BrowserRouter>
-            <Routes>
+    <BrowserRouter>
+      <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/praticante" element={<Praticante />} />
               <Route path="/esportes" element={<Esportes />} />
@@ -83,11 +88,23 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/profissionais" element={<Profissionais />} />
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <AuthProvider>
+            <Toaster />
+            <AppContent />
+          </AuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

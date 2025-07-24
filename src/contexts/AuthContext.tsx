@@ -66,9 +66,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     console.log('🔧 Configurando listener de autenticação...');
     
+    let isMounted = true;
+    
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        if (!isMounted) return;
+        
         console.log('🔐 Estado de autenticação mudou:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
@@ -78,13 +82,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('✅ Usuário logado com sucesso');
           toast.success('Login realizado com sucesso!');
           
-          // Garantir que o usuário existe na tabela usuarios (agora com RLS seguro)
-          await ensureUserInUsuariosTable(session.user.id, session.user.email);
+          // Garantir que o usuário existe na tabela usuarios de forma assíncrona
+          setTimeout(() => {
+            if (isMounted) {
+              ensureUserInUsuariosTable(session.user.id, session.user.email);
+            }
+          }, 0);
           
           // Redirecionar para dashboard após login
           if (window.location.pathname === '/') {
             console.log('🔄 Redirecionando para dashboard...');
-            window.location.href = '/dashboard';
+            setTimeout(() => {
+              if (isMounted) {
+                window.location.href = '/dashboard';
+              }
+            }, 500);
           }
         } else if (event === 'SIGNED_OUT') {
           console.log('👋 Usuário deslogado');
@@ -94,6 +106,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!isMounted) return;
+      
       console.log('📋 Sessão inicial obtida:', session?.user?.email || 'Nenhuma sessão');
       setSession(session);
       setUser(session?.user ?? null);
