@@ -188,16 +188,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     console.log('👋 Fazendo logout...');
     try {
+      // Limpar o estado local primeiro
+      setUser(null);
+      setSession(null);
+      
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('❌ Erro no logout:', error);
         toast.error('Erro ao fazer logout');
-      } else {
-        console.log('✅ Logout realizado com sucesso');
-        toast.success('Logout realizado com sucesso!');
-        // Redirecionar para a página inicial
-        window.location.href = '/';
+        return;
       }
+
+      console.log('✅ Logout realizado com sucesso');
+      toast.success('Logout realizado com sucesso!');
+      
+      // Aguardar um pouco para o toast aparecer antes de redirecionar
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 500);
     } catch (error) {
       console.error('💥 Exceção no logout:', error);
       toast.error('Erro inesperado no logout');
