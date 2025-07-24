@@ -240,6 +240,33 @@ export type Database = {
           },
         ]
       }
+      login_attempts: {
+        Row: {
+          attempted_at: string | null
+          email: string
+          id: string
+          ip_address: unknown | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          attempted_at?: string | null
+          email: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          attempted_at?: string | null
+          email?: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       profissionais_esportivos: {
         Row: {
           atende_em_estabelecimento: boolean | null
@@ -326,6 +353,33 @@ export type Database = {
           },
         ]
       }
+      registration_attempts: {
+        Row: {
+          attempted_at: string | null
+          email: string
+          id: string
+          ip_address: unknown | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          attempted_at?: string | null
+          email: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          attempted_at?: string | null
+          email?: string
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       subscription_plans: {
         Row: {
           active: boolean
@@ -362,6 +416,36 @@ export type Database = {
           price_yearly?: number
           type?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_sessions: {
+        Row: {
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          last_activity: string | null
+          session_token: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          last_activity?: string | null
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          last_activity?: string | null
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -528,6 +612,10 @@ export type Database = {
       log_registration_attempt: {
         Args: { user_email: string; was_successful: boolean; user_ip?: unknown }
         Returns: undefined
+      }
+      prevent_role_escalation: {
+        Args: { user_id: string; new_papel: string }
+        Returns: boolean
       }
       update_establishment_stats: {
         Args: { est_id: string }
