@@ -36,25 +36,11 @@ const Header = () => {
             <span>Praticante</span>
           </Link>
           <Link 
-            to="/locais" 
+            to="/hub" 
             className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 font-medium transition-colors"
           >
             <MapPin className="w-5 h-5" />
-            <span>Buscar Locais</span>
-          </Link>
-          <Link 
-            to="/grupos" 
-            className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 font-medium transition-colors"
-          >
-            <Users className="w-5 h-5" />
-            <span>Grupos</span>
-          </Link>
-          <Link 
-            to="/profissionais" 
-            className="flex items-center space-x-2 text-gray-700 hover:text-orange-600 font-medium transition-colors"
-          >
-            <Dumbbell className="w-5 h-5" />
-            <span>Profissionais</span>
+            <span>Hub do Esporte</span>
           </Link>
         </nav>
 

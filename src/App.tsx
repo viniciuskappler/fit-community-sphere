@@ -37,6 +37,7 @@ import Profissionais from "./pages/Profissionais";
 import "./App.css";
 import ErrorBoundary from "./components/ErrorBoundary";
 import LoadingScreen from "./components/LoadingScreen";
+import HubRedirect from "./components/HubRedirect";
 import { useAuth } from './contexts/AuthContext';
 
 const queryClient = new QueryClient({
@@ -66,8 +67,11 @@ function AppContent() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/cadastro-realizado" element={<CadastroRealizado />} />
               <Route path="/busca" element={<Busca />} />
-              <Route path="/grupos" element={<Grupos />} />
-              <Route path="/locais" element={<Locais />} />
+              {/* Redirects to Hub with specific tabs */}
+              <Route path="/grupos" element={<HubRedirect tab="grupos" />} />
+              <Route path="/locais" element={<HubRedirect tab="locais" />} />
+              <Route path="/profissionais" element={<HubRedirect tab="profissionais" />} />
+              
               <Route path="/assinaturas" element={<Assinaturas />} />
               <Route path="/cadastro-estabelecimento" element={<CadastroEstabelecimento />} />
               <Route path="/criar-grupo-esportivo" element={<CriarGrupoEsportivo />} />
@@ -86,7 +90,6 @@ function AppContent() {
               <Route path="/termos-privacidade" element={<TermosPrivacidade />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/profissionais" element={<Profissionais />} />
               <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
