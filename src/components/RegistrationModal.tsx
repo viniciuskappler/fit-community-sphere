@@ -128,6 +128,11 @@ const RegistrationModal = ({ isOpen, onClose, initialType = 'supporter', referra
     
     if (currentStep === 1) {
       stepErrors = validateStep1(formData);
+      
+      // Se há código promocional, verificar se foi validado
+      if (formData.promoCode && !promoValidation?.success) {
+        stepErrors.promo = 'Aplique o código promocional antes de continuar';
+      }
     } else if (currentStep === 2) {
       stepErrors = validateStep2(formData);
     } else if (currentStep === 3) {
