@@ -15,14 +15,52 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
   });
   
   const [isComplete, setIsComplete] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     const calculateTimeLeft = () => {
-      const difference = targetDate.getTime() - new Date().getTime();
-      
-      if (difference <= 0) {
-        setIsComplete(true);
-        if (onComplete) onComplete();
+      try {
+        const now = new Date().getTime();
+        const target = new Date(targetDate).getTime();
+        
+        // Verificar se as datas são válidas
+        if (isNaN(now) || isNaN(target)) {
+          console.error('⚠️ Datas inválidas no CountdownTimer');
+          return {
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0
+          };
+        }
+        
+        const difference = target - now;
+        
+        if (difference <= 0) {
+          setIsComplete(true);
+          if (onComplete) onComplete();
+          return {
+            days: 0,
+            hours: 0,
+            minutes: 0,
+            seconds: 0
+          };
+        }
+        
+        return {
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        };
+      } catch (error) {
+        console.error('❌ Erro no CountdownTimer:', error);
         return {
           days: 0,
           hours: 0,
@@ -30,13 +68,6 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
           seconds: 0
         };
       }
-      
-      return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
-      };
     };
 
     setTimeLeft(calculateTimeLeft());
@@ -46,7 +77,19 @@ const CountdownTimer = ({ targetDate, onComplete }: CountdownTimerProps) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [targetDate, onComplete]);
+  }, [targetDate, onComplete, mounted]);
+
+  // Não renderizar até estar montado (evita hydration mismatch)
+  if (!mounted) {
+    return (
+      <div className="bg-gradient-to-r from-primary/90 to-primary rounded-lg p-4 shadow-lg">
+        <div className="animate-pulse space-y-2">
+          <div className="h-6 bg-primary-foreground/20 rounded mx-auto w-3/4"></div>
+          <div className="h-16 bg-primary-foreground/20 rounded"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (isComplete) {
     return (

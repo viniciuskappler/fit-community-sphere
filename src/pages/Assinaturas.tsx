@@ -17,7 +17,7 @@ import { AlertCircle, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const Assinaturas = () => {
-  const { plans, loading, isBetaTesterDiscountActive, getDiscountedPrice } = useSubscription();
+  const { plans, loading, error, isBetaTesterDiscountActive, getDiscountedPrice } = useSubscription();
   const [selectedPlanId, setSelectedPlanId] = useState<string>('');
   const [selectedPeriod, setSelectedPeriod] = useState<'monthly' | 'yearly'>('monthly');
   const [selectedType, setSelectedType] = useState<string>('supporter');
@@ -69,6 +69,61 @@ const Assinaturas = () => {
   const freePlan = plans.find(
     (plan) => plan.type === selectedType && plan.is_free
   );
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="container max-w-7xl mx-auto py-8 px-4">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-6">Carregando planos...</h1>
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-gray-200 rounded mx-auto w-1/2"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="container max-w-7xl mx-auto py-8 px-4">
+        <Alert variant="destructive" className="max-w-3xl mx-auto">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertTitle>Erro ao carregar planos</AlertTitle>
+          <AlertDescription>
+            {error}
+            <div className="mt-2">
+              <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+                Tentar novamente
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  // Empty state
+  if (!plans || plans.length === 0) {
+    return (
+      <div className="container max-w-7xl mx-auto py-8 px-4">
+        <Alert className="max-w-3xl mx-auto">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Nenhum plano disponível</AlertTitle>
+          <AlertDescription>
+            Não foi possível encontrar planos de assinatura no momento.
+            <div className="mt-2">
+              <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+                Recarregar página
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
 
   return (
     <div className="container max-w-7xl mx-auto py-8 px-4">

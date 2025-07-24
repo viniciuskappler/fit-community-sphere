@@ -26,6 +26,7 @@ export const useSubscription = () => {
   const [subscriptions, setSubscriptions] = useState<UserSubscription[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Função para verificar se há desconto de beta tester
@@ -60,21 +61,26 @@ export const useSubscription = () => {
   // Buscar planos disponíveis
   const fetchPlans = async () => {
     try {
+      console.log('🔍 Buscando planos...');
+      setError(null);
+      
       const { data, error } = await supabase
         .from('subscription_plans')
         .select('*')
+        .eq('active', true)
         .order('is_free', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Erro na query de planos:', error);
+        throw error;
+      }
       
-      setPlans(data as Plan[]);
+      console.log('✅ Planos carregados:', data?.length || 0);
+      setPlans(data as Plan[] || []);
     } catch (error: any) {
-      console.error('Erro ao buscar planos:', error.message);
-      toast({
-        title: 'Erro ao buscar planos',
-        description: 'Não foi possível carregar os planos de assinatura.',
-        variant: 'destructive',
-      });
+      console.error('❌ Erro ao buscar planos:', error.message);
+      setError(`Erro ao carregar planos: ${error.message}`);
+      setPlans([]);
     }
   };
 
@@ -82,9 +88,11 @@ export const useSubscription = () => {
   const fetchUserSubscriptions = async () => {
     setLoading(true);
     try {
+      console.log('🔍 Buscando assinaturas do usuário...');
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
+        console.log('ℹ️ Usuário não logado');
         setLoading(false);
         return;
       }
@@ -97,22 +105,24 @@ export const useSubscription = () => {
         `)
         .eq('user_id', user.id);
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Erro na query de assinaturas:', error);
+        throw error;
+      }
       
-      setSubscriptions(data as UserSubscription[]);
+      console.log('✅ Assinaturas carregadas:', data?.length || 0);
+      setSubscriptions(data as UserSubscription[] || []);
     } catch (error: any) {
-      console.error('Erro ao buscar assinaturas:', error.message);
-      toast({
-        title: 'Erro ao buscar assinaturas',
-        description: 'Não foi possível carregar suas assinaturas.',
-        variant: 'destructive',
-      });
+      console.error('❌ Erro ao buscar assinaturas:', error.message);
+      setError(`Erro ao carregar assinaturas: ${error.message}`);
+      setSubscriptions([]);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    console.log('🚀 Inicializando useSubscription...');
     fetchPlans();
     fetchUserSubscriptions();
   }, []);
@@ -121,6 +131,7 @@ export const useSubscription = () => {
     subscriptions,
     plans,
     loading,
+    error,
     hasActivePlan,
     getActivePlan,
     isBetaTesterDiscountActive,
